@@ -1,5 +1,5 @@
 # The 2048 Power Compendium
-[Link to the game](https://mathcookie17.github.io/The-2048-Power-Compendium/)
+[Link to the game](https://pointingless.github.io/)
 
 The 2048 Power Compendium is a collection of 100 different variations of 2048. Some of these are based on powers of different numbers: 2048 is based on powers of 2, 2187 is based on powers of 3, 1024 is based on powers of 4, 3125 is based on powers of 5, and so on. Some of these variations are based on powers of numbers offset by some other value, such as 2047 (powers of 2, minus 1) and 2059 (powers of 3, minus powers of 2). The first 25 modes tend to follow these patterns, but the latter 75 modes don't.
 
