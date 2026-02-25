@@ -1180,17 +1180,26 @@ document.getElementById("Alternate5040_baseListIntro_button").addEventListener("
     gmDisplayVars();
 });
 document.getElementById("Alternate5040_baseListRandomize_button").addEventListener("click", function(){
-    let amount = 2;
-    mode_vars[1] = [];
-    for(let i = 0; i < 10; i++) {
-        if(Math.random() < 0.25) amount++;
+    if(Array.isArray(mode_vars[1])) {
+        let amount = 2;
+        mode_vars[1] = [];
+        for(let i = 0; i < 10; i++) {
+            if(Math.random() < 0.25) amount++;
+        }
+        for(let i = 0; i < amount; i++) {
+            let randomNum = 1;
+            for(let j = 0; j < 6; j++) {
+                randomNum *= 1 + Math.random();
+            }
+            mode_vars[1].push(BigInt(Math.ceil(randomNum)));
+        }
     }
-    for(let i = 0; i < amount; i++) {
+    else {
         let randomNum = 1;
-        for(let j = 0; j < 6; j++) {
+        for(let j = 0; j < 9; j++) {
             randomNum *= 1 + Math.random();
         }
-        mode_vars[1].push(BigInt(Math.ceil(randomNum)));
+        mode_vars[1] = BigInt(Math.ceil(randomNum));
     }
     loadGridSize(100, mode_vars);
     gmDisplayVars();
@@ -12848,6 +12857,8 @@ function gmDisplayVars() {
         }
         if(mode_vars[0] == 22) statBoxes = [["Merge Number", ["@Moves", "/", mode_vars[4], "floor", 1, "+", 1], false, false, "Tile", "Turatin"], ["Score", "@Score"]];
         else statBoxes = [["Score", "@Score"]];
+        document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
+        document.getElementById("Alternate5040_num").style.setProperty("display", "none");
         document.getElementById("Alternate5040_fraction").style.setProperty("display", "none");
         document.getElementById("Alternate5040_extra2").style.setProperty("display", "none");
         if (mode_vars[1] === true) {
@@ -12859,8 +12870,6 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseListIntro").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_num").style.setProperty("display", "none");
             CAM1Entry = ["@This 0", "+B", 1n];
             nextCAM1Entry = ["@This 0", "+B", 2n];
             nfact = "n!";
@@ -13063,6 +13072,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseSubfactorials").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseListIntro").style.setProperty("display", "block");
             document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "block");
+            document.getElementById("Alternate5040_baseListRandomize_button").innerHTML = "Randomize Cycle!";
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "flex");
             while (document.getElementById("Alternate5040_baseList").children.length > mode_vars[1].length + 3) {
                 document.getElementById("Alternate5040_baseList").removeChild(document.getElementById("Alternate5040_baseList").lastElementChild);
@@ -13319,7 +13329,8 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseRational").style.setProperty("display", "none");
             document.getElementById("Alternate5040_basePrimorials").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseListIntro").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "block");
+            document.getElementById("Alternate5040_baseListRandomize_button").innerHTML = "Randomize Power!";
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
             document.getElementById("Alternate5040_base_change").value = mode_vars[1];
             CAM1Entry = mode_vars[1];
@@ -13675,6 +13686,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_variant_text").style.setProperty("color", "#912ad5");
             document.getElementById("Alternate5040_extra").style.setProperty("display", "block");
             document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
+            document.getElementById("Alternate5040_num").style.setProperty("display", "none");
             document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #9900ff, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #9900ff, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
             if(mode_vars[3] == 0) {
@@ -16181,6 +16193,9 @@ function gmDisplayVars() {
                 knownMergeMaxLength = 3;
             }
             else if(mode_vars[2] == 1) {
+                if(mode_vars[1] === true) MergeRules.push(
+
+                )
                 if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
                     [3, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@Next 2 0", "=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", ">=", "@Next 2 1"], "&&", ["@Next 2 1", "!=", 0n], "&&", ["@This 1", "%B", "@Next 2 1", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "<", [CAM1Entry, "-B", 1n]], "&&", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"]]], [], [false, true, true]],
                     [3, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@Next 2 0", "=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", ">=", "@Next 2 1"], "&&", ["@Next 2 1", "!=", 0n], "&&", ["@This 1", "%B", "@Next 2 1", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", [CAM1Entry, "-B", 1n]]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
