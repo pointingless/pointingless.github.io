@@ -9394,12 +9394,12 @@ function loadGridSize(mode, mvars = []) {
             if(mvars[3] == 0) defaultSize = 5;
             else if(mvars[3] == 1) defaultSize = 6;
         } else if (mvars[0] == 4) {
-            defaultSize = mvars[4] + 2;
-            if(mvars[4] > 2 || mvars[2] == 1) defaultSize++;
+            defaultSize = mvars[4] + 3;
+            //if(mvars[4] > 2 || mvars[2] == 1) defaultSize++;
         } else if (mvars[0] == 5) {
-            defaultSize = mvars[4] + 2;
-            if(mvars[3] == 0 && mvars[4] > 2) defaultSize++;
-            else if(mvars[3] == 2) defaultSize = 6;
+            defaultSize = mvars[4] + 3;
+            //if(mvars[3] == 0 && mvars[4] > 2) defaultSize++;
+            if(mvars[3] == 2) defaultSize = 6;
         } else if (mvars[0] == 8) {
             if (mvars[1] === true) defaultSize = 9;
             else if(mvars[1] === false) defaultSize = 12;
@@ -14567,8 +14567,8 @@ function gmDisplayVars() {
                     let specialArray = [[CAM1Entry, "/", [mode_vars[4], "^", [[CAM1Entry, "/", "@This 1", "log", mode_vars[4]], "floor", 1, "-", 1]]], "floor", 1, "+B", 0n];
                     for(let i = 1; i < mode_vars[4]; i++) {
                         if(i > 1) MergeRules.push(
-                            [i, [conditional.slice(), "&&", ["@This 1", "*B", i, "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], lastArray.slice()],
-                            [i, [conditional.slice(), "&&", ["@This 1", "=", 1n], "&&", ["@This 1", "*B", BigInt(i), "<", CAM1Entry], "&&", [BigInt(mode_vars[4]), "*B", 2n, "<=", specialArray], "&&", [[[CAM1Entry, "/", [mode_vars[4], "^", [[CAM1Entry, "/", "@This 1", "log", mode_vars[4]], "floor", 1]]], "floor", 1, "+B", 0n], "=", BigInt(i)]], true, [["@This 0", ["@This 1", "*B", BigInt(i)]]], [], lastArray.slice()]
+                            [i, [conditional.slice(), "&&", ["@This 1", "*B", i, "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], lastArray.slice()],
+                            [i, [conditional.slice(), "&&", ["@This 1", "=", 1n], "&&", ["@This 1", "*B", BigInt(i), "<", CAM1Entry], "&&", [BigInt(mode_vars[4]), "*B", 2n, "<=", specialArray], "&&", [[[CAM1Entry, "/", [mode_vars[4], "^", [[CAM1Entry, "/", "@This 1", "log", mode_vars[4]], "floor"]]], "floor", 1, "+B", 0n], "=", BigInt(i)]], true, [["@This 0", ["@This 1", "*B", BigInt(i)], "@This 2"]], [], lastArray.slice()]
                         );
                         conditional.push("&&", ["@This 0", "=", "@Next " + i + " 0"], "&&", ["@This 1", "=", "@Next " + i + " 1"]);
                         lastArray.push(true);
@@ -14922,7 +14922,7 @@ function gmDisplayVars() {
                         MergeRules = [
                             [Number(mode_vars[1]), conditional, true, [[["@This 0", "+B", 1n], 1n]], [mode_vars[1], "^", ["@This 0", "+", 1]], lastArray]
                         ];
-                        rulesDescription = mode_vars[1] + " equal tiles merge. Get to the " + mode_vars[1]**goalPow + " tile to win!"
+                        rulesDescription = mode_vars[1] + " equal tiles merge. Get to the " + mode_vars[1]**goalPow + " tile to win!";
                     }
                     else if(mode_vars[2] == 1) {
                         let conditional = [["@This 0", "=", 1n], "&&", ["@Next 1 0", "!=", 0n]];
@@ -14939,7 +14939,8 @@ function gmDisplayVars() {
                             [Number(mode_vars[1]) - 1, weirdArray, true, [[1n, 1n]], [mode_vars[1], "-", 1], lastArray.slice(0, lastArray.length - 3)],
                             [Number(mode_vars[1]) + 1, [[otherArray, "arr_sort", ["@Var -1", "-B", "@Var -2", "Number"], "arr_elem", 0], "=", [otherArray, "arr_sort", ["@Var -1", "-B", "@Var -2", "Number"], "arr_elem", Number(mode_vars[1]) - 1], "&&", [otherArray, "arr_sort", ["@Var -1", "-B", "@Var -2", "Number"] , "arr_elem", Number(mode_vars[1]), "=", 1n]], true, [[[otherArray, "arr_sort", ["@Var -1", "-B", "@Var -2", "Number"], "arr_elem", 0, "+B", 1n], 1n]], [mode_vars[1], "^", ["@This 0", "+", 1], "-", 1], lastArray]
                         ];
-                        rulesDescription = mode_vars[1] - 1n + " 1s can merge. " + mode_vars[1] + " equal tiles merge with a " + (mode_vars[1] - 1n) + ". Get to the " + (mode_vars[1]**goalPow - 1n) + " tile to win!"
+                        rulesDescription = mode_vars[1] + " equal tiles merge with a " + (mode_vars[1] - 1n) + ". Get to the " + (mode_vars[1]**goalPow - 1n) + " tile to win!"
+                        if(mode_vars[1] > 2n) rulesDescription = mode_vars[1] - 1n + " 1s can merge. " + rulesDescription
                     }
                 }
             }
@@ -15643,6 +15644,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_variant_text").style.setProperty("color", "#a01313");
             document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
             document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_num").style.setProperty("display", "none");
             document.getElementById("Alternate5040_fraction").style.setProperty("display", "block");
             document.getElementById("Alternate5040_fraction_numerator_change").value = mode_vars[4].numerator;
             document.getElementById("Alternate5040_fraction_denominator_change").value = mode_vars[4].denominator;
@@ -16158,7 +16160,7 @@ function gmDisplayVars() {
         else if(mode_vars[0] == 23) { // LOCEF variant
             document.getElementById("Alternate5040_variant_text").innerHTML = "The merge rules are based on paths to tiles in LOCEF.";
             document.getElementById("Alternate5040_variant_text").style.setProperty("color", "#49a291");
-            document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
             document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
             document.getElementById("Alternate5040_num").style.setProperty("display", "none");
             document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #98ede2, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
@@ -16194,9 +16196,22 @@ function gmDisplayVars() {
             }
             else if(mode_vars[2] == 1) {
                 if(mode_vars[1] === true) MergeRules.push(
+                    [2, [["@This 0", "=", 2n], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 0", "=", 2n], "&&", ["@Next 1 1", "=", 1n]], true, [[2n, 0n]], 2, [false, true]],
+                    [3, [["@This 0", "=", 2n], "&&", ["@This 1", "=", 0n], "&&", ["@Next 1 0", "=", 2n], "&&", ["@Next 1 1", "=", 0n], "&&", ["@Next 2 0", "=", 2n], "&&", ["@Next 2 1", "=", 1n]], false, [[3n, 1n]], 5, [false, true, true]]
+                ); 
+                else if(mode_vars[1] === false) MergeRules.push(
+                    [2, [["@This 0", "=", 1n], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 0", "=", 1n], "&&", ["@Next 1 1", "=", 1n]], true, [[1n, 0n]], 2, [false, true]],
+                    [3, [["@This 0", "=", 1n], "&&", ["@This 1", "=", 0n], "&&", ["@Next 1 0", "=", 1n], "&&", ["@Next 1 1", "=", 0n], "&&", ["@Next 2 0", "=", 1n], "&&", ["@Next 2 1", "=", 1n]], false, [[2n, 1n]], 5, [false, true, true]]
+                );
+                else if(Array.isArray(mode_vars[1]) && mode_vars[1][0] == 2n) {
+                    if(mode_vars[1][1 % mode_vars[1].length] == 2n) MergeRules.push(
 
-                )
-                if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
+                    );
+                }
+                else if(mode_vars[1] === 2n) MergeRules.push(
+
+                );
+                else if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
                     [3, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@Next 2 0", "=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", ">=", "@Next 2 1"], "&&", ["@Next 2 1", "!=", 0n], "&&", ["@This 1", "%B", "@Next 2 1", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "<", [CAM1Entry, "-B", 1n]], "&&", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"]]], [], [false, true, true]],
                     [3, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@Next 2 0", "=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", ">=", "@Next 2 1"], "&&", ["@Next 2 1", "!=", 0n], "&&", ["@This 1", "%B", "@Next 2 1", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", [CAM1Entry, "-B", 1n]]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
                     [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "Number", "log", 2, "%", 1, "=", 0], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", [["@NextNE -1 0", "!=", "@This 0"], "||", ["@This 1", "%B", "@NextNE -1 1", "!=", 0n], "||", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1", "+B", "@NextNE -1 1"], "=", -1]]], true, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
