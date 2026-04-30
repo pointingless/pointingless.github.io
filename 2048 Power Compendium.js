@@ -15344,7 +15344,7 @@ function gmDisplayVars() {
                         MergeRules.push([f, [mode_vars[1], "^B", [inputs.slice(), "arr_sort", ["@Var -1", "-B", "@Var -2", "Number"], "arr_elem", 0, "+B", 1n], "%B", tileSums.slice(), "=", 0n], true, [[[inputs.slice(), "arr_sort", ["@Var -1", "-B", "@Var -2", "Number"], "arr_elem", 0], [[mode_vars[1], "^B", [[inputs.slice(), "arr_sort", ["@Var -1", "-B", "@Var -2", "Number"], "arr_elem", 0], "+B", 1n], "/B", tileSums.slice()]]]], tileSums.slice(), lastArray.slice()]);
                     }
                 }
-                rulesDescription += "Any amount of tiles can merge with a tile that's at least" + nfact + " and less than " + nonefact + " if they sum to a divisor of " + nonefact + ". ";
+                rulesDescription += "Any amount of tiles can merge with a tile that's at least " + nfact + " and less than " + nonefact + " if they sum to a divisor of " + nonefact + ". ";
                 if(Array.isArray(mode_vars[1])) rulesDescription = "Follow the paths to get from n! to (n + 1)! (pretending the start of each tier is n!) in Alternate 5040 (2520 Variant) for the following n's in a cycle: " + arrayListString + ". ";
                 rulesTitle[1] = "2520";
             }
