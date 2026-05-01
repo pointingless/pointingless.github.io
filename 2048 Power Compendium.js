@@ -12971,7 +12971,8 @@ function gmDisplayVars() {
                 ];
                 tileValueFunction = ["@This 0", "factorial", "*", "@This 1"];
             }
-            winConditions = [[7n, 1n]];
+            if(mode_vars[0] == 10) winConditions = [[7n, 8n]];
+            else winConditions = [[7n, 1n]];
         }
         else if (mode_vars[1] === false) {
             document.getElementById("Alternate5040_baseFactorials").style.setProperty("display", "none");
@@ -13053,7 +13054,8 @@ function gmDisplayVars() {
                 }
                 tileValueFunction = [[0, "@end_vars", 1, "@repeat", ["@This 0", "+", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "*", ["@var_retain", "@Var 0", "prime"], "@end-repeat"], "*", "@This 1"];
             }   
-            winConditions = [[5n, 1n]];
+            if(mode_vars[0] == 10) winConditions = [[5n, 13n]];
+            else winConditions = [[5n, 1n]];
             
         }
         else if (Array.isArray(mode_vars[1])) {
@@ -13256,6 +13258,7 @@ function gmDisplayVars() {
                 goalPow++;
             }
             winConditions = [[goalPow, 1n]];
+            if(mode_vars[0] == 10) winConditions[0][1] = mode_vars[1][Number(winConditions[0][0]) % mode_vars[1].length];
             if(arrayContainsRational) goalText = defaultAbbreviate(arrayWinCondition);
             else goalText = arrayWinCondition;
             if(mode_vars[2] == 1) rulesTitle = [arrayWinCondition - 1n + " (Alternate 5039, ", ""];
@@ -13358,7 +13361,8 @@ function gmDisplayVars() {
                 }
                 tileValueFunction = ["@if",["@This 1","=",0n],"@This 0","subfactorial","@end-if", "@if", ["@This 1","!=",0n], ["@This 0","subfactorial"],"+B",["@This 0","-B",1n,"subfactorial"],"*B","@This 1","@end-if"];
             }
-            winConditions = [[7n, 0n]];
+            if(mode_vars[0] == 10) winConditions = [[6n, 1n]];
+            else winConditions = [[7n, 0n]];
         }
         else if(mode_vars[1] < -1n) {
             document.getElementById("Alternate5040_baseFactorials").style.setProperty("display", "none");
@@ -13531,6 +13535,7 @@ function gmDisplayVars() {
             else if (mode_vars[1] < 256n) goalPow = 2n;
             else goalPow = 1n;
             winConditions = [[goalPow, 1n]];
+            if(mode_vars[0] == 10) winConditions[0][1] = mode_vars[1];
             goalText = mode_vars[1]**goalPow;
             if(mode_vars[2] == 1) rulesTitle = [mode_vars[1]**goalPow - 1n + " (Alternate 5039, ", ""];
             else if(mode_vars[2] == 0) rulesTitle = [mode_vars[1]**goalPow + " (Alternate 5040, ", ""];
@@ -14491,7 +14496,7 @@ function gmDisplayVars() {
                     }
                     MergeRules.pop();
                 }
-                rulesDescription += mode_vars[4] + " equal multiples of " + nfact + " that are less than " + nonefact + " can merge, and they result in " + nonefact + " and the negative tile that is leftover. ";
+                rulesDescription += mode_vars[4] + " equal multiples of " + nfact + " that are smaller than " + nonefact + " can merge, and they result in " + nonefact + " and the negative tile that is leftover. ";
                 rulesTitle[1] = "Partial Absorb 19,683";
             }
             else if(mode_vars[3] == 2) {
@@ -14598,7 +14603,7 @@ function gmDisplayVars() {
                     }
                     MergeRules.pop();
                 }
-                rulesDescription += mode_vars[4] + " equal multiples of " + nfact + " that are less than " + nonefact + " can merge, and if their sum is greater than half of " + nonefact + " they result in " + nonefact + " and the negative tile that is leftover. ";
+                rulesDescription += mode_vars[4] + " equal multiples of " + nfact + " that are smaller than " + nonefact + " can merge, and if their sum is greater than half of " + nonefact + " they result in " + nonefact + " and the negative tile that is leftover. ";
                 rulesTitle[1] = "Balanced Partial Absorb 19,683";
             }
             if(mode_vars[4] != 2) {
@@ -15055,7 +15060,7 @@ function gmDisplayVars() {
                             [Number(mode_vars[1]) - 1, weirdArray, true, [[1n, 1n]], [mode_vars[1], "-", 1], lastArray.slice(0, lastArray.length - 3)],
                             [Number(mode_vars[1]) + 1, [[otherArray, "arr_sort", ["@Var -1", "-B", "@Var -2", "Number"], "arr_elem", 0], "=", [otherArray, "arr_sort", ["@Var -1", "-B", "@Var -2", "Number"], "arr_elem", Number(mode_vars[1]) - 1], "&&", [otherArray, "arr_sort", ["@Var -1", "-B", "@Var -2", "Number"] , "arr_elem", Number(mode_vars[1]), "=", 1n]], true, [[[otherArray, "arr_sort", ["@Var -1", "-B", "@Var -2", "Number"], "arr_elem", 0, "+B", 1n], 1n]], [mode_vars[1], "^", ["@This 0", "+", 1], "-", 1], lastArray]
                         ];
-                        rulesDescription = mode_vars[1] + " equal tiles merge with a " + (mode_vars[1] - 1n) + ". Get to the " + (mode_vars[1]**goalPow - 1n) + " tile to win!"
+                        rulesDescription = mode_vars[1] + " equal tiles not less than " + (mode_vars[1] - 1n) + " can merge with a " + (mode_vars[1] - 1n) + ". Get to the " + (mode_vars[1]**goalPow - 1n) + " tile to win!"
                         if(mode_vars[1] > 2n) rulesDescription = mode_vars[1] - 1n + " 1s can merge. " + rulesDescription
                     }
                 }
@@ -16182,7 +16187,7 @@ function gmDisplayVars() {
                         [2, [["@This 0", ">=", nontier], "&&", ["@This 1", "arr_reduce", 1, ["+", "@Var -1"], "=", ratiopush], "&&", ["@Next 1 2", "*B", ["@This 1", "arr_indexOf", false, "+B", BigInt(mode_vars[4])], "=", "@This 2"], "&&", ["@This 2", ">=", "@Next 1 2"]], false, [[["@This 0", "+B", 1n], ["@global_var_retain_inner", 1, "@end_vars", ["@Literal"], "@repeat", ["@Var 0", "<=", nextratiopush], "arr_push", false, "@edit_var", 0, ["@Var 0", "+", 1], "@end-repeat"], ["@Next 1 2", "+B", "@This 2"]]], ["@This 2", "+", "@Next 1 2"], [false, true]],
                         [2, [false, "@edit_gvar", 0, ["@This 2", "/BR", "@Next 1 2"], "@if", [["@Next 1 2", "typeof", "!=", "bigint"], "||", ["@This 2", "typeof", "!=", "bigint"], "||", ["@GVar 0", "modBR", 1n, "!=", new BigRational(0)]], "2nd", false, "@end-if", "@else", "@edit_gvar", 0, ["@GVar 0", "BigInt", "-B", BigInt(mode_vars[4])], "2nd", [["@GVar 0", ">", -1n], "&&", ["@GVar 0", "<", ratiopush], "&&", ["@This 1", "arr_elem", "@GVar 0", "!"]], "@end-else", "&&", ["@This 0", ">=", nontier], "&&", ["@This 2", ">=", "@Next 1 2"]], false, [["@This 0", ["@This 1", "arr_edit_elem", "@GVar 0", true], ["@This 2", "+B", "@Next 1 2"]]], ["@This 2", "+", "@Next 1 2"], [false, true]]
                     ];
-                    rulesDescription += "Two tiles less than the smallest goal tile that is greater than the smallest denominator can merge if one tile is a multiple of the other tile and their sum is not greater than the smallest goal tile that is greater than the smallest denominator. To get from " + nfact + " to " + nonefact + ", a tile must merge with a tile that's 1/(the smallest denominator) of itself, merge with a tile that's 1/(the smallest denominator + 1) of itself, and so on for each bar on the tile, once each in any order. ";
+                    rulesDescription += "Two tiles less than the smallest goal tile that is greater than " + mode_vars[4] + " can merge if one tile is a multiple of the other tile and their sum is not greater than the smallest goal tile that is greater than " + mode_vars[4] + ". To get from " + nfact + " to " + nonefact + ", a tile must merge with a tile that's 1/" + mode_vars[4] + " of itself, merge with a tile that's 1/" + (mode_vars[4] + 1) + " of itself, merge with a tile that's 1/" + (mode_vars[4] + 2) + " of itself, and so on for each bar on the tile, once each in any order. ";
                     knownMergeMaxLength = 2;
                 }
                 else if(mode_vars[2] == 1) {
@@ -16196,7 +16201,7 @@ function gmDisplayVars() {
                         [2, [["@Next 1 0", "<", nontier], "&&", ["@This 0", "<", nontier], "&&", ["@This 0", ">=", "@Next 1 0"], "&&", ["@This 2", "%B", "@Next 1 2", "=", 0n], "&&", ["@This 2", "+B", "@Next 1 2", "<", [CAM2Entry, "-B", 1n]], "&&", [[0, "mergeRuleApplies", -1, "!"], "&&", [1, "mergeRuleApplies", -1, "!"]]], false, [["@This 0", ["@Literal", -1], ["@This 2", "+B", "@Next 1 2"]]], ["@This 2", "+", "@Next 1 2"], [false, true]],
                         [2, [["@Next 1 0", "<", nontier], "&&", ["@This 0", "<", nontier], "&&", ["@This 0", ">=", "@Next 1 0"], "&&", ["@This 2", "%B", "@Next 1 2", "=", 0n], "&&", ["@This 2", "+B", "@Next 1 2", "=", [CAM2Entry, "-B", 1n]], "&&", [[0, "mergeRuleApplies", -1, "!"], "&&", [1, "mergeRuleApplies", -1, "!"]]], false, [[["@This 0", "+B", 1n], ["@global_var_retain_inner", startratio, "@end_vars", ["@Literal"], "@repeat", ["@Var 0", "<=", ratiopush], "arr_push", false, "@edit_var", 0, ["@Var 0", "+", 1], "@end-repeat"], ["@This 2", "+B", "@Next 1 2"]]], ["@This 2", "+", "@Next 1 2"], [false, true]]
                     ];
-                    rulesDescription += "Two tiles less than the smallest goal tile that is greater than the smallest denominator can merge if one tile is a multiple of the other tile and their sum is less than the smallest goal tile that is greater than the smallest denominator. To get from " + nfact + " - 1 to " + nonefact + " - 1, a tile must merge with a tile that's one less than 1/(the smallest denominator) of itself plus 1, merge with a tile that's one less than 1/(the smallest denominator + 1) of itself plus 1, and so on for each bar on the tile, once each in any order with every merge also including a 1. ";
+                    rulesDescription += "Two tiles less than the smallest goal tile that is greater than " + mode_vars[4] + " can merge if one tile is a multiple of the other tile and their sum is less than the smallest goal tile that is greater than " + mode_vars[4] + ". To get from " + nfact + " - 1 to " + nonefact + " - 1, a tile must merge with a tile that's one less than 1/" + mode_vars[4] + " of itself plus 1, merge with a tile that's one less than 1/" + (mode_vars[4] + 1) + " of itself plus 1, merge with a tile that's one less than 1/" + (mode_vars[4] + 2) + " of itself plus 1, and so on for each bar on the tile, once each in any order with every merge also including a 1. ";
                     knownMergeMaxLength = 3;
                 }
                 rulesTitle[1] = "Ratio-Fill 1296";
