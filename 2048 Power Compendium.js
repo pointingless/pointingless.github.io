@@ -15812,7 +15812,7 @@ function gmDisplayVars() {
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "*B", mode_vars[4]._numerator, "-B", ["@Next 1 1", "*B", mode_vars[4]._denominator], "absB", "<=", mode_vars[4]._denominator], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "*B", mode_vars[4]._numerator, "-B", ["@Next 1 1", "*B", mode_vars[4]._denominator], "absB", "<=", mode_vars[4]._denominator], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]]
                     )
-                    rulesDescription += "Two tiles that are multiples of " + nfact + " can merge if one is less than " + nfact + " away from " + mode_vars[4]._denominator + "/" + mode_vars[4]._numerator + " of the other tile and their sum can reach " + nonefact + " with further such merges. (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow a path to get from 1 to " + none + " in 1847 with the ratio " + mode_vars[4]._numerator + "/" + mode_vars[4]._denominator + ") Get to the " + goalText + " tile to win!";
+                    rulesDescription += "Two tiles that are multiples of " + nfact + " can merge if one is less than " + nfact + " away from " + mode_vars[4]._denominator + "/" + mode_vars[4]._numerator + " of the other tile and their sum can reach " + nonefact + " with further such merges. (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow a path to get from 1 to " + none + " in 1847 with the ratio " + mode_vars[4]._numerator + "/" + mode_vars[4]._denominator + ".) ";
                     knownMergeMaxLength = 2;
                 }
                 else if(mode_vars[2] == 1) {
@@ -16353,21 +16353,18 @@ function gmDisplayVars() {
             }
         }
         else if (mode_vars[0] == 24) { // mod 27 variant
-            document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
             document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #ff81f5, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #ff81f5, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
-            knownMergeLookbackDistance = 1;
-            if(mode_vars[2] == 0) {
-                MergeRules.push(
-                    [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "*B", "@MLength", "%B", [CAM1Entry, "+B", 1n], "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [], 2, [0, 1], 1, Math.max(width, height)],
-                    [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "*B", "@MLength", "%B", [CAM1Entry, "+B", 1n], "=", 0n]], true, [], 0, [], 2, [0, 1], 1, Math.max(width, height)],
-                    [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "console.log", "Third Checked"], true, [["@This 0", ["@This 1", "*B", "@MLength", "%B", [CAM1Entry, "+B", 1n]]]], [], [], 2, [0, 1], 1, Math.max(width, height)],
-                );
-                rulesDescription += "Any amount of equal tiles can merge, but if those tiles are at least " + nfact + " and less than " + nonefact + ", the merge's addition is done in modulo (" + nonefact + " + " + nfact + "). ";
-                knownMergeMaxLength = Infinity;
-            }
+            knownMergeLookbackDistance = 2;
+            MergeRules.push(
+                [2, [[["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"]], "&&", [["Next ", "str_concat", "@MLength", "str_concat", " 0", "str_concat_front", "@", "!=", "@This 0"], "||", ["Next ", "str_concat", "@MLength", "str_concat", " 1", "str_concat_front", "@", "!=", "@This 1"]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "*B", "@MLength", "%B", [CAM1Entry, "+B", 1n], "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [], 2, [0, 1], 1, Math.max(width, height)],
+                [2, [[["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"]], "&&", [["Next ", "str_concat", "@MLength", "str_concat", " 0", "str_concat_front", "@", "!=", "@This 0"], "||", ["Next ", "str_concat", "@MLength", "str_concat", " 1", "str_concat_front", "@", "!=", "@This 1"]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "*B", "@MLength", "%B", [CAM1Entry, "+B", 1n], "=", 0n]], true, [], 0, [], 2, [0, 1], 1, Math.max(width, height)],
+                [2, [[["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"]], "&&", [["Next ", "str_concat", "@MLength", "str_concat", " 0", "str_concat_front", "@", "!=", "@This 0"], "||", ["Next ", "str_concat", "@MLength", "str_concat", " 1", "str_concat_front", "@", "!=", "@This 1"]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"]], true, [["@This 0", ["@This 1", "*B", "@MLength", "%B", [CAM1Entry, "+B", 1n]]]], [], [], 2, [0, 1], 1, Math.max(width, height)],
+            );
+            rulesDescription += "Any amount of equal tiles can merge, but if those tiles are at least " + nfact + " and less than " + nonefact + ", the merge's addition is done in modulo (" + nonefact + " + " + nfact + "). Get to the " + goalText + " tile to win!";
+            knownMergeMaxLength = Infinity;
             if(Array.isArray(mode_vars[1])) {
-                rulesDescription = "Follow the paths to get from n! to (n + 1)! (pretending the start of each tier is n!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+                rulesDescription = "Follow the paths to get from n! to (n + 1)! (pretending the start of each tier is n!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". Get to the " + arrayWinCondition + " tile to win!";
             }
             rulesTitle[1] = "mod 27";
         }
