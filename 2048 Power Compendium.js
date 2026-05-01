@@ -12874,7 +12874,10 @@ function gmDisplayVars() {
             else document.getElementById("Alternate5040_num_counter").innerHTML = mode_vars[4];
             document.getElementById("Alternate5040_num_minus").style.setProperty("display", "block");
         }
-        if(mode_vars[0] == 21) {
+        if(mode_vars[0] == 8) {
+            if(typeof mode_vars[1] != "bigint" || mode_vars[1] < 1n) mode_vars[2] = 0;
+        }
+        else if(mode_vars[0] == 21) {
             TileNumAmount++;
             if(mode_vars[1] === 0n) {
                 mode_vars[1] = [2n, 3n, 6n];
@@ -12882,7 +12885,7 @@ function gmDisplayVars() {
                 gmDisplayVars();
             }
         }
-        if(mode_vars[0] == 22) statBoxes = [["Merge Number", ["@Moves", "/", mode_vars[4], "floor", 1, "+", 1], false, false, "Tile", "Turatin"], ["Score", "@Score"]];
+        else if(mode_vars[0] == 22) statBoxes = [["Merge Number", ["@Moves", "/", mode_vars[4], "floor", 1, "+", 1], false, false, "Tile", "Turatin"], ["Score", "@Score"]];
         else statBoxes = [["Score", "@Score"]];
         document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
         document.getElementById("Alternate5040_num").style.setProperty("display", "none");
