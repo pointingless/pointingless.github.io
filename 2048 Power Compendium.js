@@ -12974,7 +12974,7 @@ function gmDisplayVars() {
                 ];
                 tileValueFunction = ["@This 0", "factorial", "*", "@This 1"];
             }
-            if(mode_vars[0] == 10) winConditions = [[7n, 8n]];
+            if(mode_vars[0] == 10 && mode_vars[3] == 0) winConditions = [[7n, 8n]];
             else winConditions = [[7n, 1n]];
         }
         else if (mode_vars[1] === false) {
@@ -13057,7 +13057,7 @@ function gmDisplayVars() {
                 }
                 tileValueFunction = [[0, "@end_vars", 1, "@repeat", ["@This 0", "+", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "*", ["@var_retain", "@Var 0", "prime"], "@end-repeat"], "*", "@This 1"];
             }   
-            if(mode_vars[0] == 10) winConditions = [[5n, 13n]];
+            if(mode_vars[0] == 10 && mode_vars[3] == 0) winConditions = [[5n, 13n]];
             else winConditions = [[5n, 1n]];
             
         }
@@ -13261,7 +13261,7 @@ function gmDisplayVars() {
                 goalPow++;
             }
             winConditions = [[goalPow, 1n]];
-            if(mode_vars[0] == 10) winConditions[0][1] = mode_vars[1][Number(winConditions[0][0]) % mode_vars[1].length];
+            if(mode_vars[0] == 10 && mode_vars[3] == 0) winConditions[0][1] = mode_vars[1][Number(winConditions[0][0]) % mode_vars[1].length];
             if(arrayContainsRational) goalText = defaultAbbreviate(arrayWinCondition);
             else goalText = arrayWinCondition;
             if(mode_vars[2] == 1) rulesTitle = [arrayWinCondition - 1n + " (Alternate 5039, ", ""];
@@ -13285,6 +13285,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseRational_numerator_change").value = mode_vars[1].numerator;
             document.getElementById("Alternate5040_baseRational_denominator_change").value = mode_vars[1].denominator;
             oneTile = [0n, new BigRational(1n)];
+            baseTile = new BigRational(1n);
             CAM1Entry = mode_vars[1];
             nfact = "(" + defaultAbbreviate(mode_vars[1]) + ")<sup>n</sup>";
             nonefact = "(" + defaultAbbreviate(mode_vars[1]) + ")<sup>n + 1</sup>";
@@ -13364,7 +13365,7 @@ function gmDisplayVars() {
                 }
                 tileValueFunction = ["@if",["@This 1","=",0n],"@This 0","subfactorial","@end-if", "@if", ["@This 1","!=",0n], ["@This 0","subfactorial"],"+B",["@This 0","-B",1n,"subfactorial"],"*B","@This 1","@end-if"];
             }
-            if(mode_vars[0] == 10) winConditions = [[6n, 1n]];
+            if(mode_vars[0] == 10 && mode_vars[3] == 0) winConditions = [[6n, 1n]];
             else winConditions = [[7n, 0n]];
         }
         else if(mode_vars[1] < -1n) {
@@ -13538,7 +13539,7 @@ function gmDisplayVars() {
             else if (mode_vars[1] < 256n) goalPow = 2n;
             else goalPow = 1n;
             winConditions = [[goalPow, 1n]];
-            if(mode_vars[0] == 10) winConditions[0][1] = mode_vars[1];
+            if(mode_vars[0] == 10 && mode_vars[3] == 0) winConditions[0][1] = mode_vars[1];
             goalText = mode_vars[1]**goalPow;
             if(mode_vars[2] == 1) rulesTitle = [mode_vars[1]**goalPow - 1n + " (Alternate 5039, ", ""];
             else if(mode_vars[2] == 0) rulesTitle = [mode_vars[1]**goalPow + " (Alternate 5040, ", ""];
@@ -14282,6 +14283,7 @@ function gmDisplayVars() {
             if(mode_vars[4] == 2) document.getElementById("Alternate5040_num_minus").style.setProperty("display", "none");
             knownMergeLookbackDistance = 0;
             knownMergeMaxLength = mode_vars[4];
+            console.log(baseTile);
             if(mode_vars[3] == 0) {
                 if(mode_vars[2] == 0) {
                     if(Array.isArray(mode_vars[1]) && arrayContainsRational || mode_vars[1] instanceof BigRational) {
@@ -14301,7 +14303,7 @@ function gmDisplayVars() {
                             tileSums.push("+BR", "@Next " + i + " 1");
                             lastArray.push(true);
                             if(mode_vars[5] == 0) MergeRules.push(
-                                [i + 1, conditional.slice(), true, [[["@This 0", "+B", 1n], 1n]], [], lastArray.slice()]
+                                [i + 1, conditional.slice(), true, [[["@This 0", "+B", 1n], new BigRational(1n)]], [], lastArray.slice()]
                             );
                         }
                         let outputs = [[["@This 0", "+B", 1n], baseTile]];
@@ -14330,12 +14332,12 @@ function gmDisplayVars() {
                             );
                             for(let i = 1; i < mode_vars[4]; i++) {
                                 lastArray[i] = false;
-                                outputs.push([["@var_retain", "@This 0", "-B", "@Var 0"], ["@var_retain", tileSums.slice(), "-BR", [mode_vars[1], "*BR", new BigRational(i)], "*BR", ["@var_retain", mode_vars[1], "^BR", "@Var 0"]]]);
+                                outputs.push([["@var_retain", "@This 0", "-B", "@Var 0"], ["@global_var_retain", tileSums.slice(), "-BR", [mode_vars[1], "*BR", new BigRational(i)], "*BR", ["@var_retain", mode_vars[1], "^BR", "@Var 0"]]]);
                                 MergeRules.push(
-                                    [0n, "@end_vars", mode_vars[4], [conditional.slice(2), "&&", [tileSums.slice(), ">", [CAM1Entry, "*BR", new BigRational(i)]], "&&", [tileSums.slice(), "<", [CAM1Entry, "*BR", new BigRational(i + 1)]], "@if", "@Parent -1", "@repeat", [tileSums.slice(), "-BR", [mode_vars[1], "*BR", new BigRational(i)], "*BR", [mode_vars[1], "^BR", "@Var 0"], "<", 1], "@edit_var", 0, ["@Var 0", "+B", 1n], "@end-repeat", "@end-if"], true, outputs.slice(), [], lastArray.slice()]
+                                    [0n, "@end_vars", mode_vars[4], ["@global_var_retain", conditional.slice(2), "&&", [tileSums.slice(), ">", [CAM1Entry, "*BR", new BigRational(i)]], "&&", [tileSums.slice(), "<", [CAM1Entry, "*BR", new BigRational(i + 1)]], "@if", "@Parent -1", "@repeat", [tileSums.slice(), "-BR", [mode_vars[1], "*BR", new BigRational(i)], "*BR", [mode_vars[1], "^BR", "@Var 0"], "<", 1], "@edit_var", 0, ["@Var 0", "+B", 1n], "@end-repeat", "@end-if"], true, outputs.slice(), [], lastArray.slice()]
                                 );
                                 outputs.pop();
-                                outputs.push([["@This 0", "+B", 1n], 1n]);
+                                outputs.push([["@This 0", "+B", 1n], new BigRational(1n)]);
                                 MergeRules.push(
                                     [mode_vars[4], [conditional.slice(2), "&&", [tileSums.slice(), "=", [CAM1Entry, "*BR", new BigRational(i + 1)]]], true, outputs.slice(), [], lastArray.slice()]
                                 );
@@ -16355,18 +16357,131 @@ function gmDisplayVars() {
         else if (mode_vars[0] == 24) { // mod 27 variant
             document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #ff81f5, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #ff81f5, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
             knownMergeLookbackDistance = 2;
             MergeRules.push(
                 [2, [[["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"]], "&&", [["Next ", "str_concat", "@MLength", "str_concat", " 0", "str_concat_front", "@", "!=", "@This 0"], "||", ["Next ", "str_concat", "@MLength", "str_concat", " 1", "str_concat_front", "@", "!=", "@This 1"]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "*B", "@MLength", "%B", [CAM1Entry, "+B", 1n], "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [], 2, [0, 1], 1, Math.max(width, height)],
                 [2, [[["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"]], "&&", [["Next ", "str_concat", "@MLength", "str_concat", " 0", "str_concat_front", "@", "!=", "@This 0"], "||", ["Next ", "str_concat", "@MLength", "str_concat", " 1", "str_concat_front", "@", "!=", "@This 1"]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "*B", "@MLength", "%B", [CAM1Entry, "+B", 1n], "=", 0n]], true, [], 0, [], 2, [0, 1], 1, Math.max(width, height)],
                 [2, [[["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"]], "&&", [["Next ", "str_concat", "@MLength", "str_concat", " 0", "str_concat_front", "@", "!=", "@This 0"], "||", ["Next ", "str_concat", "@MLength", "str_concat", " 1", "str_concat_front", "@", "!=", "@This 1"]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"]], true, [["@This 0", ["@This 1", "*B", "@MLength", "%B", [CAM1Entry, "+B", 1n]]]], [], [], 2, [0, 1], 1, Math.max(width, height)],
             );
-            rulesDescription += "Any amount of equal tiles can merge, but if those tiles are at least " + nfact + " and less than " + nonefact + ", the merge's addition is done in modulo (" + nonefact + " + " + nfact + "). Get to the " + goalText + " tile to win!";
+            rulesDescription += "Any amount of equal tiles can merge, but if those tiles are at least " + nfact + " and less than " + nonefact + ", the merge's addition is done in modulo (" + nonefact + " + " + nfact + "). ";
             knownMergeMaxLength = Infinity;
-            if(Array.isArray(mode_vars[1])) {
-                rulesDescription = "Follow the paths to get from n! to (n + 1)! (pretending the start of each tier is n!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". Get to the " + arrayWinCondition + " tile to win!";
-            }
             rulesTitle[1] = "mod 27";
+            if(Array.isArray(mode_vars[1])) {
+                rulesDescription = "Follow the paths to get from n! to (n + 1)! (pretending the start of each tier is n!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+            }
+        }
+        else if (mode_vars[0] == 25) { // Four-Sides 625 variant
+            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #ff81f5, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
+            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #ff81f5, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+            knownMergeLookbackDistance = 0;
+            let directionAmount = 4;
+            if (modifiers[5] == "Square" || modifiers[5] == "Checkerboard" || modifiers[5] == "Diamond") {
+                if (modifiers[10] == "Both") directionAmount = 8;
+                else directionAmount = 4;
+            }
+            else if (modifiers[5] == "Hexagon" || modifiers[5] == "HexaTriangle") {
+                if (modifiers[10] == "Both") directionAmount = 12;
+                else directionAmount = 6;
+            }
+            else if (modifiers[5] == "4D") {
+                directionAmount = 4;
+                if (modifiers[8] > 1) directionAmount += 2;
+                if (modifiers[9] > 1) directionAmount += 2;
+            }
+            else if (modifiers[5] == "Custom") {
+                directionAmount = 0;
+                for (let d of directions) {
+                    if (d[0][0] != 0 || d[0][1] != 0) directionAmount++;
+                }
+            }
+            directionAmount += 1;
+            let numberNames = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty"];
+            /*
+            let goalPow = 0;
+            if (directionAmount >= 1000) goalPow = 1;
+            else if (directionAmount > 1) while (directionAmount**(goalPow + 1) < 1000) goalPow++;
+            winConditions = [[["@This 0", "=", goalPow]]];
+            mergeResultKnownLevel = 0; // Directional merges doesn't work with known merge results
+            let rulesTitle = ((directionAmount <= 20) ? numberNames[directionAmount - 1] : (directionAmount - 1)) + "-Sides " + (directionAmount**goalPow);
+            let baseString = (directionAmount <= 20) ? numberNames[directionAmount].toLowerCase() : String(directionAmount)
+            let rulesDescription = "A larger tile merges with a smaller or equal tile that's equal to the largest power of " + baseString + " that's not larger than the larger tile. However, said larger tile must be merged into in a different direction each time to get from one power of " + baseString + " to the next, once for each movement direction. Get to the " + (directionAmount**goalPow) + " tile to win!" 
+            */
+            /*
+            TileNumAmount = 2;
+            let sideDirections = [];
+            // Directions of movement
+            for (let d of directions) {
+                let currentDirection = d[0].slice(0, 2);
+                if (currentDirection[0] != 0 || currentDirection[1] != 0) sideDirections.push(currentDirection);
+            }
+            // Combine identical directions and convert into angle and magnitude form for the graphics
+            let sideAngles = [];
+            for (let sd = 0; sd < sideDirections.length; sd++) {
+                let index = indexOfPrimArray(sideDirections[sd], sideAngles.map(x => x.slice(0, 2)))
+                if (index == -1) sideAngles.push(sideDirections[sd].concat([sd]));
+                else sideAngles[index].push(sd);
+            }
+            for (let sa = 0; sa < sideAngles.length; sa++) {
+                let angle = mod(Math.atan2(-sideAngles[sa][0] * (hexagonal ? Math.sqrt(3) : 1), sideAngles[sa][1]) * -180 / Math.PI - 90, 360);
+                let magnitude = abs(gcd(sideAngles[sa][0], sideAngles[sa][1]));
+                sideAngles[sa][0] = angle;
+                sideAngles[sa][1] = magnitude;
+            }
+            // Sort each angle by its magnitudes
+            let finalSideAngles = [];
+            while (sideAngles.length > 0) {
+                let angle = sideAngles[0][0];
+                let matchingAngles = [];
+                for (let sa = 0; sa < sideAngles.length; sa++) {
+                    if (sideAngles[sa][0] == angle) {
+                        matchingAngles.push(sideAngles.splice(sa, 1)[0]);
+                        sa--;
+                    }
+                }
+                let magnitudes = matchingAngles.map(x => x[1]).sort((a, b) => a - b);
+                let coneWidth = 100 / magnitudes.length;
+                for (let m of matchingAngles) {
+                    index = magnitudes.indexOf(m[1]);
+                    m.splice(1, 1, coneWidth * index, coneWidth * (index + 1));
+                }
+                finalSideAngles = finalSideAngles.concat(matchingAngles);
+            }
+            // Find the nearest two angles, so we know how big to make the cones
+            let gap = 360; let angleDistance;
+            for (let a = 1; a < finalSideAngles.length; a++) {
+                for (let b = 0; b < a; b++) {
+                    angleDistance = modularDistance(finalSideAngles[a][0], finalSideAngles[b][0], 360)
+                    if (angleDistance > 0 && angleDistance < gap) gap = angleDistance;
+                }
+            }
+            gap *= 2/3;
+            // Gameplay stuff
+            start_game_vars = [sideDirections.length + 1, sideDirections, finalSideAngles, 0]; // game_vars[0] is the base, game_vars[1] is a list of the directions (for gameplay), game_vars[2] is a list of the angles and magnitudes of the directions (for tile graphics), game_vars[3] helps with merges
+            TileTypes = [
+                [true, ["@GVar 0", "^", "@This 0", "*", ["@This 1", "arr_reduce", 1, ["+", "@Var -1"]]], ["@HSLA", [0, "@if", ["@This 0", "<", 12], "2nd", ["@Literal", 0, 0, 238, 57, 280, 74, 323, 140, 21, 187, 45, 218], "arr_elem", "@This 0", "@end-if", "@else", "2nd", [23.5, "*", "@This 0", "-", 212, "+", ["@This 0", "%", 2, "*", 156.5]], "@end-else"], [100, "@if", ["@This 0", ">=", 12], "2nd", [0.95, "^", ["@This 0", "-", 12], "*", 75], "@end-if", "@if", ["@This 0", "=", 0], "2nd", 0, "@end-if"], ["@This 1", "arr_reduce", 0, ["+", "@Var -1"], "/", ["@GVar 0", "-", 2], "*", -40, "+", 70], 1], ["#f4f7e9", "@if", ["@This 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 0], "2nd", "#ffebe9", "@end-if"], "0px 0px 5px #000", 0, 0,
+                    ["ExtraEntriesList", "@global_var_retain_inner", 0, "@end_vars", ["@Literal"], "@repeat", ["@Var 0", "<", ["@GVar 2", "arr_length"]], "arr_push", ["@Literal", "PrimeImage", ["@conic-gradient", ["@CalcArray", "@GVar 2", "arr_elem", "@Var 0", "arr_elem", 0, "-", (gap/2)], "#0000", 0, ["@HSLA", 0, 0, ["@CalcArray", "@GVar 2", "arr_elem", "@Var 0", "arr_slice", 3, Infinity, "arr_reduce", 0, ["+", ["@var_retain", "@This 1", "arr_elem", "@Var -1"]], "/", ["@GVar 2", "arr_elem", "@Var 0", "arr_length", "-", 3], "*", 100], 0.75], gap * 1/3, gap * 2/3, "#0000", gap], ["@radial-gradient", "#0000", 0, ["@CalcArray", "@GVar 2", "arr_elem", "@Var 0", "arr_elem", 1], "#000", ["@CalcArray", "@GVar 2", "arr_elem", "@Var 0", "arr_elem", 1], ["@CalcArray", "@GVar 2", "arr_elem", "@Var 0", "arr_elem", 2], "#0000", ["@CalcArray", "@GVar 2", "arr_elem", "@Var 0", "arr_elem", 2]]], "@edit_var", 0, ["@Var 0", "+", 1], "@end-repeat"]]
+            ];
+            MergeRules = [
+                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 0], "&&", ["@Next 1 1", "arr_reduce", 0, ["+", "@Var -1"], "=", ["@GVar 0", "-", 2]], "&&", ["@VDir", "=", ["@GVar 1", "arr_elem", ["@Next 1 1", "arr_indexOf", false], "arr_elem", 0]], "&&", ["@HDir", "=", ["@GVar 1", "arr_elem", ["@Next 1 1", "arr_indexOf", false], "arr_elem", 1]]], true, [[["@Next 1 0", "+", 1], [["@Literal"], "@repeat", ["@GVar 0", "-", 1], "arr_push", false, "@end-repeat"]]], ["@GVar 0", "^", ["@Next 1 0", "+", 1]], [false, true]],
+                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@Next 1 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 0], "&&", ["@This 1", "arr_reduce", 0, ["+", "@Var -1"], "=", ["@GVar 0", "-", 2]], "&&", ["@VDir", "*", -1, "=", ["@GVar 1", "arr_elem", ["@This 1", "arr_indexOf", false], "arr_elem", 0]], "&&", ["@HDir", "*", -1, "=", ["@GVar 1", "arr_elem", ["@This 1", "arr_indexOf", false], "arr_elem", 1]]], true, [[["@This 0", "+", 1], [["@Literal"], "@repeat", ["@GVar 0", "-", 1], "arr_push", false, "@end-repeat"]]], ["@GVar 0", "^", ["@This 0", "+", 1]], [false, true]],
+                [2, [false, "@if", [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 0]], "@edit_gvar", 3, -1, "@repeat", ["@Parent -2", "!", "&&", ["@GVar 3", "<", ["@GVar 0", "-", 2]]], "@edit_gvar", 3, ["@GVar 3", "+", 1], "2nd", [["@Next 1 1", "arr_elem", "@GVar 3", "!"], "&&", ["@VDir", "=", ["@GVar 1", "arr_elem", "@GVar 3", "arr_elem", 0]], "&&", ["@HDir", "=", ["@GVar 1", "arr_elem", "@GVar 3", "arr_elem", 1]]], "@end-repeat", "@end-if"], true, [["@Next 1 0", ["@Next 1 1", "arr_edit_elem", "@GVar 3", true]]], ["@GVar 0", "^", "@Next 1 0", "*", ["@Next 1 1", "arr_reduce", 2, ["+", "@Var -1"]]], [false, true]],
+                [2, [false, "@if", [["@This 0", "=", "@Next 1 0"], "&&", ["@Next 1 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 0]], "@edit_gvar", 3, -1, "@repeat", ["@Parent -2", "!", "&&", ["@GVar 3", "<", ["@GVar 0", "-", 2]]], "@edit_gvar", 3, ["@GVar 3", "+", 1], "2nd", [["@This 1", "arr_elem", "@GVar 3", "!"], "&&", ["@VDir", "*", -1, "=", ["@GVar 1", "arr_elem", "@GVar 3", "arr_elem", 0]], "&&", ["@HDir", "*", -1, "=", ["@GVar 1", "arr_elem", "@GVar 3", "arr_elem", 1]]], "@end-repeat", "@end-if"], true, [["@This 0", ["@This 1", "arr_edit_elem", "@GVar 3", true]]], ["@GVar 0", "^", "@This 0", "*", ["@This 1", "arr_reduce", 2, ["+", "@Var -1"]]], [false, true]]
+            ];
+            let start1falses = ["@Literal"].concat(Array(start_game_vars[0] - 1).fill(false));
+            startTileSpawns = [[[0, start1falses], 1]];
+            tileValueFunction = ["@GVar 0", "^", "@This 0", "*", ["@This 1", "arr_reduce", 1, ["+", "@Var -1"]]];
+            */
+            MergeRules.push(
+                [2, [], ]
+            );
+            rulesDescription += "Any amount of equal tiles can merge, but if those tiles are at least " + nfact + " and less than " + nonefact + ", the merge's addition is done in modulo (" + nonefact + " + " + nfact + "). ";
+            knownMergeMaxLength = Infinity;
+            rulesTitle[1] = "Four-Sides 625";
+            if(Array.isArray(mode_vars[1])) {
+                rulesDescription = "Follow the paths to get from n! to (n + 1)! (pretending the start of each tier is n!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+            }
         }
         if(mode_vars[0] == 8) {} // don't add text for XXXX variant
         else if(mode_vars[2] == 0) {
