@@ -1267,7 +1267,7 @@ document.getElementById("Alternate5040_num_plus").addEventListener("click", func
     gmDisplayVars();
 });
 document.getElementById("Alternate5040_num_minus").addEventListener("click", function(){
-    if ((mode_vars[0] != 22 && mode_vars[0] != 0) && (mode_vars[4] == 2n && mode_vars[0] != 6 && mode_vars[0] != 21) && mode_vars[0] != 15) mode_vars[4] = Infinity;
+    if ((mode_vars[0] != 22 && mode_vars[0] != 0) && (mode_vars[4] == 2n && mode_vars[0] != 6 && mode_vars[0] != 21) && mode_vars[0] != 15 && mode_vars[0] != 26) mode_vars[4] = Infinity;
     else mode_vars[4]--;
     loadGridSize(100, mode_vars);
     gmDisplayVars();
@@ -3133,7 +3133,7 @@ let waves_order = [
     [96, 96.50118], [35, 101], [34, 34.50118], [70, 50.1], [69, 50.22], [91, 91.50118], [73, 73.50118], [89, 89.50118], [97, 97.50118], [37, 102], [40, 50.248], [95, 50.7101113], [50, 50]
 ]
 let wavesModeModified = [96.50118, 34.50118, 50.22, 91.50118, 73.50118, 89.50118, 97.50118, 50.248]
-let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24];
+let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 26,24];
 for (let t = 1; t <= modes_order.length; t++) { //Adding event listeners to the main mode tiles on the menu
     let mtile = document.getElementById("menu_grid_storage").firstElementChild;
     let position = modes_order.indexOf(t);
@@ -3172,7 +3172,7 @@ for (let t = 0; t < alt5040_variantOrder.length; t++) { //Adding event listeners
             if((mode_vars[0] >= 8 && mode_vars[0] <= 12) || mode_vars[0] == 18) mode_vars[2] = 0;
             mode_vars[3] = 0;
             if(mode_vars[0] == 0) mode_vars[4] = 0;
-            else if(mode_vars[0] == 6 || mode_vars[0] == 21) mode_vars[4] = 1;
+            else if(mode_vars[0] == 6 || mode_vars[0] == 21 || mode_vars[0] == 26) mode_vars[4] = 1;
             else if(mode_vars[0] == 14) mode_vars[4] = new BigRational(2n, 1n);
             else if(mode_vars[0] == 15) mode_vars[4] = 0;
             else if(mode_vars[0] == 22) mode_vars[4] = 4;
@@ -9413,7 +9413,7 @@ function loadGridSize(mode, mvars = []) {
     }
     else if (mode == 100) { // Alternate 5040
         defaultSize = 5;
-        if ((mvars[0] == 0 || mvars[0] == 6 || mvars[0] == 7 || mvars[0] == 13 || mvars[0] == 14 || mvars[0] == 15 || mvars[0] == 22) && mvars[2] == 0) defaultSize = 4;
+        if ((mvars[0] == 0 || mvars[0] == 6 || mvars[0] == 7 || mvars[0] == 13 || mvars[0] == 14 || mvars[0] == 15 || mvars[0] == 22 || mvars[0] == 26) && mvars[2] == 0) defaultSize = 4;
         else if (mvars[2] == 2 || (mvars[2] == 1 && (mvars[0] == 2 || mvars[0] == 3)) || mvars[0] == 11 || (mvars[0] == 19 && mvars[3] == 0)) defaultSize = 6;
         else if (mvars[0] == 1) {
             if(mvars[3] == 0) defaultSize = 5;
@@ -15959,19 +15959,13 @@ function gmDisplayVars() {
             function split1845(n) {
                 if(n == 1n || n == 0n || tierTiles.includes(n)) return;
                 tierTiles.push(n);
-                let factors = primeFactorize(n, Infinity, false, 1)[0];
-                if(BigInt(factors[0][0]) == 2n) {
-                    split1845(n / 2n);
-                    factors.shift();
-                }
-                else {
-                    split1845((n - 1n) / 2n);
-                    split1845((n + 1n) / 2n);
-                }
-                for(const f of factors.slice()) {
-                    split1845((n - (n / BigInt(f[0]))) / 2n);
-                    split1845((n + (n / BigInt(f[0]))) / 2n);
-                }
+                if(n % 2n == 0n) split1845(n / 2n);
+                for(let i = 1n; i < n / 2n; i++) {
+                    if(((n - i) / gcd(i, n - i)) - (i / gcd(i, n - i)) == 1n) {
+                        split1845(n - i);
+                        split1845(i);
+                    }
+                } 
             }
             for(let i = 0; i < validIndex.length; i++) {
                 split1845(validIndex[i]);
@@ -16397,19 +16391,17 @@ function gmDisplayVars() {
                 }
             }
             directionAmount += 1;
+            console.log(directionAmount);
             let numberNames = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty"];
-            /*
             let goalPow = 0;
             if (directionAmount >= 1000) goalPow = 1;
             else if (directionAmount > 1) while (directionAmount**(goalPow + 1) < 1000) goalPow++;
-            winConditions = [[["@This 0", "=", goalPow]]];
             mergeResultKnownLevel = 0; // Directional merges doesn't work with known merge results
-            let rulesTitle = ((directionAmount <= 20) ? numberNames[directionAmount - 1] : (directionAmount - 1)) + "-Sides " + (directionAmount**goalPow);
+            rulesTitle[1] = ((directionAmount <= 20) ? numberNames[directionAmount - 1] : (directionAmount - 1)) + "-Sides " + (directionAmount**goalPow);
             let baseString = (directionAmount <= 20) ? numberNames[directionAmount].toLowerCase() : String(directionAmount)
-            let rulesDescription = "A larger tile merges with a smaller or equal tile that's equal to the largest power of " + baseString + " that's not larger than the larger tile. However, said larger tile must be merged into in a different direction each time to get from one power of " + baseString + " to the next, once for each movement direction. Get to the " + (directionAmount**goalPow) + " tile to win!" 
+            /*let rulesDescription = "A larger tile merges with a smaller or equal tile that's equal to the largest power of " + baseString + " that's not larger than the larger tile. However, said larger tile must be merged into in a different direction each time to get from one power of " + baseString + " to the next, once for each movement direction. Get to the " + (directionAmount**goalPow) + " tile to win!" 
             */
             /*
-            TileNumAmount = 2;
             let sideDirections = [];
             // Directions of movement
             for (let d of directions) {
@@ -16478,9 +16470,65 @@ function gmDisplayVars() {
             );
             rulesDescription += "Any amount of equal tiles can merge, but if those tiles are at least " + nfact + " and less than " + nonefact + ", the merge's addition is done in modulo (" + nonefact + " + " + nfact + "). ";
             knownMergeMaxLength = Infinity;
-            rulesTitle[1] = "Four-Sides 625";
             if(Array.isArray(mode_vars[1])) {
                 rulesDescription = "Follow the paths to get from n! to (n + 1)! (pretending the start of each tier is n!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+            }
+        }
+        else if(mode_vars[0] == 26) { // DOFFET variant
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_num").style.setProperty("display", "block");
+            document.getElementById("Alternate5040_num_title").innerHTML = "Offset:";
+            if(mode_vars[4] <= 1n) document.getElementById("Alternate5040_num_minus").style.setProperty("display", "none");
+            else document.getElementById("Alternate5040_num_minus").style.setProperty("display", "block");
+            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #14a3db, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
+            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #14a3db, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
+            let tierTiles = [];
+            function splitDOFFET(n) {
+                if(n == 1n || n == 0n || tierTiles.includes(n)) return;
+                tierTiles.push(n);
+                if(n % 2n == 0n) splitDOFFET(n / 2n);
+                if(listFactors(n + 2n * BigInt(mode_vars[4]), true) == 2) splitDOFFET(n - 1n);
+                else for(let i = 1n; i < n / 2n; i++) {
+                    if((n - i + BigInt(mode_vars[4])) % (i + BigInt(mode_vars[4])) == 0n) {
+                        splitDOFFET(n - i);
+                        splitDOFFET(i);
+                    }
+                } 
+            }
+            for(let i = 0; i < validIndex.length; i++) {
+                splitDOFFET(validIndex[i]);
+                valid.push(tierTiles.slice());
+                tierTiles = [];
+            }
+            validPos.unshift(valid);
+            if(mode_vars[2] == 0) {
+                MergeRules.push(
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "+B", BigInt(mode_vars[4])], "%B", ["@Next 1 1", "+B", BigInt(mode_vars[4])], "=", 0n], "||", [[["@This 1", "+B", "@Next 1 1", "+B", [2n, "*B", BigInt(mode_vars[4])]], "factorAmountB", "=", 2n], "&&", ["@This 1", "=", 1n]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "+B", BigInt(mode_vars[4])], "%B", ["@Next 1 1", "+B", BigInt(mode_vars[4])], "=", 0n], "||", [[["@This 1", "+B", "@Next 1 1", "+B", [2n, "*B", BigInt(mode_vars[4])]], "factorAmountB", "=", 2n], "&&", ["@This 1", "=", 1n]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]]
+                )
+                rulesDescription += "Two tiles that are multiples of " + nfact + " can merge if (the larger tile + " + mode_vars[4] + "*" + nfact + ") is a multiple of (the smaller tile + " + mode_vars[4] + "*" + nfact + "). A tile that is equal to " + nfact + " can merge with a multiple of " + nfact + " if their sum divided by " + nfact + " plus " + (2*mode_vars[4]) + " is prime. (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow a path to get from 1 to " + none + " in DOFFET, but a 1 can merge with any tile if their sum plus " + (2*mode_vars[4]) + " is prime.) ";
+                knownMergeMaxLength = 2;
+            }
+            else if(mode_vars[2] == 1) {
+                if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
+                if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
+                    [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", [["@This 1", "=", "@Next 1 1"], "||", [["@This 1", ">", "@Next 1 1"], "&&", ["@This 1", "-B", "@Next 1 1", "=", ["@This 1", "gcdB", "@Next 1 1"]]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]], "&&", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", [["@This 1", "=", "@Next 1 1"], "||", [["@This 1", ">", "@Next 1 1"], "&&", ["@This 1", "-B", "@Next 1 1", "=", ["@This 1", "gcdB", "@Next 1 1"]]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n]], [], [false, true]]
+                );
+                MergeRules.push(
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", ">", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "=", "@Next 1 1"], "||", [["@This 1", ">", "@Next 1 1"], "&&", ["@This 1", "-B", "@Next 1 1", "=", ["@This 1", "gcdB", "@Next 1 1"]]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]],
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", ">", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "=", "@Next 1 1"], "||", [["@This 1", ">", "@Next 1 1"], "&&", ["@This 1", "-B", "@Next 1 1", "=", ["@This 1", "gcdB", "@Next 1 1"]]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]]
+                );
+                rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " can merge with a 1 if they are equal of if, when each tile is increased by 1 and divided by their greatest common divisor, the difference between the two tiles is 1. ";
+                if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in 1845, but every merge must include an additional 1 except for the first power, which goes to " + (mode_vars[1] - 1n) + " instead.) ";
+                else rulesDescription += "(In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in 1845, but every merge must include an additional 1.) ";
+                knownMergeMaxLength = 3;
+            }
+            rulesTitle[1] = "DOFFET";
+            if(Array.isArray(mode_vars[1])) {
+                if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from n! to (n + 1)! (pretending the start of each tier is n!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+                else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from n! - 1 to (n + 1)! - 1 (pretending the start of each tier is n! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
             }
         }
         if(mode_vars[0] == 8) {} // don't add text for XXXX variant
