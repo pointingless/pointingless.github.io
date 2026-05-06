@@ -3133,7 +3133,7 @@ let waves_order = [
     [96, 96.50118], [35, 101], [34, 34.50118], [70, 50.1], [69, 50.22], [91, 91.50118], [73, 73.50118], [89, 89.50118], [97, 97.50118], [37, 102], [40, 50.248], [95, 50.7101113], [50, 50]
 ]
 let wavesModeModified = [96.50118, 34.50118, 50.22, 91.50118, 73.50118, 89.50118, 97.50118, 50.248]
-let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 26,24];
+let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 26, 24];
 for (let t = 1; t <= modes_order.length; t++) { //Adding event listeners to the main mode tiles on the menu
     let mtile = document.getElementById("menu_grid_storage").firstElementChild;
     let position = modes_order.indexOf(t);
@@ -12864,11 +12864,11 @@ function gmDisplayVars() {
         let validIndex = [];
         let spawnTiles = "Spawning tiles: 1 (100%)";
         if (mode_vars[4] == Infinity) {
-            if(mode_vars[0] == 6) document.getElementById("Alternate5040_num_counter").innerHTML = "1";
-            else if(mode_vars[0] == 12) document.getElementById("Alternate5040_num_counter").innerHTML = "&phi;";
+            if(mode_vars[0] == 12) document.getElementById("Alternate5040_num_counter").innerHTML = "&phi;";
             else document.getElementById("Alternate5040_num_counter").innerHTML = "&infin;";
             document.getElementById("Alternate5040_num_minus").style.setProperty("display", "none");
         }
+        else if(mode_vars[0] == 6 && mode_vars[4] == 0) document.getElementById("Alternate5040_num_counter").innerHTML = "Any";
         else {
             if(mode_vars[0] == 15) document.getElementById("Alternate5040_num_counter").innerHTML = 2 * mode_vars[4] + 3;
             else document.getElementById("Alternate5040_num_counter").innerHTML = mode_vars[4];
@@ -14785,59 +14785,103 @@ function gmDisplayVars() {
         else if (mode_vars[0] == 6) { // SCAPRIM variant
             document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #00944c, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #00944c, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
+            document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
             document.getElementById("Alternate5040_num").style.setProperty("display", "block");
-            if(mode_vars[4] < 2) document.getElementById("Alternate5040_num_minus").style.setProperty("display", "none");
+            if(mode_vars[4] < 1) document.getElementById("Alternate5040_num_minus").style.setProperty("display", "none");
             document.getElementById("Alternate5040_num_title").innerHTML = "Smaller Term of Ratio:";
             knownMergeLookbackDistance = 0;
             let tierTiles = [];
-            function splitSCAPRIM(n, ratio) {
-                if(tierTiles.includes(n) || n <= 1n) return;
-                tierTiles.push(n);
-                let factors = primeFactorize(n, Infinity, false, 1)[0];
-                for(let i = 0; i < factors.length; i++) {
-                    let fact = factors[i][0];
-                    if(fact <= ratio) {
-                        splitSCAPRIM(n / fact, ratio);
-                        splitSCAPRIM(n - (n / fact), ratio);
-                    }
-                    else {
-                        splitSCAPRIM(n / fact * ratio, ratio);
-                        splitSCAPRIM(n - (n / fact * ratio), ratio);
+            if(mode_vars[4] == 0) {
+                function splitSCAPRIM(n) {
+                    if(tierTiles.includes(n) || n <= 1n) return;
+                    tierTiles.push(n);
+                    for(let i = 1n; i <= n / 2n; i++) {
+                        if(listFactors(n / gcd(i, n - i), true) == 2n) {
+                            splitSCAPRIM(n - i);
+                            splitSCAPRIM(i);
+                        }
                     }
                 }
+                for(let i = 0; i < validIndex.length; i++) {
+                    splitSCAPRIM(validIndex[i]);
+                    valid.push(tierTiles.slice());
+                    tierTiles = [];
+                }
+                validPos.unshift(valid);
+                if(mode_vars[2] == 0) {
+                    MergeRules.push(
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
+                    )
+                    rulesDescription += "Two tiles that are multiples of " + nfact + " can merge if, when you divide their sum by their greatest common divisor, you get either 1 or a prime number, and if their sum can reach " + nonefact + " using further such merges. ";
+                    knownMergeMaxLength = 2;
+                }
+                else if(mode_vars[2] == 1) {
+                    if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
+                    if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
+                        [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n]], [], [false, true]],
+                        [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]]], false, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
+                    );
+                    MergeRules.push(
+                        [3, [["@This 0", ">", 0n], "&&", ["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
+                        [3, [["@This 0", ">", 0n], "&&", ["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]]
+                    );
+                    rulesDescription += "Two tiles that are multiples of " + nfact + " can merge with a 1 if, when you divide their (sum + 2) by the greatest common divisor of the numbers one greater than each tile, you get either 1 or a prime number, and if their sum can reach " + nonefact + " - 1 using further such merges. ";
+                    if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. ";
+                    knownMergeMaxLength = 3;
+                }
+                rulesTitle[1] = "Any Ratio SCAPRIM"
+            } else {
+                function splitSCAPRIM(n, ratio) {
+                    if(tierTiles.includes(n) || n <= 1n) return;
+                    tierTiles.push(n);
+                    let factors = primeFactorize(n, Infinity, false, 1)[0];
+                    for(let i = 0; i < factors.length; i++) {
+                        let fact = factors[i][0];
+                        if(fact <= ratio) {
+                            splitSCAPRIM(n / fact, ratio);
+                            splitSCAPRIM(n - (n / fact), ratio);
+                        }
+                        else {
+                            splitSCAPRIM(n / fact * ratio, ratio);
+                            splitSCAPRIM(n - (n / fact * ratio), ratio);
+                        }
+                    }
+                }
+                for(let i = 0; i < validIndex.length; i++) {
+                    splitSCAPRIM(validIndex[i], BigInt(mode_vars[4]));
+                    valid.push(tierTiles.slice());
+                    tierTiles = [];
+                }
+                validPos.unshift(valid);
+                if(mode_vars[2] == 0) {
+                    MergeRules.push(
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", BigInt(mode_vars[4])], "||", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", 1n], "&&", ["@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "+B", 1n, "<=", BigInt(mode_vars[4])]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", BigInt(mode_vars[4])], "||", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", 1n], "&&", ["@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "+B", 1n, "<=", BigInt(mode_vars[4])]]], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
+                    )
+                    if(mode_vars[4] == 1) rulesDescription += "Two tiles that are multiples of " + nfact + " can merge if their ratio is one less than a prime number, and if their sum can reach " + nonefact + " using further such merges. ";
+                    else rulesDescription += "Two tiles that are multiples of " + nfact + " can merge if their ratio is " + mode_vars[4] + " : (prime - " + mode_vars[4] + ") for any prime, or 1 : (prime - 1) for any prime no greater than " + mode_vars[4] + ", and if their sum can reach " + nonefact + " using further such merges. ";
+                    knownMergeMaxLength = 2;
+                }
+                else if(mode_vars[2] == 1) {
+                    if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
+                    if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
+                        [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", BigInt(mode_vars[4])], "||", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", 1n], "&&", ["@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "+B", 1n, "<=", BigInt(mode_vars[4])]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n]], [], [false, true]],
+                        [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", BigInt(mode_vars[4])], "||", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", 1n], "&&", ["@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "+B", 1n, "<=", BigInt(mode_vars[4])]]], "&&", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]]], false, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
+                    );
+                    MergeRules.push(
+                        [3, [["@This 0", ">", 0n], "&&", ["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", BigInt(mode_vars[4])], "||", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", 1n], "&&", ["@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "+B", 1n, "<=", BigInt(mode_vars[4])]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
+                        [3, [["@This 0", ">", 0n], "&&", ["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", BigInt(mode_vars[4])], "||", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", 1n], "&&", ["@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "+B", 1n, "<=", BigInt(mode_vars[4])]]], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]]
+                    );
+                    if(mode_vars[4] == 1) rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " can merge with a 1 if the ratio of one greater than each of the tiles is one less than a prime, and if their sum can reach " + nonefact + " - 1 using further such merges. ";
+                    else rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " can merge with a 1 if their ratio of one greater than each of the tiles is " + mode_vars[4] + " : (prime - " + mode_vars[4] + ") for any prime, or 1 : (prime - 1) for any prime no greater than " + mode_vars[4] + ", and if their sum can reach " + nonefact + " - 1 using further such merges. ";
+                    if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. ";
+                    knownMergeMaxLength = 3;
+                }
+                if(mode_vars[4] == 1) rulesTitle[1] = "SCAPRIM";
+                else rulesTitle[1] = mode_vars[4] + "-SCAPRIM";
             }
-            for(let i = 0; i < validIndex.length; i++) {
-                splitSCAPRIM(validIndex[i], BigInt(mode_vars[4]));
-                valid.push(tierTiles.slice());
-                tierTiles = [];
-            }
-            validPos.unshift(valid);
-            if(mode_vars[2] == 0) {
-                MergeRules.push(
-                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", BigInt(mode_vars[4])], "||", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", 1n], "&&", ["@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "+B", 1n, "<=", BigInt(mode_vars[4])]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
-                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", BigInt(mode_vars[4])], "||", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", 1n], "&&", ["@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "+B", 1n, "<=", BigInt(mode_vars[4])]]], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
-                )
-                if(mode_vars[4] == 1) rulesDescription += "Two tiles that are multiples of " + nfact + " can merge if their ratio is one less than a prime number, and if their sum can reach " + nonefact + " using further such merges. ";
-                else rulesDescription += "Two tiles that are multiples of " + nfact + " can merge if their ratio is " + mode_vars[4] + " : (prime - " + mode_vars[4] + ") for any prime, or 1 : (prime - 1) for any prime no greater than " + mode_vars[4] + ", and if their sum can reach " + nonefact + " using further such merges. ";
-                knownMergeMaxLength = 2;
-            }
-            else if(mode_vars[2] == 1) {
-                if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
-                if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
-                    [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", BigInt(mode_vars[4])], "||", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", 1n], "&&", ["@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "+B", 1n, "<=", BigInt(mode_vars[4])]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n]], [], [false, true]],
-                    [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", BigInt(mode_vars[4])], "||", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", 1n], "&&", ["@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "+B", 1n, "<=", BigInt(mode_vars[4])]]], "&&", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]]], false, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
-                );
-                MergeRules.push(
-                    [3, [["@This 0", ">", 0n], "&&", ["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", BigInt(mode_vars[4])], "||", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", 1n], "&&", ["@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "+B", 1n, "<=", BigInt(mode_vars[4])]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
-                    [3, [["@This 0", ">", 0n], "&&", ["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", [["@This 1", "+B", "@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "primeFactorizeB", 2], "arr_length", "=", 1], "&&", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", BigInt(mode_vars[4])], "||", [["@This 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "=", 1n], "&&", ["@Next 1 1", "/B", ["@This 1", "gcdB", "@Next 1 1"], "+B", 1n, "<=", BigInt(mode_vars[4])]]], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]]
-                );
-                if(mode_vars[4] == 1) rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " can merge with a 1 if the ratio of one greater than each of the tiles is one less than a prime, and if their sum can reach " + nonefact + " - 1 using further such merges. ";
-                else rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " can merge with a 1 if their ratio of one greater than each of the tiles is " + mode_vars[4] + " : (prime - " + mode_vars[4] + ") for any prime, or 1 : (prime - 1) for any prime no greater than " + mode_vars[4] + ", and if their sum can reach " + nonefact + " - 1 using further such merges. ";
-                if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. ";
-                knownMergeMaxLength = 3;
-            }
-            if(mode_vars[4] == 1) rulesTitle[1] = "SCAPRIM";
-            else rulesTitle[1] = mode_vars[4] + "-SCAPRIM";
             if(Array.isArray(mode_vars[1])) {
                 if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from n! to (n + 1)! (pretending the start of each tier is n!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
                 else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from n! - 1 to (n + 1)! - 1 (pretending the start of each tier is n! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
@@ -16391,7 +16435,6 @@ function gmDisplayVars() {
                 }
             }
             directionAmount += 1;
-            console.log(directionAmount);
             let numberNames = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty"];
             let goalPow = 0;
             if (directionAmount >= 1000) goalPow = 1;
