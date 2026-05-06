@@ -3133,7 +3133,7 @@ let waves_order = [
     [96, 96.50118], [35, 101], [34, 34.50118], [70, 50.1], [69, 50.22], [91, 91.50118], [73, 73.50118], [89, 89.50118], [97, 97.50118], [37, 102], [40, 50.248], [95, 50.7101113], [50, 50]
 ]
 let wavesModeModified = [96.50118, 34.50118, 50.22, 91.50118, 73.50118, 89.50118, 97.50118, 50.248]
-let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 26, 24];
+let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 26, 27, 24];
 for (let t = 1; t <= modes_order.length; t++) { //Adding event listeners to the main mode tiles on the menu
     let mtile = document.getElementById("menu_grid_storage").firstElementChild;
     let position = modes_order.indexOf(t);
@@ -9413,7 +9413,7 @@ function loadGridSize(mode, mvars = []) {
     }
     else if (mode == 100) { // Alternate 5040
         defaultSize = 5;
-        if ((mvars[0] == 0 || mvars[0] == 6 || mvars[0] == 7 || mvars[0] == 13 || mvars[0] == 14 || mvars[0] == 15 || mvars[0] == 22 || mvars[0] == 26) && mvars[2] == 0) defaultSize = 4;
+        if ((mvars[0] == 0 || mvars[0] == 6 || mvars[0] == 7 || mvars[0] == 13 || mvars[0] == 14 || mvars[0] == 15 || mvars[0] == 22 || mvars[0] == 26 || mvars[0] == 27) && mvars[2] == 0) defaultSize = 4;
         else if (mvars[2] == 2 || (mvars[2] == 1 && (mvars[0] == 2 || mvars[0] == 3)) || mvars[0] == 11 || (mvars[0] == 19 && mvars[3] == 0)) defaultSize = 6;
         else if (mvars[0] == 1) {
             if(mvars[3] == 0) defaultSize = 5;
@@ -16519,6 +16519,7 @@ function gmDisplayVars() {
         }
         else if(mode_vars[0] == 26) { // DOFFET variant
             document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+            mode_vars[2] = 0;
             document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
             document.getElementById("Alternate5040_num").style.setProperty("display", "block");
             document.getElementById("Alternate5040_num_title").innerHTML = "Offset:";
@@ -16569,6 +16570,35 @@ function gmDisplayVars() {
                 knownMergeMaxLength = 3;
             }
             rulesTitle[1] = "DOFFET";
+            if(Array.isArray(mode_vars[1])) {
+                if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from n! to (n + 1)! (pretending the start of each tier is n!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+                else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from n! - 1 to (n + 1)! - 1 (pretending the start of each tier is n! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
+            }
+        }
+        else if(mode_vars[0] == 27) { // FACTUP variant
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_num").style.setProperty("display", "none");
+            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #14a3db, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
+            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #14a3db, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
+            MergeRules = [];
+            let lastArray = [false];
+            let conditional = [["@This 1", "!=", 0n]];
+            let specialCondition = ["@This 1"]
+            for(let f = 2; f <= max(width, height); f++) {
+                lastArray.push(true);
+                conditional.push("&&", ["@This 0", "=", "@Next " + (f - 1) + " 0"], "&&", ["@Next " + (f - 1) + " 1", "!=", 0n]);
+                specialCondition.push("+B", "@Next " + (f - 1) + " 1")
+                let factuprule = [[["@This 1", "factorAmountB"], "<=", [specialCondition.slice(), "factorAmountB"]]];
+                for(let i = 1; i < f; i++) {
+                    factuprule.push("&&", [["@Next " + i + " 1", "factorAmountB"], "<=", [specialCondition.slice(), "factorAmountB"]])
+                }
+                MergeRules.push([f, [[specialCondition.slice(), "<", CAM1Entry], "&&", [[specialCondition.slice(), "factorAmountB"], "<=", [CAM1Entry, "factorAmountB"]], "&&", factuprule.slice(), "&&", conditional.slice()], true, [["@This 0", specialCondition.slice()]], [], lastArray.slice()]);
+                MergeRules.push([f, [[specialCondition.slice(), "=", CAM1Entry], "&&", conditional.slice()], true, [[["@This 0", "+B", 1n], baseTile]], [], lastArray.slice()]);
+            }
+            rulesDescription += "Any amount of tiles that are multiples of " + nfact + " can merge if their sum has at least as many factors as each of the tiles themselves and their sum doesn't have a greater amount of factors than " +  nonefact + ". (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow a path to get from 1 to " + none + " in FACTUP (Crazy Mode) with any merge length, but the factor amount can never be greater than n's factor amount.) ";
+            knownMergeMaxLength = max(width, height);
+            rulesTitle[1] = "FACTUP";
             if(Array.isArray(mode_vars[1])) {
                 if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from n! to (n + 1)! (pretending the start of each tier is n!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
                 else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from n! - 1 to (n + 1)! - 1 (pretending the start of each tier is n! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
