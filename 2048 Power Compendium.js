@@ -16518,15 +16518,14 @@ function gmDisplayVars() {
             }
         }
         else if(mode_vars[0] == 26) { // DOFFET variant
-            document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
-            mode_vars[2] = 0;
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
             document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
             document.getElementById("Alternate5040_num").style.setProperty("display", "block");
             document.getElementById("Alternate5040_num_title").innerHTML = "Offset:";
             if(mode_vars[4] <= 1n) document.getElementById("Alternate5040_num_minus").style.setProperty("display", "none");
             else document.getElementById("Alternate5040_num_minus").style.setProperty("display", "block");
-            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #14a3db, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
-            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #14a3db, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
+            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #4ea31d, #0000, #0000 90deg), repeating-conic-gradient(#bfc4bc 0deg, #ffffa1 45deg, #bfc4bc 90deg)");
+            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #4ea31d, #0000, #0000 90deg), repeating-conic-gradient(#bfc4bc 0deg,#eeee65 45deg,#bfc4bc 90deg)");
             let tierTiles = [];
             function splitDOFFET(n) {
                 if(n == 1n || n == 0n || tierTiles.includes(n)) return;
@@ -16557,16 +16556,16 @@ function gmDisplayVars() {
             else if(mode_vars[2] == 1) {
                 if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
                 if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
-                    [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", [["@This 1", "=", "@Next 1 1"], "||", [["@This 1", ">", "@Next 1 1"], "&&", ["@This 1", "-B", "@Next 1 1", "=", ["@This 1", "gcdB", "@Next 1 1"]]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]], "&&", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
-                    [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", [["@This 1", "=", "@Next 1 1"], "||", [["@This 1", ">", "@Next 1 1"], "&&", ["@This 1", "-B", "@Next 1 1", "=", ["@This 1", "gcdB", "@Next 1 1"]]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n]], [], [false, true]]
+                    [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "+B", BigInt(mode_vars[4])], "%B", ["@Next 1 1", "+B", BigInt(mode_vars[4])], "=", 0n], "||", [[["@This 1", "+B", "@Next 1 1", "+B", [2n, "*B", BigInt(mode_vars[4])]], "factorAmountB", "=", 2n], "&&", ["@This 1", "=", 1n]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]], "&&", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "+B", BigInt(mode_vars[4])], "%B", ["@Next 1 1", "+B", BigInt(mode_vars[4])], "=", 0n], "||", [[["@This 1", "+B", "@Next 1 1", "+B", [2n, "*B", BigInt(mode_vars[4])]], "factorAmountB", "=", 2n], "&&", ["@This 1", "=", 1n]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n]], [], [false, true]]
                 );
                 MergeRules.push(
-                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", ">", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "=", "@Next 1 1"], "||", [["@This 1", ">", "@Next 1 1"], "&&", ["@This 1", "-B", "@Next 1 1", "=", ["@This 1", "gcdB", "@Next 1 1"]]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]],
-                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", ">", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "=", "@Next 1 1"], "||", [["@This 1", ">", "@Next 1 1"], "&&", ["@This 1", "-B", "@Next 1 1", "=", ["@This 1", "gcdB", "@Next 1 1"]]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]]
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "+B", BigInt(mode_vars[4])], "%B", ["@Next 1 1", "+B", BigInt(mode_vars[4])], "=", 0n], "||", [[["@This 1", "+B", "@Next 1 1", "+B", [2n, "*B", BigInt(mode_vars[4])]], "factorAmountB", "=", 2n], "&&", ["@This 1", "=", 1n]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]],
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "+B", BigInt(mode_vars[4])], "%B", ["@Next 1 1", "+B", BigInt(mode_vars[4])], "=", 0n], "||", [[["@This 1", "+B", "@Next 1 1", "+B", [2n, "*B", BigInt(mode_vars[4])]], "factorAmountB", "=", 2n], "&&", ["@This 1", "=", 1n]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]]
                 );
-                rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " can merge with a 1 if they are equal of if, when each tile is increased by 1 and divided by their greatest common divisor, the difference between the two tiles is 1. ";
-                if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in 1845, but every merge must include an additional 1 except for the first power, which goes to " + (mode_vars[1] - 1n) + " instead.) ";
-                else rulesDescription += "(In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in 1845, but every merge must include an additional 1.) ";
+                rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " can merge with a 1 if (the larger tile + " + mode_vars[4] + "*" + nfact + " + 1) is a multiple of (the smaller tile + " + mode_vars[4] + "*" + nfact + " + 1). A tile that is one less than " + nfact + " can merge with a tile one less than a multiple of " + nfact + " if their sum plus 2, divided by " + nfact + ", plus " + (2*mode_vars[4]) + " is prime.  ";
+                if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in DOFFET, but a 1 can merge with any tile if their sum plus " + (2*mode_vars[4]) + " is prime and every merge also includes an extra 1 except for the first power, which goes to " + (mode_vars[1] - 1n) + " instead.) ";
+                else rulesDescription += "(In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in DOFFET, but a 1 can merge with any tile if their sum plus " + (2*mode_vars[4]) + " is prime and every merge also includes an extra 1.) ";
                 knownMergeMaxLength = 3;
             }
             rulesTitle[1] = "DOFFET";
@@ -16579,8 +16578,9 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
             document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
             document.getElementById("Alternate5040_num").style.setProperty("display", "none");
-            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #14a3db, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
-            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #14a3db, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
+            // d14821
+            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #d14821, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
+            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #d14821, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
             MergeRules = [];
             let lastArray = [false];
             let conditional = [["@This 1", "!=", 0n]];
@@ -16596,7 +16596,7 @@ function gmDisplayVars() {
                 MergeRules.push([f, [[specialCondition.slice(), "<", CAM1Entry], "&&", [[specialCondition.slice(), "factorAmountB"], "<=", [CAM1Entry, "factorAmountB"]], "&&", factuprule.slice(), "&&", conditional.slice()], true, [["@This 0", specialCondition.slice()]], [], lastArray.slice()]);
                 MergeRules.push([f, [[specialCondition.slice(), "=", CAM1Entry], "&&", conditional.slice()], true, [[["@This 0", "+B", 1n], baseTile]], [], lastArray.slice()]);
             }
-            rulesDescription += "Any amount of tiles that are multiples of " + nfact + " can merge if their sum has at least as many factors as each of the tiles themselves and their sum doesn't have a greater amount of factors than " +  nonefact + ". (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow a path to get from 1 to " + none + " in FACTUP (Crazy Mode) with any merge length, but the factor amount can never be greater than n's factor amount.) ";
+            rulesDescription += "Any amount of tiles that are multiples of " + nfact + " can merge if their sum has at least as many factors as each of the tiles themselves and their sum doesn't have a greater amount of factors than " +  nonefact + ". (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow a path to get from 1 to " + none + " in FACTUP (Crazy Mode) with any merge length.) ";
             knownMergeMaxLength = max(width, height);
             rulesTitle[1] = "FACTUP";
             if(Array.isArray(mode_vars[1])) {
