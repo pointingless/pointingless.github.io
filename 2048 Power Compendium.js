@@ -13983,15 +13983,17 @@ function gmDisplayVars() {
                 spawnTiles = "Spawning tiles: 1 (50%), -1 (50%)";
             }
             else if(mode_vars[3] == 2) { // 1429 variant
+                document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+                mode_vars[2] = 0;
                 let NotCAM1Entry = [CAM1Entry, "/B", [2n, "^B", [CAM1Entry, "expomodB", 2n]]];
                 if(mode_vars[2] == 0) {
                     MergeRules.push(
-                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@Next 2 1", "=", 1n], "&&", [["@This 0", "*B", 2n, "+B", [["@This 2", "*", "@Next 2 2"], "BigInt"]], "<", CAM1Entry], "&&", [[[["@This 2", "*", "@Next 2 2"], "BigInt", "+B", 1n], "/B", 2n], "=", [NotCAM1Entry, "/B", [2n, "^B", [[[NotCAM1Entry, "log", 2], "ceil", 1], "BigInt", "-B", 1n]], "%B", 2n]]], false, [["@This 0", ["@This 1", "*B", 2n, "+B", [["@This 2", "*", "@Next 2 2"], "BigInt"]], "@This 2"]], [], [false, true, true]],
-                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@Next 2 1", "=", 1n], "&&", [["@This 0", "*B", 2n, "+B", [["@This 2", "*", "@Next 2 2"], "BigInt"]], "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true, true]],
+                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@Next 2 1", "=", 1n], "&&", [["@This 1", "*B", 2n, "+B", [["@This 2", "*", "@Next 2 2"], "BigInt"]], "<", CAM1Entry], "&&", [[[["@This 2", "*", "@Next 2 2"], "BigInt", "+B", 1n], "/B", 2n], "=", [NotCAM1Entry, "/B", [2n, "^B", [[[NotCAM1Entry, "log", 2], "floor", 1], "BigInt", "-B", [["@This 1", "log", 2], "floor", 1], "BigInt"]], "%B", 2n]]], false, [["@This 0", ["@This 1", "*B", 2n, "+B", [["@This 2", "*", "@Next 2 2"], "BigInt"]], "@This 2"]], [], [false, true, true]],
+                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@Next 2 1", "=", 1n], "&&", [["@This 1", "*B", 2n, "+B", [["@This 2", "*", "@Next 2 2"], "BigInt"]], "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true, true]],
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 1", ">=", NotCAM1Entry], "&&", ["@This 1", "*B", 2n, "!=", CAM1Entry]], true, [["@This 0", ["@This 1", "*B", 2n], "@This 2"]], [], [false, true]],
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 1", "*B", 2n, "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true]]
                     )
-                    rulesDescription += "Merges occur between two equal tiles that are multiples of " + nfact + " but smaller than " + nonefact + ", potentially including a negative " + nfact + " as a third tile. Whether or not that third tile must be included depends on the binary digits of " + none + ". ";
+                    rulesDescription += "Merges occur between two equal tiles that are multiples of " + nfact + " but smaller than " + nonefact + ", and including a positive or negative " + nfact + " as a third tile. Which third tile must be included depends on the binary digits of the odd part of " + none + ". Once you make the odd part of " + none + ", two equal tiles merge until they reach " + nonefact + ". ";
                     knownMergeMaxLength = 3;
                 }
                 else if(mode_vars[2] == 1) {
