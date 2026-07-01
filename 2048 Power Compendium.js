@@ -13046,7 +13046,7 @@ function gmDisplayVars() {
                     oneTile[1] = 2n;
                     TileTypes = [
                         [[0n, 2n], 1, "#ffffff", "#393900"],
-                        [true, [[0, "@end_vars", 1, "@repeat", ["@This 0", "+", 1], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "*", ["@var_retain", "@Var 0", "prime"], "@end-repeat"], "/", "@This 1"], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", 77], 100, [0.86, "^", ["@This 0", "-", 1], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", ["@This 0", "+", 1], "*", 360], 100, [40, "@if", ["@This 0", ">", 6], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", ["@This 0", ">", 6], "2nd", "#ffffd3", "@end-if"]]
+                        [true, [[0, "@end_vars", 1, "@repeat", ["@This 0", "+", 1], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "*", ["@var_retain", "@Var 0", "prime"], "@end-repeat"], "/", "@This 1"], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 67, "+", 205], 100, [0.85, "^", "@This 0", "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", ["@This 0", "+", 1, "prime"], "*", 360], 100, [40, "@if", ["@This 0", ">", 4], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", ["@This 0", ">", 4], "2nd", "#ffffd3", "@end-if"]]
                     ];
                 }
                 else {
@@ -13988,7 +13988,7 @@ function gmDisplayVars() {
                 let NotCAM1Entry = [CAM1Entry, "/B", [2n, "^B", [CAM1Entry, "expomodB", 2n]]];
                 if(mode_vars[2] == 0) {
                     MergeRules.push(
-                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@Next 2 1", "=", 1n], "&&", [["@This 1", "*B", 2n, "+B", [["@This 2", "*", "@Next 2 2"], "BigInt"]], "<", CAM1Entry], "&&", [[[["@This 2", "*", "@Next 2 2"], "BigInt", "+B", 1n], "/B", 2n], "=", [NotCAM1Entry, "/B", [2n, "^B", [[[NotCAM1Entry, "log", 2], "floor", 1], "BigInt", "-B", [["@This 1", "log", 2], "floor", 1], "BigInt"]], "%B", 2n]]], false, [["@This 0", ["@This 1", "*B", 2n, "+B", [["@This 2", "*", "@Next 2 2"], "BigInt"]], "@This 2"]], [], [false, true, true]],
+                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@Next 2 1", "=", 1n], "&&", [["@This 1", "*B", 2n, "+B", [["@This 2", "*", "@Next 2 2"], "BigInt"]], "<", CAM1Entry], "&&", ["@This 1", "<", NotCAM1Entry], "&&", [[[["@This 2", "*", "@Next 2 2"], "BigInt", "+B", 1n], "/B", 2n], "=", [NotCAM1Entry, "/B", [2n, "^B", [[[NotCAM1Entry, "log", 2], "floor", 1], "BigInt", "-B", [["@This 1", "log", 2], "floor", 1], "BigInt"]], "%B", 2n]]], false, [["@This 0", ["@This 1", "*B", 2n, "+B", [["@This 2", "*", "@Next 2 2"], "BigInt"]], "@This 2"]], [], [false, true, true]],
                         [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@Next 2 1", "=", 1n], "&&", [["@This 1", "*B", 2n, "+B", [["@This 2", "*", "@Next 2 2"], "BigInt"]], "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true, true]],
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 1", ">=", NotCAM1Entry], "&&", ["@This 1", "*B", 2n, "!=", CAM1Entry]], true, [["@This 0", ["@This 1", "*B", 2n], "@This 2"]], [], [false, true]],
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 1", "*B", 2n, "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true]]
@@ -14133,7 +14133,8 @@ function gmDisplayVars() {
                 mode_vars[2] = 0;
                 document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
             }
-            document.getElementById("Alternate5040_extra").style.setProperty("display", "block");
+            document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
+            mode_vars[3] = 0;
             document.getElementById("Alternate5040_num").style.setProperty("display", "none");
             knownMergeLookbackDistance = 0;
             // Doing the merge rules by hand for this one proved to be laggy, so instead we'll make an array of the valid tiles to reference later
@@ -23779,8 +23780,8 @@ function loadModifiers() {
                     winConditions[w].push(1);
                 }
             }
-            if (!(gamemode == 72 && mode_vars[0] && modifiers[13] == "Interacting") && ((gamemode != 57 && gamemode != 68) || (mode_vars[0] != -1 && (mode_vars[0] != 0 || modifiers[13] != "Interacting"))) && !(gamemode == 100 && ((mode_vars[0] == 1 && (mode_vars[3] == 1 || mode_vars[3] == 2))/* || (mode_vars[0] == 4 && mode_vars[3] == 1) || (mode_vars[0] == 5 && mode_vars[3] == 1) */|| (mode_vars[0] == 19 && mode_vars[3] == 0)))) { // 3026 with all merges and 2700 and 2205's Level -1's and Level 0's have special negatives behavior, but only the merge behavior is special, not the display behavior
-                if(!(/*modifiers[13] == "None" && */gamemode == 100 && mode_vars[0] == 5 && mode_vars[3] == 1))
+            if (!(gamemode == 72 && mode_vars[0] && modifiers[13] == "Interacting") && ((gamemode != 57 && gamemode != 68) || (mode_vars[0] != -1 && (mode_vars[0] != 0 || modifiers[13] != "Interacting"))) && !(gamemode == 100 && ((mode_vars[0] == 1 && (mode_vars[3] == 1 || mode_vars[3] == 2))/* || (mode_vars[0] == 4 && mode_vars[3] == 1) || (mode_vars[0] == 5 && mode_vars[3] == 1) */))) { // 3026 with all merges and 2700 and 2205's Level -1's and Level 0's have special negatives behavior, but only the merge behavior is special, not the display behavior
+                if(!(/*modifiers[13] == "None" && */gamemode == 100 && (mode_vars[0] == 5 && mode_vars[3] == 1 || mode_vars[0] == 19 && mode_vars[3] == 0)))
                     for (let m = 0; m < MergeRules.length; m++) {
                         let mstart = 0;
                         while (calcArray_startModifiersPlus.indexOf(MergeRules[m][mstart]) != -1) mstart++;
