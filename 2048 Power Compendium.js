@@ -532,7 +532,8 @@ document.getElementById("DIVE_primeSpawns_button").addEventListener("click", fun
     gmDisplayVars();
 });
 document.getElementById("DIVE_1s_button").addEventListener("click", function(){
-    mode_vars[1] = !(mode_vars[1]);
+    if (mode_vars[0] > 0) mode_vars[1] = (mode_vars[1] == 1n) ? 2n : 1n
+    else mode_vars[1] = mod(mode_vars[1] - 2n, 3n) + 1n
     gmDisplayVars();
 });
 document.getElementById("DIVE_unlockRules_button").addEventListener("click", function(){
@@ -570,6 +571,10 @@ document.getElementById("3888_firstGoalMinimum_change").addEventListener("change
     mode_vars[1] = v;
     gmDisplayVars();
 });
+document.getElementById("3888_extraMerge_button").addEventListener("click", function(){
+    mode_vars[2] = !mode_vars[2];
+    gmDisplayVars();
+});
 document.getElementById("2000_randomGoals_button").addEventListener("click", function(){
     mode_vars[0] = (mode_vars[0] + 1) % 3;
     gmDisplayVars();
@@ -580,6 +585,10 @@ document.getElementById("2000_firstGoalMinimum_change").addEventListener("change
     mode_vars[1] = v;
     gmDisplayVars();
 });
+document.getElementById("2000_extraMerge_button").addEventListener("click", function(){
+    mode_vars[2] = !mode_vars[2];
+    gmDisplayVars();
+});
 document.getElementById("3645_randomGoals_button").addEventListener("click", function(){
     mode_vars[0] = (mode_vars[0] + 1) % 3;
     gmDisplayVars();
@@ -588,6 +597,10 @@ document.getElementById("3645_firstGoalMinimum_change").addEventListener("change
     let v = Number(this.value);
     if (!isFinite(v) || v < 75) v = 75;
     mode_vars[1] = v;
+    gmDisplayVars();
+});
+document.getElementById("3645_extraMerge_button").addEventListener("click", function(){
+    mode_vars[2] = !mode_vars[2];
     gmDisplayVars();
 });
 document.getElementById("2700_level_decrease").addEventListener("click", function(){
@@ -2552,7 +2565,7 @@ document.getElementById("customColors_gradientSelection_next").addEventListener(
 document.getElementById("customColors_addGradientEntry").addEventListener("click", function(){
     for (let p = 0; p < customColors[screenVars[0]][3].length; p++) customColors[screenVars[0]][3][p] *= ((customColors[screenVars[0]][3].length - 1) / (customColors[screenVars[0]][3].length));
     customColors[screenVars[0]][2].push(compendiumStructuredClone(customColors[screenVars[0]][2][screenVars[1]]));
-    customColors[screenVars[0]][3].push(100);
+    customColors[screenVars[0]][3].push(customColors[screenVars[0]][4][0] == "@conic-gradient" ? 360 : 100);
     screenVars[1] = customColors[screenVars[0]][2].length - 1;
     displayCustomMode("Colors", screenVars);
 });
@@ -2878,7 +2891,7 @@ document.getElementById("customBackground_gradientSelection_next").addEventListe
 document.getElementById("customBackground_addGradientEntry").addEventListener("click", function(){
     for (let p = 0; p < customBackground[screenVars[0]][2].length; p++) customBackground[screenVars[0]][2][p] *= ((customBackground[screenVars[0]][2].length - 1) / (customBackground[screenVars[0]][2].length));
     customBackground[screenVars[0]][3].push(compendiumStructuredClone(customBackground[screenVars[0]][3][screenVars[1]]));
-    customBackground[screenVars[0]][2].push(100);
+    customBackground[screenVars[0]][2].push(customBackground[screenVars[0]][0] = "@conic-gradient" ? 360 : 100);
     screenVars[1] = customBackground[screenVars[0]][2].length - 1;
     displayCustomMode("Background", screenVars);
 });
@@ -3133,7 +3146,7 @@ let waves_order = [
     [96, 96.50118], [35, 101], [34, 34.50118], [70, 50.1], [69, 50.22], [91, 91.50118], [73, 73.50118], [89, 89.50118], [97, 97.50118], [37, 102], [40, 50.248], [95, 50.7101113], [50, 50]
 ]
 let wavesModeModified = [96.50118, 34.50118, 50.22, 91.50118, 73.50118, 89.50118, 97.50118, 50.248]
-let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 26, 27, 24];
+let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 26, 27, 28, 29, 24];
 for (let t = 1; t <= modes_order.length; t++) { //Adding event listeners to the main mode tiles on the menu
     let mtile = document.getElementById("menu_grid_storage").firstElementChild;
     let position = modes_order.indexOf(t);
@@ -4367,7 +4380,7 @@ function loadMode(mode) {
     if (mode == 1) { // 2048
         // width = 4; height = 4;
         TileNumAmount = 1;
-        TileTypes = [[[0], 1, "#ffffff", "#776e65"], [[1], 2, "#f9eee3", "#776e65"], [[2], 4, "#ede0c8", "#776e65"], [[3], 8, "#f2b179", "#f9f6f2"], 
+        TileTypes = [[[0], 1, "#ffffff", "#776e65"], [[1], 2, "#f9eee3", "#776e65"], [[2], 4, "#ede0c8", "#776e65"], [[3], 8, "#f2b179", "#f9f6f2"],
         [[4], 16, "#f59563", "#f9f6f2"], [[5], 32, "#f67c5f", "#f9f6f2"], [[6], 64, "#f65e3b", "#f9f6f2"], [[7], 128, "#edcf72", "#f9f6f2"],
         [[8], 256, "#edcc61", "#f9f6f2"], [[9], 512, "#edc850", "#f9f6f2"], [[10], 1024, "#edc53f", "#f9f6f2"], [[11], 2048, "#edc22e", "#f9f6f2"],
         [[12], 4096, "#f29eff", "#f9f6f2"], [[13], 8192, "#eb75fd", "#f9f6f2"], [[14], 16384, "#e53bff", "#f9f6f2"], [[15], 32768, "#bd00db", "#f9f6f2"],
@@ -4848,7 +4861,7 @@ function loadMode(mode) {
             ];
             if (modifiers[13] == "Interacting") MergeRules.unshift([2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "!=", "@This 1"]], false, [], 0, [true, true]]);
             startTileSpawns = [[[-1, 1], modifiers[22]], [[-1, -1], modifiers[23]]];
-            winConditions = [[11, -1], [11, -1]];
+            winConditions = [[11, 1], [11, -1]];
             winRequirement = 2;
             knownMergeMaxLength = 3;
             knownMergeLookbackDistance = 0;
@@ -5204,7 +5217,7 @@ function loadMode(mode) {
         ]
         MergeRules = [
             [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "<=", 0], "&&", ["@This 1", ">", -2]], true, [["@This 0", ["@This 1", "-", 1]]], [25, "^", "@This 0", "*", [3, "^", ["@This 1", "*", -1], "*", 3]], [false, true, true]],
-            [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "||", ["@This 1", "!=", 0], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", ">=", 0], "&&", ["@This 1", "<", 4]], true, [["@This 0", ["@This 1", "+", 1]]], [25, "^", "@This 0", "*", [2, "^", "@This 1", "*", 2]], [false, true]], 
+            [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "||", ["@This 1", "!=", 0], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", ">=", 0], "&&", ["@This 1", "<", 4]], true, [["@This 0", ["@This 1", "+", 1]]], [25, "^", "@This 0", "*", [2, "^", "@This 1", "*", 2]], [false, true]],
             [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", -2], "&&", ["@Next 1 1", "=", 4]], false, [[["@This 0", "+", 1], 0]], [25, "^", "@This 0", "*", 25], [false, true]],
         ]
         startTileSpawns = [[[0, 0], 90], [[0, 1], 5], [[0, -1], 5]];
@@ -6031,12 +6044,12 @@ function loadMode(mode) {
         if (modifiers[13] == "None") {
             TileNumAmount = 1;
             TileTypes = [ //The powers of 2 could be rendered using the rule for wildcards, but they're given specified types to reduce lag
-            [[1n], "1", "#89817b", "#f9f6f2"], [[2n], "2", "#aa937f", "#f9f6f2"], [[4n], "4", "#c69d79", "#f9f6f2"], [[8n], "8", "#f2b179", "#f9f6f2"],
-            [[16n], "16", "#f59563", "#f9f6f2"], [[32n], "32", "#f67c5f", "#f9f6f2"], [[64n], "64", "#f65e3b", "#f9f6f2"], [[128n], "128", "#edcf72", "#f9f6f2"],
-            [[256n], "256", "#edcc61", "#f9f6f2"], [[512n], "512", "#edc850", "#f9f6f2"], [[1024n], "1024", "#edc53f", "#f9f6f2"], [[2048n], "2048", "#edc22e", "#f9f6f2"],
-            [[4096n], "4096", "#f29eff", "#f9f6f2"], [[8192n], "8192", "#eb75fd", "#f9f6f2"], [[16384n], "16384", "#e53bff", "#f9f6f2"],
-            [[32768n], "32768", "#bd00db", "#f9f6f2"], [[65536n], "65536", "#770089", "#f9f6f2"], [[131072n], "131072", "#534de8", "#f9f6f2"],
-            [[262144n], "262144", "#2922e1", "#f9f6f2"], [[524288n], "524288", "#0a05b6", "#f9f6f2"],
+            [[1n], 1, "#89817b", "#f9f6f2"], [[2n], 2, "#aa937f", "#f9f6f2"], [[4n], 4, "#c69d79", "#f9f6f2"], [[8n], 8, "#f2b179", "#f9f6f2"],
+            [[16n], 16, "#f59563", "#f9f6f2"], [[32n], 32, "#f67c5f", "#f9f6f2"], [[64n], 64, "#f65e3b", "#f9f6f2"], [[128n], 128, "#edcf72", "#f9f6f2"],
+            [[256n], 256, "#edcc61", "#f9f6f2"], [[512n], 512, "#edc850", "#f9f6f2"], [[1024n], 1024, "#edc53f", "#f9f6f2"], [[2048n], 2048, "#edc22e", "#f9f6f2"],
+            [[4096n], 4096, "#f29eff", "#f9f6f2"], [[8192n], 8192, "#eb75fd", "#f9f6f2"], [[16384n], 16384, "#e53bff", "#f9f6f2"],
+            [[32768n], 32768, "#bd00db", "#f9f6f2"], [[65536n], 65536, "#770089", "#f9f6f2"], [[131072n], 131072, "#534de8", "#f9f6f2"],
+            [[262144n], 262144, "#2922e1", "#f9f6f2"], [[524288n], 524288, "#0a05b6", "#f9f6f2"],
             [true, 0, "@ColorScheme", "Wildcard 2048", ["@This 0", true]]
             ];
             MergeRules = [[["@This 0", "bit&B", "@Next 1 0"], "@end_vars", 2, ["@var_retain", "@Var 0", ">", 0], true, [[["@var_retain", "@Var 0", "*B", 2n]]], ["@var_retain", "@Var 0", "*", 2, "@edit_gvar", 0, ["@Parent -2", "logB", 2n, "max", "@GVar 0"]], [false, true]]];
@@ -6050,20 +6063,20 @@ function loadMode(mode) {
         else { //A tile cannot contain both positive and negative possibilities, so "2 -1" is not possible. This restriction was mostly placed to make the code easier to write
             TileNumAmount = 2;
             TileTypes = [
-                [[1n, 1], "1", "#89817b", "#f9f6f2"], [[2n, 1], "2", "#aa937f", "#f9f6f2"], [[4n, 1], "4", "#c69d79", "#f9f6f2"],
-                [[8n, 1], "8", "#f2b179", "#f9f6f2"], [[16n, 1], "16", "#f59563", "#f9f6f2"], [[32n, 1], "32", "#f67c5f", "#f9f6f2"],
-                [[64n, 1], "64", "#f65e3b", "#f9f6f2"], [[128n, 1], "128", "#edcf72", "#f9f6f2"],  [[256n, 1], "256", "#edcc61", "#f9f6f2"],
-                [[512n, 1], "512", "#edc850", "#f9f6f2"], [[1024n, 1], "1024", "#edc53f", "#f9f6f2"], [[2048n, 1], "2048", "#edc22e", "#f9f6f2"],
-                [[4096n, 1], "4096", "#f29eff", "#f9f6f2"], [[8192n, 1], "8192", "#eb75fd", "#f9f6f2"], [[16384n, 1], "16384", "#e53bff", "#f9f6f2"],
-                [[32768n, 1], "32768", "#bd00db", "#f9f6f2"], [[65536n, 1], "65536", "#770089", "#f9f6f2"], [[131072n, 1], "131072", "#534de8", "#f9f6f2"],
-                [[262144n, 1], "262144", "#2922e1", "#f9f6f2"], [[524288n, 1], "524288", "#0a05b6", "#f9f6f2"],
-                [[1n, -1], "-1", "#767e84", "#06090d"], [[2n, -1], "-2", "#556c80", "#06090d"], [[4n, -1], "-4", "#396286", "#06090d"],
-                [[8n, -1], "-8", "#0d4e86", "#06090d"], [[16n, -1], "-16", "#0a6a9c", "#06090d"], [[32n, -1], "-32", "#0983a0", "#06090d"],
-                [[64n, -1], "-64", "#09a1c4", "#06090d"], [[128n, -1], "-128", "#12308d", "#06090d"], [[256n, -1], "-256", "#12339e", "#06090d"],
-                [[512n, -1], "-512", "#1237af", "#06090d"], [[1024n, -1], "-1024", "#123ac0", "#06090d"], [[2048n, -1], "-2048", "#123dd1", "#06090d"],
-                [[4096n, -1], "-4096", "#0d6100", "#06090d"], [[8192n, -1], "-8192", "#148a02", "#06090d"], [[16384n, -1], "-16384", "#1ac400", "#06090d"],
-                [[32768n, -1], "-32768", "#42ff24", "#06090d"], [[65536n, -1], "-65536", "#88ff76", "#06090d"], [[131072n, -1], "-131072", "#acb217", "#06090d"],
-                [[262144n, -1], "-262144", "#d6dd1e", "#06090d"], [[524288n, -1], "-524288", "#f5fa49", "#06090d"],
+                [[1n, 1], 1, "#89817b", "#f9f6f2"], [[2n, 1], 2, "#aa937f", "#f9f6f2"], [[4n, 1], 4, "#c69d79", "#f9f6f2"],
+                [[8n, 1], 8, "#f2b179", "#f9f6f2"], [[16n, 1], 16, "#f59563", "#f9f6f2"], [[32n, 1], 32, "#f67c5f", "#f9f6f2"],
+                [[64n, 1], 64, "#f65e3b", "#f9f6f2"], [[128n, 1], 128, "#edcf72", "#f9f6f2"],  [[256n, 1], 256, "#edcc61", "#f9f6f2"],
+                [[512n, 1], 512, "#edc850", "#f9f6f2"], [[1024n, 1], 1024, "#edc53f", "#f9f6f2"], [[2048n, 1], 2048, "#edc22e", "#f9f6f2"],
+                [[4096n, 1], 4096, "#f29eff", "#f9f6f2"], [[8192n, 1], 8192, "#eb75fd", "#f9f6f2"], [[16384n, 1], 16384, "#e53bff", "#f9f6f2"],
+                [[32768n, 1], 32768, "#bd00db", "#f9f6f2"], [[65536n, 1], 65536, "#770089", "#f9f6f2"], [[131072n, 1], 131072, "#534de8", "#f9f6f2"],
+                [[262144n, 1], 262144, "#2922e1", "#f9f6f2"], [[524288n, 1], 524288, "#0a05b6", "#f9f6f2"],
+                [[1n, -1], -1, "#767e84", "#06090d"], [[2n, -1], -2, "#556c80", "#06090d"], [[4n, -1], -4, "#396286", "#06090d"],
+                [[8n, -1], -8, "#0d4e86", "#06090d"], [[16n, -1], -16, "#0a6a9c", "#06090d"], [[32n, -1], -32, "#0983a0", "#06090d"],
+                [[64n, -1], -64, "#09a1c4", "#06090d"], [[128n, -1], -128, "#12308d", "#06090d"], [[256n, -1], -256, "#12339e", "#06090d"],
+                [[512n, -1], -512, "#1237af", "#06090d"], [[1024n, -1], -1024, "#123ac0", "#06090d"], [[2048n, -1], -2048, "#123dd1", "#06090d"],
+                [[4096n, -1], -4096, "#0d6100", "#06090d"], [[8192n, -1], -8192, "#148a02", "#06090d"], [[16384n, -1], -16384, "#1ac400", "#06090d"],
+                [[32768n, -1], -32768, "#42ff24", "#06090d"], [[65536n, -1], -65536, "#88ff76", "#06090d"], [[131072n, -1], -131072, "#acb217", "#06090d"],
+                [[262144n, -1], -262144, "#d6dd1e", "#06090d"], [[524288n, -1], -524288, "#f5fa49", "#06090d"],
                 [true, 0, "@ColorScheme", "Wildcard 2048", [["@This 0", "*B", "@This 1"], true]]
             ];
             MergeRules = [[["@This 0", "bit&B", "@Next 1 0"], "@end_vars", 2, ["@var_retain", "@Var 0", ">", 0, "&&", ["@This 1", "=", "@Next 1 1"]], true, [[["@var_retain", "@Var 0", "*B", 2n], "@This 1"]], ["@var_retain", "@Var 0", "*", 2, "@edit_gvar", 0, ["@Parent -2", "logB", 2n, "max", "@GVar 0"]], [false, true]]];
@@ -6498,7 +6511,7 @@ function loadMode(mode) {
     else if (mode == 50) { // DIVE
         // width = 4; height = 4;
         TileNumAmount = 1;
-        mode_vars = [0, false, 0, 0, 4n, (wavesUnleashed ? 1 : 0)]; // For the first entry, 0 means seeds can be unlocked and eliminated, -1 means seeds can be unlocked but not eliminated, and a positive number does away with the seeds system and just makes the spawning tiles the first n primes. The second entry is whether 1s can spawn. The third entry controls the seed unlock testing rules: 0 is largest to smallest, 2 is smallest to largest, 3 is "whatever order the seeds happen to be in", and 1 guarantees the minimum result but runs in exponential time. The fourth entry controls random goals, and the fifth entry is the minimum for the first random goal. Sixth entry controls the DIVE-3 variant we're in (regular DIVE for 0, DIVE-3B for 1, DIVE-3S for 2, DIVE-3L for 3)
+        mode_vars = [0, (wavesUnleashed ? 3n : 2n), 0, 0, 4n, (wavesUnleashed ? 1 : 0)]; // For the first entry, 0 means seeds can be unlocked and eliminated, -1 means seeds can be unlocked but not eliminated, and a positive number does away with the seeds system and just makes the spawning tiles the first n primes. The second entry is the starting seed. The third entry controls the seed unlock testing rules: 0 is largest to smallest, 2 is smallest to largest, 3 is "whatever order the seeds happen to be in", and 1 guarantees the minimum result but runs in exponential time. The fourth entry controls random goals, and the fifth entry is the minimum for the first random goal. Sixth entry controls the DIVE-3 variant we're in (regular DIVE for 0, DIVE-3B for 1, DIVE-3S for 2, DIVE-3L for 3)
         start_game_vars = [[2n], [2n], [], [], 0, 4n, 0, false, false, 4n, 0] // The first entry is the current seeds, the second entry is all seeds discovered, the third entry is the seeds that are currently being added, the fourth entry is the seeds that are currently being removed. The fifth entry matches the third entry of mode_vars, the sixth entry is the current random goal, the seventh entry is the amount of random goals met so far, and the eighth entry is whether a random goal has been met this turn. The ninth entry is used when tile text is hidden to replace the announcement numbers with question marks. The tenth entry is the minimum for the first random goal. The eleventh entry controls the display of "all seeds seen".
         TileTypes = [
             [true, "@This 0", "@ColorScheme", "DIVE", ["@This 0"]]
@@ -6540,7 +6553,7 @@ function loadMode(mode) {
         scripts = [
             [["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0], "@end_vars", "@Var -1", "absB", "DIVESeedUnlock", "@GVar 0", "@GVar 4", "@if", [["@Parent -3", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"],
             [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "%B", "@Var 2", "=", 0n], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 8", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 8", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_binaryInsert", "@Var 1"], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 8", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 8", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
             [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String", "@if", "@GVar 8", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "@if", "@GVar 8", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]]], "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
         ];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
@@ -6662,7 +6675,7 @@ function loadMode(mode) {
     else if (mode == 54) { // 3888
         // width = 4; height = 4;
         TileNumAmount = 2;
-        mode_vars = [0, 16]; // The first entry controls the random goals, the second entry is the minimum for the first random goal
+        mode_vars = [0, 16, false]; // The first entry controls the random goals, the second entry is the minimum for the first random goal, the third entry is whether n+8n is a valid merge
         start_game_vars = [[0, 0], 0, false, 0, 16, 0] // The first entry is the current random goal, the second entry is the amount of random goals met so far, the third entry is whether a random goal has been met this turn, the fourth entry is a random number used to randomize the random goals, and the fifth entry is the minimum for the first random goal. Sixth entry controls the display of Discovered Tiles.
         TileTypes = [
             [[0, 0], 1, "#000000", "#ffffff"],
@@ -6696,7 +6709,7 @@ function loadMode(mode) {
     else if (mode == 55) { // 2000
         // width = 5; height = 5;
         TileNumAmount = 2;
-        mode_vars = [0, 25]; // The first entry controls the random goals, the second entry is the minimum for the first random goal
+        mode_vars = [0, 25, false]; // The first entry controls the random goals, the second entry is the minimum for the first random goal, the third entry is whether n+5n+10n is a valid merge
         start_game_vars = [[0, 0], 0, false, 0, 25, 0] // The first entry is the current random goal, the second entry is the amount of random goals met so far, the third entry is whether a random goal has been met this turn, the fourth entry is a random number used to randomize the random goals, and the fifth entry is the minimum for the first random goal. Sixth entry controls the display of Discovered Tiles.
         TileTypes = [
             [[0, 0], 1, "#000000", "#ffffff"],
@@ -6731,7 +6744,7 @@ function loadMode(mode) {
     else if (mode == 56) { // 3645
         // width = 5; height = 5;
         TileNumAmount = 2;
-        mode_vars = [0, 75]; // The first entry controls the random goals, the second entry is the minimum for the first random goal
+        mode_vars = [0, 75, true]; // The first entry controls the random goals, the second entry is the minimum for the first random goal, the third entry is whether n+5n+9n is a valid merge
         start_game_vars = [[0, 0], 0, false, 0, 75, 0] // The first entry is the current random goal, the second entry is the amount of random goals met so far, the third entry is whether a random goal has been met this turn, the fourth entry is a random number used to randomize the random goals, and the fifth entry is the minimum for the first random goal. Sixth entry controls the display of Discovered Tiles.
         TileTypes = [
             [[0, 0], 1, "#000000", "#ffffff"],
@@ -7399,7 +7412,7 @@ function loadMode(mode) {
             ];
             MergeRules = [
                 [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 2], "&&", ["@Next 1 1", "=", 4]], false, [[["@This 0", "+", 1], 2]], [3, "^", "@This 0", "*", 6], [false, true]],
-                [3, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 1", "=", 2], "&&", ["@Next 2 1", "=", 2]], true, [[["@This 0", "+", "@Next 2 0"], 4]], 0, [false, true]],
+                [3, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 1", "=", 2], "&&", ["@Next 2 1", "=", 2]], true, [[["@This 0", "+", "@Next 2 0"], 4]], 0, [false, true, true]],
                 [2, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 0", "=", "Multiply"]], true, [["Multiply", "@Signless"]], 0, [true, true]]
             ];
             startTileSpawns = [[[0, 2], 50], [["Multiply", "@Signless"], 50]];
@@ -7418,7 +7431,7 @@ function loadMode(mode) {
             ];
             MergeRules = [
                 [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 2", "=", "@This 2"], "&&", ["@This 1", "=", 2], "&&", ["@Next 1 1", "=", 4]], false, [[["@This 0", "+", 1], 2, "@This 2"]], [3, "^", "@This 0", "*", 6], [false, true]],
-                [3, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 1", "=", 2], "&&", ["@Next 2 1", "=", 2]], true, [[["@This 0", "+", "@Next 2 0"], 4, ["@This 2", "*", "@Next 2 2"]]], 0, [false, true]],
+                [3, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 1", "=", 2], "&&", ["@Next 2 1", "=", 2]], true, [[["@This 0", "+", "@Next 2 0"], 4, ["@This 2", "*", "@Next 2 2"]]], 0, [false, true, true]],
                 [2, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 0", "=", "Multiply"]], true, [["Multiply", "@Signless", 0]], 0, [true, true]]
             ];
             if (modifiers[13] == "Interacting") MergeRules.unshift([2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 1 2", "!=", "@This 2"]], true, [], 0, [true, true]]);
@@ -7961,7 +7974,7 @@ function loadMode(mode) {
         start_game_vars = [0]; // Used to help with merges
         TileTypes = [
         [["@This 2", "<", 4n], ["@This 2", "Number"], ["@HSLA", 0, 0, ["@This 2", "*", -15, "+", 115], 1], "#564040"],
-        [true, ["@This 2", "Number"], ["@CalcArray", 0, "@if", ["@This 0", "<", 12], "2nd", [["@Literal", "#ffffff", "#00ff00", "#bbff00", "#ffc800", "#ff7300", "#ff0000", "#ff009d", "#f900fe", "#6f00ff", "#004cff", "#01d0ff", "#00ffae"], "arr_elem", "@This 0"], "@end-if", "@else", "2nd", ["@HSLA", [-31, "*", "@This 0", "+", 491], [0.95, "^", ["@This 0", "-", 12], "*", 75], 70, 1], "@end-else", "evaluateColor"], "#564040", "none", 2, 0, 
+        [true, ["@This 2", "Number"], ["@CalcArray", 0, "@if", ["@This 0", "<", 12], "2nd", [["@Literal", "#ffffff", "#00ff00", "#bbff00", "#ffc800", "#ff7300", "#ff0000", "#ff009d", "#f900fe", "#6f00ff", "#004cff", "#01d0ff", "#00ffae"], "arr_elem", "@This 0"], "@end-if", "@else", "2nd", ["@Literal", "@HSLA", [-31, "*", "@This 0", "+", 491], [0.95, "^", ["@This 0", "-", 12], "*", 75], 70, 1], "@end-else", "evaluateColor"], "#564040", "none", 2, 0, 
             ["PrimeImage", ["@linear-gradient", ["@HSLA", 43, 100, [15, "@if", ["@This 1", "arr_elem", 0], "2nd", 75, "@end-if"], 1], 0, "#0000", 25, 75, ["@HSLA", 43, 100, [15, "@if", ["@This 1", "arr_elem", 0], "2nd", 75, "@end-if"], 1], 100], ["@linear-gradient", 90, "#0000", 0, 0, "#000", 0, 100/6, "#0000", 100/6]],
             ["PrimeImage", ["@linear-gradient", ["@HSLA", 86, 100, [15, "@if", ["@This 1", "arr_elem", 1], "2nd", 75, "@end-if"], 1], 0, "#0000", 25, 75, ["@HSLA", 86, 100, [15, "@if", ["@This 1", "arr_elem", 1], "2nd", 75, "@end-if"], 1], 100], ["@linear-gradient", 90, "#0000", 0, 100/6, "#000", 100/6, 200/6, "#0000", 200/6]],
             ["PrimeImage", ["@linear-gradient", ["@HSLA", 129, 100, [15, "@if", ["@This 1", "arr_elem", 2], "2nd", 75, "@end-if"], 1], 0, "#0000", 25, 75, ["@HSLA", 129, 100, [15, "@if", ["@This 1", "arr_elem", 2], "2nd", 75, "@end-if"], 1], 100], ["@linear-gradient", 90, "#0000", 0, 200/6, "#000", 200/6, 300/6, "#0000", 300/6]],
@@ -8559,7 +8572,7 @@ function loadMode(mode) {
         ];
         if (modifiers[13] == "None") {
             MergeRules = [
-                [2, [["@Next 1 0", "+B", "@GVar 1", "modB", ["@This 0", "+B", "@GVar 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "min", "@Next 1 0"], [false, true]]
+                [2, [["@Next 1 0", "+B", "@GVar 1", "modB", ["@This 0", "+B", "@GVar 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]]
             ];
             startTileSpawns = [[[1n], 1]];
         }
@@ -8632,7 +8645,7 @@ function loadMode(mode) {
         scripts = [
             [["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0], "@end_vars", "@Var -1", "absB", "DIVESeedUnlock", "@GVar 0", "@GVar 6", "@if", [["@Parent -3", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"],
             [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "%B", "@Var 2", "=", 0n], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_binaryInsert", "@Var 1"], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
             [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
         ];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
@@ -8659,7 +8672,7 @@ function loadMode(mode) {
             startTileSpawns = [[[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]]]], modifiers[22]], [[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]], "*B", -1n]], modifiers[23]]];
             if (modifiers[13] == "Non-Interacting") {
                 MergeRules = [
-                    [2, [["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "min", "@Next 1 0"], [false, true]],
+                    [2, [["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]],
                     [2, [[["@This 0", "absB"], ">", ["@Next 1 0", "absB"]], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], true, [[["@This 0", "gcdB", "@Next 1 0", "absB", "*B", ["@Next 1 0", "signB", "*B", -1n], "+B", "@Next 1 0"]], [["@This 0", "gcdB", "@Next 1 0", "absB", "*B", ["@Next 1 0", "signB"], "+B", "@This 0"]]], 0, [false, false]],
                     [2, [[["@Next 1 0", "absB"], ">", ["@This 0", "absB"]], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], true, [[["@Next 1 0", "gcdB", "@This 0", "absB", "*B", ["@This 0", "signB"], "+B", "@Next 1 0"]], [["@Next 1 0", "gcdB", "@This 0", "absB", "*B", ["@This 0", "signB", "*B", -1n], "+B", "@This 0"]]], 0, [false, false]]
                 ];
@@ -8667,7 +8680,7 @@ function loadMode(mode) {
             else {
                 MergeRules = [
                     [2, ["@This 0", "*B", -1n, "=", "@Next 1 0"], true, [], 0],
-                    [2, [["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "min", "@Next 1 0"], [false, true]],
+                    [2, [["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]],
                     [2, [[["@This 0", "absB"], ">", ["@Next 1 0", "absB"]], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], true, [[["@This 0", "gcdB", "@Next 1 0", "absB", "*B", ["@Next 1 0", "signB", "*B", -1n], "+B", "@Next 1 0"]], [["@This 0", "gcdB", "@Next 1 0", "absB", "*B", ["@Next 1 0", "signB"], "+B", "@This 0"]]], 0, [false, false]],
                     [2, [[["@Next 1 0", "absB"], ">", ["@This 0", "absB"]], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], true, [[["@Next 1 0", "gcdB", "@This 0", "absB", "*B", ["@This 0", "signB"], "+B", "@Next 1 0"]], [["@Next 1 0", "gcdB", "@This 0", "absB", "*B", ["@This 0", "signB", "*B", -1n], "+B", "@This 0"]]], 0, [false, false]]
                 ];
@@ -8687,7 +8700,7 @@ function loadMode(mode) {
         scripts = [
             [["@var_retain", 0, "@end_vars", 0, "@repeat", ["@var_retain", "@Var -2", "arr_length", ">", "@Var -1"], "2nd", ["@var_retain", "@Var -2", "arr_elem", "@Var -1", "arr_elem", 0], "absB", "DIVESeedUnlock", "@GVar 0", "@GVar 6", "@if", [["@Parent -3", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if", "@edit_var", -1, ["@var_retain", "@Var -1", "+", 1], "@end-repeat"], "Merge"],
             [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "%B", "@Var 2", "=", 0n], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_binaryInsert", "@Var 1"], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
             [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
         ];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
@@ -8769,7 +8782,7 @@ function loadMode(mode) {
         statBoxes = [["Score", "@Score", false, false, "Tile", "DIVE"], ["Seeds", "@GVar 0", false, false, "TileArray", "Self"], ["Seeds Seen", ["@GVar 1", "arr_length"], ...[,,,,], ["@GVar 5", "=", 0], [0, "@edit_gvar", 5, 1], true], ["All Seeds Seen", "@GVar 1", true, false, "TileArray", "Self", ["@GVar 5", "=", 1], [0, "@edit_gvar", 5, 0], true]];
         scripts = [
             [
-                ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "@end_vars", "@Var -1",
+                ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_map", ["@Var -1", "absB"]], "@end_vars", "@Var -1",
                 "customDIVESeedUnlock", ["@GVar 0", "arr_map", ["@Var -1", "arr_map", ["@Var -1", "absB"]]], "@GVar 6",
                 ["@global_var_retain", ["@Literal"], "arr_push", [["@Var -2", "arr_elem", 0], "*B", ["@Var -1", "arr_elem", 0]], "arr_push", [["@Var -2", "arr_elem", 1], "*B", ["@Var -1", "arr_elem", 1]]],
                 ["@global_var_retain", ["@Literal"], "arr_push", [["@Var -2", "arr_elem", 0], "/B", ["@Var -1", "arr_elem", 0]], "arr_push", [["@Var -2", "arr_elem", 1], "/B", ["@Var -1", "arr_elem", 1]]],
@@ -8782,7 +8795,7 @@ function loadMode(mode) {
                 "@if", [[["@Parent -4", "arr_elem", 0, ">", 1n], "||", ["@Parent -4", "arr_elem", 1, ">", 1n]], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"
             ],
             [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 1, "arr_filter", ["@Var -1", "arr_elem", 0, "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "arr_elem", 0, "!=", 0n], "&&", ["@var_retain", "@Var 1", "arr_elem", 1, "!=", 0n]], "arr_reduce", true, ["@global_var_copy", "@if", [[["@Var -1", "arr_elem", 0, "absB"], "%B", ["@Var 2", "arr_elem", 0, "absB", "max", 1n], "=", 0n], "&&", [["@Var -1", "arr_elem", 1, "absB"], "%B", ["@Var 2", "arr_elem", 1, "absB", "max", 1n], "=", 0n]], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 2", "arr_elem", 1, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 1, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_binaryInsert", "@Var 1"], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 2", "arr_elem", 1, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 1, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
             [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
         ];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
@@ -8807,13 +8820,13 @@ function loadMode(mode) {
             startTileSpawns = [[[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]]]], modifiers[22]], [[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]], "*B", -1n]], modifiers[23]]];
             if (modifiers[13] == "Non-Interacting") {
                 MergeRules = [
-                    [2, [["@global_var_retain_inner", ["@This 0", "/BR", "@Next 1 0"], "@end_vars", ["@Var -1", ">", new BigRational(1n, 1n)], "&&", ["@Var -1", "floorBR", 1n, "*BR", -1n, "+BR", "@Var -1", "recipBR", "modBR", 1n, "=", new BigRational(0n)], "||", ["@Var -1", "=", new BigRational(1n, 1n)], "||", ["@Var -1", "=", new BigRational(2n, 1n)]]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "min", "@Next 1 0"], [false, true]]
+                    [2, [["@global_var_retain_inner", ["@This 0", "/BR", "@Next 1 0"], "@end_vars", ["@Var -1", ">", new BigRational(1n, 1n)], "&&", ["@Var -1", "floorBR", 1n, "*BR", -1n, "+BR", "@Var -1", "recipBR", "modBR", 1n, "=", new BigRational(0n)], "||", ["@Var -1", "=", new BigRational(1n, 1n)], "||", ["@Var -1", "=", new BigRational(2n, 1n)]]], false, [[["@This 0", "+B", "@Next 1 0"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]]
                 ];
             }
             else {
                 MergeRules = [
                     [2, ["@This 0", "*B", -1n, "=", "@Next 1 0"], true, [], 0],
-                    [2, [["@global_var_retain_inner", ["@This 0", "/BR", "@Next 1 0"], "@end_vars", ["@Var -1", "absBR", ">", new BigRational(1n, 1n)], "&&", ["@Var -1", "floorBR", 1n, "*BR", -1n, "+BR", "@Var -1", "recipBR", "modBR", 1n, "=", new BigRational(0n)], "||", ["@Var -1", "=", new BigRational(1n, 1n)], "||", ["@Var -1", "=", new BigRational(2n, 1n)]]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "min", "@Next 1 0"], [false, true]]
+                    [2, [["@global_var_retain_inner", ["@This 0", "/BR", "@Next 1 0"], "@end_vars", ["@Var -1", "absBR", ">", new BigRational(1n, 1n)], "&&", ["@Var -1", "floorBR", 1n, "*BR", -1n, "+BR", "@Var -1", "recipBR", "modBR", 1n, "=", new BigRational(0n)], "||", ["@Var -1", "=", new BigRational(1n, 1n)], "||", ["@Var -1", "=", new BigRational(2n, 1n)]]], false, [[["@This 0", "+B", "@Next 1 0"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]]
                 ];
             }
         }
@@ -8830,7 +8843,7 @@ function loadMode(mode) {
         scripts = [
             [["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0], "@end_vars", "@Var -1", "absB", "DIVESeedUnlock", "@GVar 0", "@GVar 6", "@if", [["@Parent -3", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"],
             [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "%B", "@Var 2", "=", 0n], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_binaryInsert", "@Var 1"], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
             [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
         ];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
@@ -8856,14 +8869,14 @@ function loadMode(mode) {
             startTileSpawns = [[[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]]]], ["@GVar 0", "arr_length", "*", modifiers[22]]], [[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]], "*B", -1n]], ["@GVar 0", "arr_length", "*", modifiers[23]]], [[["@GVar 7", "arr_elem", [0, "rand_bigint", ["@GVar 7", "arr_length", "-", 1]]]], ["@GVar 7", "arr_length", "*", modifiers[22]]], [[["@GVar 7", "arr_elem", [0, "rand_bigint", ["@GVar 7", "arr_length", "-", 1]], "*B", -1n]], ["@GVar 7", "arr_length", "*", modifiers[23]]]];
             if (modifiers[13] == "Non-Interacting") {
                 MergeRules = [
-                    [2, [["@Next 1 0", "=", "@This 0"], "||", [["@This 0", "^B", 2n, "%B", ["@Next 1 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "%B", ["@Next 1 0", "absB", "max", 1n], "!=", 0n]], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]],
+                    [2, [[["@This 0", "^B", 2n, "%B", ["@Next 1 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "%B", ["@Next 1 0", "absB", "max", 1n], "!=", 0n]], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]],
                     [2, [["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0"]]], 0, [false, true]]
                 ];
             }
             else {
                 MergeRules = [
                     [2, ["@This 0", "*B", -1n, "=", "@Next 1 0"], true, [], 0],
-                    [2, [["@Next 1 0", "=", "@This 0"], "||", [["@This 0", "^B", 2n, "%B", ["@Next 1 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "%B", ["@Next 1 0", "absB", "max", 1n], "!=", 0n]], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]],
+                    [2, [[["@This 0", "^B", 2n, "%B", ["@Next 1 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "%B", ["@Next 1 0", "absB", "max", 1n], "!=", 0n]], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]],
                     [2, [["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"]]], 0, [false, true]]
                 ];
             }
@@ -8881,11 +8894,11 @@ function loadMode(mode) {
         scripts = [
             [["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0], "@end_vars", "@Var -1", "absB", "DIVESeedUnlock", "@GVar 0", "@GVar 6", "@if", [["@Parent -3", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"],
             [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "%B", "@Var 2", "=", 0n], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_binaryInsert", "@Var 1"], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
             [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"],
             [["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0], "@end_vars", "@Var -1", "absB", "primeFactorizeB", 1, "arr_map", ["@Var -1", "arr_edit_elem", 1, ["@var_retain", "@Var -1", "arr_elem", 1, "floorB", 2n]], "primeDefactorizeB", 1, "DIVESeedUnlock", "@GVar 7", "@GVar 4", "@if", [["@Parent -3", ">", 1n], "&&", ["@GVar 9", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 9, ["@GVar 9", "arr_push", "@Parent -2"], "@end-if"], "Merge"],
             [["@GVar 7", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "%B", ["@var_retain", "@Var 2", "rootB", 2n], "=", 0n], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 10, ["@var_retain", "@GVar 10", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 9", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 9", "arr_elem", "@Var 0"], "@edit_gvar", 7, ["@var_retain", "@GVar 7", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 8", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 8, ["@var_retain", "@GVar 8", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 9", "arr_length", ">", 0], "@if", ["@GVar 9", "arr_length", "=", 1], "announce", ["@GVar 9", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " square-unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 9", "arr_length", "=", 2], "announce", ["@GVar 9", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 9", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " square-unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 9", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 9", "arr_elem", ["@GVar 9", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " square-unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 9, ["@Literal"]], "EndMovement"],
+            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 9", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 9", "arr_elem", "@Var 0"], "@edit_gvar", 7, ["@var_retain", "@GVar 7", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 8", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 8, ["@var_retain", "@GVar 8", "arr_binaryInsert", "@Var 1"], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 9", "arr_length", ">", 0], "@if", ["@GVar 9", "arr_length", "=", 1], "announce", ["@GVar 9", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " square-unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 9", "arr_length", "=", 2], "announce", ["@GVar 9", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 9", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " square-unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 9", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 9", "arr_elem", ["@GVar 9", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " square-unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 9, ["@Literal"]], "EndMovement"],
             [[0, 0, "@end_vars", 0, "@if", [["@GVar 10", "arr_length", ">", 0]], "@if", ["@GVar 10", "arr_length", "=", 1], "announce", ["@GVar 7", "arr_elem", ["@GVar 10", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " square-eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 10", "arr_length", "=", 2], "announce", ["@GVar 7", "arr_elem", ["@GVar 10", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 7", "arr_elem", ["@GVar 10", "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " square-eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 10", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 7", "arr_elem", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 7", "arr_elem", ["@GVar 10", "arr_elem", ["@GVar 10", "arr_length", "-", 1]]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " square-eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 10", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 10", "arr_elem", "@Var 0"], "@edit_gvar", 7, ["@var_retain", "@GVar 7", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 10, ["@Literal"]], "EndMovement"]
         ];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
@@ -8940,7 +8953,7 @@ function loadMode(mode) {
         scripts = [
             [["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "@end_vars", ["@var_retain", "@Var -1", "arr_elem", 0], "*B", ["@var_retain", "@Var -1", "arr_elem", 1], "absB", "DIVESeedUnlock", "@GVar 0", "@GVar 6", "@if", [["@Parent -3", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"],
             [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 1, "arr_map", [["@var_retain", "@Var -1", "arr_elem", 0], "*B", ["@var_retain", "@Var -1", "arr_elem", 1]], "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "%B", "@Var 2", "=", 0n], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_binaryInsert", "@Var 1"], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
             [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"],
             [["@global_var_retain_inner", 0, 0, ["@GVar 0", "arr_sort", ["@Var -2", "-", "@Var -1", "Number"]], "@end_vars", 0, "@edit_gvar", 7, ["@Literal"], "@repeat", ["@Var 2", "arr_length", ">", "@Var 0"], "@edit_var", 1, "@Var 0", "@repeat", ["@Var 2", "arr_length", ">", "@Var 1"], "@if", [["@Var 2", "arr_elem", "@Var 0"], "*B", ["@Var 2", "arr_elem", "@Var 1"], "<=", "@GVar 8"], "@edit_gvar", 7, ["@GVar 7", "arr_push", [["@Literal"], "arr_push", ["@Var 2", "arr_elem", "@Var 0"], "arr_push", ["@Var 2", "arr_elem", "@Var 1"]]], "@end-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "@edit_var", 0, ["@Var 0", "+", 1], "@end-repeat"], "EndMovement"]
         ];
@@ -8971,7 +8984,7 @@ function loadMode(mode) {
             }
             else {
                 MergeRules = [
-                    [2, [["@This 0", "*B", -1n, "=", "@Next 1 0"], "||", ["@This 1", "*B", -1n, "=", "@Next 1 1"]], true, [], 0],
+                    [2, [["@This 0", "*B", -1n, "=", "@Next 1 0"], "||", ["@This 1", "*B", -1n, "=", "@Next 1 1"], "&&", [["@Next 1 0", "*B", "@Next 1 1"], "modB", ["@This 0", "*B", "@This 1", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [], 0],
                     [2, [[["@Next 1 0", "*B", "@Next 1 1"], "modB", ["@This 0", "*B", "@This 1", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"], ["@This 1", "+B", "@Next 1 1"]]], [["@This 0", "*B", "@This 1", "absB"], "min", ["@Next 1 0", "*B", "@Next 1 1", "absB"]], [false, true]]
                 ];
                 startTileSpawns = [[[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]], "*B", [["@Literal", 1n, -1n], "weightedRandomArrayEntry", ["@Literal", modifiers[22], modifiers[23]]]], ["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]], "*B", [["@Literal", 1n, -1n], "weightedRandomArrayEntry", ["@Literal", modifiers[22], modifiers[23]]]]], modifiers[22]]];
@@ -8990,7 +9003,7 @@ function loadMode(mode) {
         scripts = [
             [["@var_retain", 0, ["@var_retain", "@Var -2", "arr_elem", 0], "@end_vars", 0, "@repeat", ["@var_retain", "@Var -2", "<", 2], "2nd", ["@var_retain", "@Var -1", "arr_elem", "@Var -2"], "absB", "DIVESeedUnlock", "@GVar 0", "@GVar 6", "@if", [["@Parent -3", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if", "@edit_var", -2, ["@var_retain", "@Var -2", "+", 1], "@end-repeat"], "Merge"],
             [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "%B", "@Var 2", "=", 0n], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_binaryInsert", "@Var 1"], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
             [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"],
         ];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
@@ -9085,7 +9098,7 @@ function loadMode(mode) {
         scripts = [
             [["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0], 0, "@end_vars", 0, "@repeat", ["@var_retain", "@Var -2", "arr_length", ">", "@Var -1"], "2nd", ["@var_retain", "@Var -2", "arr_elem", "@Var -1"], "absB", "DIVESeedUnlock", "@GVar 0", "@GVar 6", "@if", [["@Parent -3", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if", "@edit_var", -1, ["@var_retain", "@Var -1", "+", 1], "@end-repeat"], "Merge"],
             [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 3, "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "%B", "@Var 2", "=", 0n], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_binaryInsert", "@Var 1"], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
             [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]]], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
         ];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
@@ -9140,7 +9153,7 @@ function loadMode(mode) {
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
         document.getElementById("FRUSEE_vars").style.setProperty("display", "flex");
     }
-
+    
     else if (mode == 37.71) { // 839,808
         // width = 5; height = 5;
         TileNumAmount = 2;
@@ -9184,7 +9197,7 @@ function loadMode(mode) {
             ];
             MergeRules = [ 
                 [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "/", 2, "=", "@Next 1 1"]], false, [[["@This 0", "+", 1], "@This 1"]], [3, "^", "@This 0", "*", "@This 1"], [false, true]],
-                [3, [["@Next 1 0", "=", "Divide"], "&&", [[["@This 1", "=", 2], "||", ["@This 1", "=", 0.5]], "&&", [["@Next 2 1", "=", 2], "||", ["@Next 2 1", "=", 0.5]], "||", [["@This 0", "=", 0], "&&", ["@This 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]], "||", [["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1], "&&", ["@This 0", "!=", "Divide"]]]], true, [[["@This 0", "-", "@Next 2 0"], ["@This 1", "/", "@Next 2 1"]]], 0, [false, true]],
+                [3, [["@Next 1 0", "=", "Divide"], "&&", [[["@This 1", "=", 2], "||", ["@This 1", "=", 0.5]], "&&", [["@Next 2 1", "=", 2], "||", ["@Next 2 1", "=", 0.5]], "||", [["@This 0", "=", 0], "&&", ["@This 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]], "||", [["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1], "&&", ["@This 0", "!=", "Divide"]]]], true, [[["@This 0", "-", "@Next 2 0"], ["@This 1", "/", "@Next 2 1"]]], 0, [false, true, true]],
                 [2, [["@Next 1 0", "=", "Divide"], "&&", ["@This 0", "=", "Divide"]], true, [["Divide", "@Signless"]], 0, [true, true]]
             ];
             startTileSpawns = [[[0, 2], 50], [["Divide", "@Signless"], 50]];
@@ -9201,7 +9214,7 @@ function loadMode(mode) {
             ];
             MergeRules = [
                 [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "/", 2, "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"]], false, [[["@This 0", "+", 1], "@This 1", "@This 2"]], [3, "^", "@This 0", "*", "@This 1"], [false, true]],
-                [3, [["@Next 1 0", "=", "Divide"], "&&", [[["@This 1", "=", 2], "||", ["@This 1", "=", 0.5]], "&&", [["@Next 2 1", "=", 2], "||", ["@Next 2 1", "=", 0.5]], "||", [["@This 0", "=", 0], "&&", ["@This 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]], "||", [["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]]]], true, [[["@This 0", "-", "@Next 2 0"], ["@This 1", "/", "@Next 2 1"], ["@This 2", "*", "@Next 2 2"]]], 0, [false, true]],
+                [3, [["@Next 1 0", "=", "Divide"], "&&", [[["@This 1", "=", 2], "||", ["@This 1", "=", 0.5]], "&&", [["@Next 2 1", "=", 2], "||", ["@Next 2 1", "=", 0.5]], "||", [["@This 0", "=", 0], "&&", ["@This 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]], "||", [["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]]]], true, [[["@This 0", "-", "@Next 2 0"], ["@This 1", "/", "@Next 2 1"], ["@This 2", "*", "@Next 2 2"]]], 0, [false, true, true]],
                 [2, [["@Next 1 0", "=", "Divide"], "&&", ["@This 0", "=", "Divide"]], true, [["Divide", "@Signless", 0]], 0, [true, true]]
             ];
             if (modifiers[13] == "Interacting") MergeRules.unshift([2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 1 2", "!=", "@This 2"]], true, [], 0, [true, true]]);
@@ -10238,9 +10251,9 @@ function gmDisplayVars() {
             spawnText);
         }
         else if (mode_vars[0] == 2) {
-            displayRules("rules_text", ["h1", "Multitile 2048"], ["p", "2048, but some tiles contain multiple tiles, such as a \"2 4\" tile, which contains both a 2 and a 4. Two tiles can only merge if every tile the one that contains less tiles contains is also part of the one that contains more tiles, and only the tiles they share are merged. For example, a 2 4 tile and a 2 4 16 tile share the 2 and 4 possibilities, so they merge into a 4 8 16 tile - the 2s and the 4s merged, but the 8 did not. If the resulting tile would contain multiple copies of the same tile, only one of those copies remains. To win, you must make a regular 2048 tile - a multitile with 2048 as one of the tiles it contains doesn't count!"],
+            displayRules("rules_text", ["h1", "Multitile 2048"], ["p", "2048, but some tiles contain multiple tiles, such as a \"2 4\" tile, which contains both a 2 and a 4. Two tiles can only merge if every tile the one that contains less tiles contains is also part of the one that contains more tiles, and only the tiles they share are merged. For example, a 2 4 tile and a 2 4 16 tile share the 2 and 4 possibilities, so they merge into a 4 8 16 tile - the 2s and the 4s merged, but the 16 did not. If the resulting tile would contain multiple copies of the same tile, only one of those copies remains. To win, you must make a regular 2048 tile - a multitile with 2048 as one of the tiles it contains doesn't count!"],
             spawnText);
-            displayRules("gm_rules_text", ["h1", "Multitile 2048"], ["p", "2048, but some tiles contain multiple tiles, such as a \"2 4\" tile, which contains both a 2 and a 4. Two tiles can only merge if every tile the one that contains less tiles contains is also part of the one that contains more tiles, and only the tiles they share are merged. For example, a 2 4 tile and a 2 4 16 tile share the 2 and 4 possibilities, so they merge into a 4 8 16 tile - the 2s and the 4s merged, but the 8 did not. If the resulting tile would contain multiple copies of the same tile, only one of those copies remains. To win, you must make a regular 2048 tile - a multitile with 2048 as one of the tiles it contains doesn't count!"],
+            displayRules("gm_rules_text", ["h1", "Multitile 2048"], ["p", "2048, but some tiles contain multiple tiles, such as a \"2 4\" tile, which contains both a 2 and a 4. Two tiles can only merge if every tile the one that contains less tiles contains is also part of the one that contains more tiles, and only the tiles they share are merged. For example, a 2 4 tile and a 2 4 16 tile share the 2 and 4 possibilities, so they merge into a 4 8 16 tile - the 2s and the 4s merged, but the 16 did not. If the resulting tile would contain multiple copies of the same tile, only one of those copies remains. To win, you must make a regular 2048 tile - a multitile with 2048 as one of the tiles it contains doesn't count!"],
             spawnText);
         }
         else {
@@ -11028,13 +11041,29 @@ function gmDisplayVars() {
                 document.getElementById("DIVE_seeds_text").style.setProperty("color", "#400");
             }
         }
-        if (mode_vars[1]) {
-            document.getElementById("DIVE_1s_text").innerHTML = "1s are as likely to spawn as any other spawning tile.";
-            document.getElementById("DIVE_1s_text").style.setProperty("color", "#000");
+        if (mode_vars[0] > 0) {
+            if (mode_vars[1] == 1n) {
+                document.getElementById("DIVE_1s_text").innerHTML = "1s are as likely to spawn as any other spawning tile.";
+                document.getElementById("DIVE_1s_text").style.setProperty("color", "#000");
+            }
+            else {
+                document.getElementById("DIVE_1s_text").innerHTML = "1s cannot spawn.";
+                document.getElementById("DIVE_1s_text").style.setProperty("color", "#fff");
+            }
         }
         else {
-            document.getElementById("DIVE_1s_text").innerHTML = "1s cannot spawn.";
-            document.getElementById("DIVE_1s_text").style.setProperty("color", "#fff");
+            if (mode_vars[1] == 1n) {
+                document.getElementById("DIVE_1s_text").innerHTML = "The starting seed is 1.";
+                document.getElementById("DIVE_1s_text").style.setProperty("color", "#000");
+            }
+            else if (mode_vars[1] == 3n) {
+                document.getElementById("DIVE_1s_text").innerHTML = "The starting seed is 3.";
+                document.getElementById("DIVE_1s_text").style.setProperty("color", "#4a4");
+            }
+            else {
+                document.getElementById("DIVE_1s_text").innerHTML = "The starting seed is 2.";
+                document.getElementById("DIVE_1s_text").style.setProperty("color", "#a44");
+            }
         }
         let title = ["DIVE", "DIVE-3B", "DIVE-3S", "DIVE-3L"][mode_vars[5]];
         let mergeDescription = [
@@ -11070,7 +11099,7 @@ function gmDisplayVars() {
             seedCheckDescription = " (Seeds are checked in the order they were unlocked.) "
         }
         let seedSpawnDescription = "";
-        let firstSeed = (mode_vars[1]) ? 1 : (mode_vars[5] > 0) ? 3 : 2;
+        let firstSeed = String(mode_vars[1]);
         if (mode_vars[0] == 0) {
             seedSpawnDescription = "At first, only " + firstSeed + "s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile." + seedCheckDescription + "If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."
         }
@@ -11078,7 +11107,7 @@ function gmDisplayVars() {
             seedSpawnDescription = "At first, only " + firstSeed + "s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile." + seedCheckDescription;
         }
         else {
-            if (mode_vars[1]) {
+            if (mode_vars[1] == 1) {
                 seedSpawnDescription = "The spawning tiles are 1 and the first " + mode_vars[0] + " primes, with an equal chance for each to spawn."
             }
             else {
@@ -11119,6 +11148,22 @@ function gmDisplayVars() {
         }
         document.getElementById("3888_firstGoalMinimum").style.setProperty("display", (mode_vars[0] == 0) ? "none" : "block");
         document.getElementById("3888_firstGoalMinimum_change").value = mode_vars[1];
+        if (mode_vars[2]) {
+            document.getElementById("3888_extraMerge_text").innerHTML = "n+8n is a valid merge.";
+            document.getElementById("3888_extraMerge_text").style.setProperty("color", "#e77e1c");
+            displayRules("rules_text", ["h2", "Powers of 2 Times Powers of 3"], ["h1", "3888"], ["p", "Two 1s can merge into a 2, and merges occur between any tile and a tile that's exactly double that tile, triple that tile, or eight times that tile. Get to the 3888 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h2", "Powers of 2 Times Powers of 3"], ["h1", "3888"], ["p", "Two 1s can merge into a 2, and merges occur between any tile and a tile that's exactly double that tile, triple that tile, or eight times that tile. Get to the 3888 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+        }
+        else {
+            document.getElementById("3888_extraMerge_text").innerHTML = "n+8n is not a valid merge.";
+            document.getElementById("3888_extraMerge_text").style.setProperty("color", "#582b00");
+            displayRules("rules_text", ["h2", "Powers of 2 Times Powers of 3"], ["h1", "3888"], ["p", "Two 1s can merge into a 2, and merges occur between any tile and a tile that's exactly double that tile or triple that tile. Get to the 3888 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h2", "Powers of 2 Times Powers of 3"], ["h1", "3888"], ["p", "Two 1s can merge into a 2, and merges occur between any tile and a tile that's exactly double that tile or triple that tile. Get to the 3888 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+        }
     }
     else if (gamemode == 55) { // 2000
         if (mode_vars[0] == 0) {
@@ -11135,6 +11180,22 @@ function gmDisplayVars() {
         }
         document.getElementById("2000_firstGoalMinimum").style.setProperty("display", (mode_vars[0] == 0) ? "none" : "block");
         document.getElementById("2000_firstGoalMinimum_change").value = mode_vars[1];
+        if (mode_vars[2]) {
+            document.getElementById("2000_extraMerge_text").innerHTML = "n+5n+10n is a valid merge.";
+            document.getElementById("2000_extraMerge_text").style.setProperty("color", "#97b626");
+            displayRules("rules_text", ["h2", "Powers of 2 Times Powers of 5"], ["h1", "2000"], ["p", "Two 1s can merge into a 2 and two 2s can merge into a 4. Merges occur between any tile and a tile that's exactly quadruple that tile, or between any tile, a tile that's quintuple that tile, and a tile that's either double that tile or ten times that tile. Get to the 2000 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h2", "Powers of 2 Times Powers of 5"], ["h1", "2000"], ["p", "Two 1s can merge into a 2 and two 2s can merge into a 4. Merges occur between any tile and a tile that's exactly quadruple that tile, or between any tile, a tile that's quintuple that tile, and a tile that's either double that tile or ten times that tile. Get to the 2000 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+        }
+        else {
+            document.getElementById("2000_extraMerge_text").innerHTML = "n+5n+10n is not a valid merge.";
+            document.getElementById("2000_extraMerge_text").style.setProperty("color", "#526900");
+            displayRules("rules_text", ["h2", "Powers of 2 Times Powers of 5"], ["h1", "2000"], ["p", "Two 1s can merge into a 2 and two 2s can merge into a 4. Merges occur between any tile and a tile that's exactly quadruple that tile, or between any tile, a tile that's double that tile, and a tile that's quintuple that tile. Get to the 2000 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h2", "Powers of 2 Times Powers of 5"], ["h1", "2000"], ["p", "Two 1s can merge into a 2 and two 2s can merge into a 4. Merges occur between any tile and a tile that's exactly quadruple that tile, or between any tile, a tile that's double that tile, and a tile that's quintuple that tile. Get to the 2000 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+        }
     }
     else if (gamemode == 56) { // 3645
         if (mode_vars[0] == 0) {
@@ -11151,6 +11212,22 @@ function gmDisplayVars() {
         }
         document.getElementById("3645_firstGoalMinimum").style.setProperty("display", (mode_vars[0] == 0) ? "none" : "block");
         document.getElementById("3645_firstGoalMinimum_change").value = mode_vars[1];
+        if (mode_vars[2]) {
+            document.getElementById("3645_extraMerge_text").innerHTML = "n+5n+9n is a valid merge.";
+            document.getElementById("3645_extraMerge_text").style.setProperty("color", "#da3479");
+            displayRules("rules_text", ["h2", "Powers of 3 Times Powers of 5"], ["h1", "3645"], ["p", "Three 1s can merge into a 3. Merges occur between two equal tiles and a tile that's triple those tiles, or between any tile, a tile that's quintuple that tile, and a tile that's either triple that tile or nine times that tile. Get to the 3645 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h2", "Powers of 3 Times Powers of 5"], ["h1", "3645"], ["p", "Three 1s can merge into a 3. Merges occur between two equal tiles and a tile that's triple those tiles, or between any tile, a tile that's quintuple that tile, and a tile that's either triple that tile or nine times that tile. Get to the 3645 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+        }
+        else {
+            document.getElementById("3645_extraMerge_text").innerHTML = "n+5n+9n is not a valid merge.";
+            document.getElementById("3645_extraMerge_text").style.setProperty("color", "#610028");
+            displayRules("rules_text", ["h2", "Powers of 3 Times Powers of 5"], ["h1", "3645"], ["p", "Three 1s can merge into a 3. Merges occur between two equal tiles and a tile that's triple those tiles, or between any tile, a tile that's triple that tile, and a tile that's quintuple that tile. Get to the 3645 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h2", "Powers of 3 Times Powers of 5"], ["h1", "3645"], ["p", "Three 1s can merge into a 3. Merges occur between two equal tiles and a tile that's triple those tiles, or between any tile, a tile that's triple that tile, and a tile that's quintuple that tile. Get to the 3645 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+        }   
     }
     else if (gamemode == 57) { // 2700
         if (mode_vars[0] == 1) { // Level 1
@@ -16527,8 +16604,8 @@ function gmDisplayVars() {
                     MergeRules[m][1].push("&&", ["@MLength", "gcdB", [CAM1Entry, "+B", 1n], "=", 1n]);
                 }
             }
-            if(mode_vars[3] == 0) rulesDescription += "Any amount of equal tiles can merge, but if those tiles are at least " + nfact + " and less than " + nonefact + ", the merge's addition is done in modulo (" + nonefact + " + " + nfact + ")";
-            else if(mode_vars[3] == 1) rulesDescription += "An amount coprime to (" + none + " + 1) of equal tiles can merge, but if those tiles are at least " + nfact + " and less than " + nonefact + ", the merge's addition is done in modulo (" + nonefact + " + " + nfact + ")";
+            if(mode_vars[3] == 0) rulesDescription += "Any amount of equal tiles can merge, but if those tiles are at least " + nfact + " and less than " + nonefact + ", the merge's addition is done in modulo (" + nonefact + " + " + nfact + "). ";
+            else if(mode_vars[3] == 1) rulesDescription += "An amount coprime to (" + none + " + 1) of equal tiles can merge, but if those tiles are at least " + nfact + " and less than " + nonefact + ", the merge's addition is done in modulo (" + nonefact + " + " + nfact + "). ";
             knownMergeMaxLength = Infinity;
             rulesTitle[1] = "mod 27";
             if(Array.isArray(mode_vars[1])) {
@@ -16730,33 +16807,47 @@ function gmDisplayVars() {
             }
         }
         else if(mode_vars[0] == 28) { // 2197 variant
-            document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
             document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
             document.getElementById("Alternate5040_num").style.setProperty("display", "none");
             document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #7d1447, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #7d1447, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
+            let tierTiles = [];
+            function split2197(n) {
+                let maxn = BigInt(Math.ceil((Math.sqrt(8 * Number(n) + 9) - 3) / 2));
+                for(let j = 1n; j <= maxn; j++) {
+                    tierTiles.push(j);
+                }
+                let max = maxn * (maxn + 1n) / 2n + maxn;
+                for(let j = 1n; j <= maxn; j++) {
+                    if(max - n != j) tierTiles.push(tierTiles[tierTiles.length - 1] + j)
+                }
+            }
+            for(let i = 0; i < validIndex.length; i++) {
+                split2197(validIndex[i]);
+                valid.push(tierTiles.slice());
+                tierTiles = [];
+            }
+            validPos.unshift(valid);
             if(mode_vars[2] == 0) {
                 MergeRules.push(
-                    //[2, [[CAM1Entry, "=", 2n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"]], false, [[["@This 0", "+B, 1n"], baseTile]], [], [false, true]],
-                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@Next 1 1", "<", [[[[CAM1Entry, "*", 8, "+", 9], "^", 0.5, "-", 3], "/", 2], "ceil", 1]]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
-                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", ">=", [[[[CAM1Entry, "*", 8, "+", 9], "^", 0.5, "-", 3], "/", 2], "ceil", 1]], "&&", ["@Next 1 1", "Number", "!=", [CAM1Entry, "-", [0.5, "*", [[[[CAM1Entry, "*", 8, "+", 9], "^", 0.5, "-", 3], "/", 2], "ceil", 1], "*", [[[[CAM1Entry, "*", 8, "+", 9], "^", 0.5, "-", 3], "/", 2], "ceil", 1, "+", 3]]]]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", [validPos, "arr_elem", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], "-", 1], "=", "@This 1"]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", [validPos, "arr_elem", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], "-", 1], "=", "@This 1"]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
                 )
-                rulesDescription += "Two tiles that are multiples of " + nfact + " can merge if (the larger tile + " + mode_vars[4] + "*" + nfact + ") is a multiple of (the smaller tile + " + mode_vars[4] + "*" + nfact + "). A tile that is equal to " + nfact + " can merge with a multiple of " + nfact + " if their sum divided by " + nfact + " plus " + (2*mode_vars[4]) + " is prime. (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow a path to get from 1 to " + none + " in DOFFET, but a 1 can merge with any tile if their sum plus " + (2*mode_vars[4]) + " is prime.) ";
+                //rulesDescription += "A tile that is equal to k * (" + nfact + ") can merge with a tile that is equal to " + nfact + " if (k + 1) * (k + 2) / 2 + k + 1 is no less than " + none + "";
                 knownMergeMaxLength = 2;
             }
             else if(mode_vars[2] == 1) {
                 if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
                 if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
-                    [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "+B", BigInt(mode_vars[4])], "%B", ["@Next 1 1", "+B", BigInt(mode_vars[4])], "=", 0n], "||", [[["@This 1", "+B", "@Next 1 1", "+B", [2n, "*B", BigInt(mode_vars[4])]], "factorAmountB", "=", 2n], "&&", ["@This 1", "=", 1n]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]], "&&", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
-                    [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "+B", BigInt(mode_vars[4])], "%B", ["@Next 1 1", "+B", BigInt(mode_vars[4])], "=", 0n], "||", [[["@This 1", "+B", "@Next 1 1", "+B", [2n, "*B", BigInt(mode_vars[4])]], "factorAmountB", "=", 2n], "&&", ["@This 1", "=", 1n]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n]], [], [false, true]]
+                    [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "+B", 1n, "<", CAM1Entry], "&&", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", [valid, "arr_elem", 0, "arr_elem", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], "-", 1], "=", "@This 1"]], false, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "+B", 1n, "=", CAM1Entry], "&&", [valid, "arr_elem", 0, "arr_elem", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], "-", 1], "=", "@This 1"]], false, [[1n, baseTile]], [], [false, true]],
                 );
                 MergeRules.push(
-                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "+B", BigInt(mode_vars[4])], "%B", ["@Next 1 1", "+B", BigInt(mode_vars[4])], "=", 0n], "||", [[["@This 1", "+B", "@Next 1 1", "+B", [2n, "*B", BigInt(mode_vars[4])]], "factorAmountB", "=", 2n], "&&", ["@This 1", "=", 1n]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]],
-                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "+B", BigInt(mode_vars[4])], "%B", ["@Next 1 1", "+B", BigInt(mode_vars[4])], "=", 0n], "||", [[["@This 1", "+B", "@Next 1 1", "+B", [2n, "*B", BigInt(mode_vars[4])]], "factorAmountB", "=", 2n], "&&", ["@This 1", "=", 1n]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]]
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", ">", 0n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", [validPos, "arr_elem", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], "-", 1], "=", "@This 1"]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]],
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", ">", 0n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", [validPos, "arr_elem", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], "-", 1], "=", "@This 1"]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
                 );
-                rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " can merge with a 1 if (the larger tile + " + mode_vars[4] + "*" + nfact + " + 1) is a multiple of (the smaller tile + " + mode_vars[4] + "*" + nfact + " + 1). A tile that is one less than " + nfact + " can merge with a tile one less than a multiple of " + nfact + " if their sum plus 2, divided by " + nfact + ", plus " + (2*mode_vars[4]) + " is prime.  ";
-                if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in DOFFET, but a 1 can merge with any tile if their sum plus " + (2*mode_vars[4]) + " is prime and every merge also includes an extra 1 except for the first power, which goes to " + (mode_vars[1] - 1n) + " instead.) ";
-                else rulesDescription += "(In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in DOFFET, but a 1 can merge with any tile if their sum plus " + (2*mode_vars[4]) + " is prime and every merge also includes an extra 1.) ";
+                //rulesDescription += "Two tiles that are multiples of " + nfact + " can merge if (the larger tile + " + mode_vars[4] + "*" + nfact + ") is a multiple of (the smaller tile + " + mode_vars[4] + "*" + nfact + "). A tile that is equal to " + nfact + " can merge with a multiple of " + nfact + " if their sum divided by " + nfact + " plus " + (2*mode_vars[4]) + " is prime. (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow a path to get from 1 to " + none + " in DOFFET, but a 1 can merge with any tile if their sum plus " + (2*mode_vars[4]) + " is prime.) ";
                 knownMergeMaxLength = 3;
             }
             rulesTitle[1] = "2197";
@@ -17263,7 +17354,13 @@ function gmDisplayVars() {
                 document.getElementById("DivAddTor_232_240_merges_text").innerHTML = "Unordered (232, 240)-style merges are allowed.";
                 document.getElementById("DivAddTor_232_240_merges_text").style.setProperty("color", "#ff91da");
             }
-            modeSpawnDescription = "The starting seed is " + (mode_vars[1] ? 1 : 2) + ".";
+            if (mode_vars[4] == 0) {
+                modeSpawnDescription = "The starting seed is " + (mode_vars[1] ? 1 : 2) + ".";
+            }
+            else {
+                if (mode_vars[1]) modeSpawnDescription = "The starting seeds are 1 × 1 and 1 × 2.";
+                else modeSpawnDescription = "The starting seed is 1 × 2.";
+            }
             if (mode_vars[4] == 0) {
                 modeSpawnDescription += " Seeds are unlocked in the same way as DIVE, treating each member of a product independently."
                 document.getElementById("DivAddTor_DualTileSeeds_text").innerHTML = "Members of a product are treated independently for seed checks.";
@@ -17706,7 +17803,7 @@ function displayModifiers(page) {
             document.getElementById("modifiers_spawnLocation_text").style.setProperty("color", "#c6af00");
         }
         if (modifiers[15] == "Simple") {
-            document.getElementById("modifiers_simpleSpawns_text").innerHTML = "Only the first spawnable tile type in each mode can spawn. (In 3072 and 1093 1094, this gets rid of spawning 3s and bonus tiles, keeping only 1s and 2s in the box. Does not affect 2049, 1535 1536 1537, Wildcard 2048, versions of 2216.838 with &#247;2 tiles, 1321, DIVE, 10, 1825, (232, 240), 16+16i, 3,188,646, 1429, 2058, 1716, Pro-Add-Uct, any Custom Mode, or any mode that already only spawns one tile)";
+            document.getElementById("modifiers_simpleSpawns_text").innerHTML = "Only the first spawnable tile type in each mode can spawn. (In 3072 and 1093 1094, this gets rid of spawning 3s and bonus tiles, keeping only 1s and 2s in the box. Does not affect 2049, 1535 1536 1537, Wildcard 2048, versions of 2216.838 with &#247;2 tiles, 1321, DIVE, 10, 1825, (232, 240), 16+16i, 3,188,646, 1429, 2058, 1716, Pro-Add-Uct, any Waves Mode, any Custom Mode, or any mode that already only spawns one tile)";
             document.getElementById("modifiers_simpleSpawns_text").style.setProperty("color", "#d3c480");
         }
         else if (modifiers[15] == "Equal") {
@@ -19493,7 +19590,7 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                 tile.appendChild(upperImage);
                 let lowerImage = document.createElement("div");
                 lowerImage.classList.add("primeImage");
-                tile.appendChild(lowerImage);
+                if (value != 0n) tile.appendChild(lowerImage);
                 let singleDisplay = compendiumStructuredClone(display).slice(0, 5);
                 if (display[3] == "Three-Tile SQUART") {
                     singleDisplay[3] = "Three-Tile SQUARTSingle";
@@ -19501,17 +19598,21 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     let upperDefactored = primeDefactorize(upperFactors);
                     singleDisplay[4][0] = upperDefactored;
                     displayTile("Subtile", upperImage, "None", "None", upperDefactored, singleDisplay);
-                    singleDisplay[4][0] = lowerDefactored;
-                    displayTile("Subtile", lowerImage, "None", "None", lowerDefactored, singleDisplay);
+                    if (value != 0n) {
+                        singleDisplay[4][0] = lowerDefactored;
+                        displayTile("Subtile", lowerImage, "None", "None", lowerDefactored, singleDisplay);
+                    }
                 }
                 else {
                     singleDisplay[3] = "SQUARTSingle";
                     singleDisplay[4][0] = ["@Literal", upperFactors];
                     displayTile("Subtile", upperImage, "None", "None", upperFactors, singleDisplay);
-                    singleDisplay[4][0] = ["@Literal", lowerFactors]
-                    displayTile("Subtile", lowerImage, "None", "None", lowerFactors, singleDisplay);
+                    if (value != 0n) {
+                        singleDisplay[4][0] = ["@Literal", lowerFactors]
+                        displayTile("Subtile", lowerImage, "None", "None", lowerFactors, singleDisplay);
+                    }
                 }
-                lowerImage.style.setProperty("mask-image", "linear-gradient(#0000 0% 25%, #000 75%)")
+                if (value != 0n) lowerImage.style.setProperty("mask-image", "linear-gradient(#0000 0% 25%, #000 75%)")
                 if (negative) {
                     let pImage = document.createElement("div");
                     tile.appendChild(pImage);
@@ -22045,23 +22146,17 @@ function loadModifiers() {
                 scripts = [];
                 statBoxes = [statBoxes[0]];
                 if (modifiers[13] == "None") {
-                    if (mode_vars[1]) startTileSpawns = [[[[0, "rand_int", mode_vars[0], "BigInt", "primeB"]], 1]];
+                    if (mode_vars[1] == 1n) startTileSpawns = [[[[0, "rand_int", mode_vars[0], "BigInt", "primeB"]], 1]];
                     else startTileSpawns = [[[[1, "rand_int", mode_vars[0], "BigInt", "primeB"]], 1]];
                 }
                 else {
-                    if (mode_vars[1]) startTileSpawns = [[[[0, "rand_int", mode_vars[0], "BigInt", "primeB"]], modifiers[22]], [[[0, "rand_int", mode_vars[0], "BigInt", "primeB", "*B", -1n]], modifiers[23]]];
+                    if (mode_vars[1] == 1n) startTileSpawns = [[[[0, "rand_int", mode_vars[0], "BigInt", "primeB"]], modifiers[22]], [[[0, "rand_int", mode_vars[0], "BigInt", "primeB", "*B", -1n]], modifiers[23]]];
                     else startTileSpawns = [[[[1, "rand_int", mode_vars[0], "BigInt", "primeB"]], modifiers[22]], [[[1, "rand_int", mode_vars[0], "BigInt", "primeB", "*B", -1n]], modifiers[23]]];
                 }
             }
             else {
-                if (mode_vars[1]) {
-                    start_game_vars[0] = [1n];
-                    start_game_vars[1] = [1n];
-                }
-                else if (mode_vars[5] != 0) {
-                    start_game_vars[0] = [3n];
-                    start_game_vars[1] = [3n];
-                }
+                start_game_vars[0] = [mode_vars[1]];
+                start_game_vars[1] = [mode_vars[1]];
                 if (mode_vars[0] == -1) {
                     scripts = [scripts[0], scripts[2]];
                     statBoxes.pop(); statBoxes.pop();
@@ -22108,6 +22203,7 @@ function loadModifiers() {
                 if (modifiers[30] > 0) sBox.push("arr_push", 1);
                 statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
             }
+            if (mode_vars[2]) MergeRules.push([2, [["@This 0", "+", 3, "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"]], false, [["@This 0", ["@This 1", "+", 2]]], [[2, "^", "@This 0"], "*", [3, "^", "@This 1"], "*", 9], [false, true]])
         }
         else if (gamemode == 55) { // 2000
             if (mode_vars[0] > 0) {
@@ -22124,6 +22220,7 @@ function loadModifiers() {
                 if (modifiers[30] > 0) sBox.push("arr_push", 1);
                 statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
             }
+            if (mode_vars[2]) MergeRules.push([3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+", 1, "=", "@Next 1 1"], "&&", ["@This 0", "+", 1, "=", "@Next 2 0"], "&&", ["@This 1", "+", 1, "=", "@Next 2 1"]], false, [[["@This 0", "+", 4], "@This 1"]], [[2, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", 16], [false, true]])
         }
         else if (gamemode == 56) { // 3645
             if (mode_vars[0] > 0) {
@@ -22141,6 +22238,7 @@ function loadModifiers() {
                 if (modifiers[30] > 0) sBox.push("arr_push", 1);
                 statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
             }
+            if (mode_vars[2]) MergeRules.push([3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+", 1, "=", "@Next 1 1"], "&&", ["@This 0", "+", 2, "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"]], false, [[["@This 0", "+", 1], ["@This 1", "+", 1]]], [[2, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", 15], [false, true]])
         }
         else if (gamemode == 57) { // 2700
             if (mode_vars[2] > 0) {
@@ -22441,8 +22539,8 @@ function loadModifiers() {
                 }
                 else {
                     MergeRules = [
-                        [3, [["@This", "=", "@Next 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "+", 1, "%", 6, "=", "@Next 2 1"]], false, [[["@This 0", "+", 1], "@This 1"]], [3, "^", "@This 0", "*", 3], [false, true, true]],
-                        [3, [["@This", "=", "@Next 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "-", 1, "%", 6, "=", "@Next 2 1"]], false, [[["@This 0", "+", 1], ["@This 1", "-", 1, "%", 6]]], [3, "^", "@This 0", "*", 3], [false, true, true]]
+                        [3, [["@This", "=", "@Next 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "+", 2, "mod", 6, "=", "@Next 2 1"]], false, [[["@This 0", "+", 1], "@This 1"]], [3, "^", "@This 0", "*", 3], [false, true, true]],
+                        [3, [["@This", "=", "@Next 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "-", 2, "mod", 6, "=", "@Next 2 1"]], false, [[["@This 0", "+", 1], ["@This 1", "-", 1, "%", 6]]], [3, "^", "@This 0", "*", 3], [false, true, true]]
                     ];
                     knownMergeMaxLength = 3;
                     tileValueFunction = [3, "^", "@This 0"];
@@ -22536,7 +22634,7 @@ function loadModifiers() {
                 }
                 knownMergeMaxLength = 3;
             }
-            if (mode_vars[0] > 0) {
+            if (mode_vars[0] > 0 && !mode_vars[2]) {
                 scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([["@global_var_retain_inner", ["@Literal"], 0, "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@GVar 1", "+", 1], "@edit_gvar", 2, false, "@repeat", ["@GVar 3", "arr_length", ">", "@Var 1"], "@if", ["@GVar 3", "arr_elem", "@Var 1", ">", "@GVar 0"], "@edit_var", 1, 1e300, "@end-if", "@else-if", ["@GVar 3", "arr_elem", "@Var 1", "^B", 2, "%B", "@GVar 0", "=", 0n], "@edit_var", 0, ["@Var 0", "arr_push", ["@GVar 3", "arr_elem", "@Var 1"]], "@end-else-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "2nd", ["@GVar 0", "+B", ["@Var 0", "arr_elem", ["@Var 0", "arr_length", "-", 1, "rand_int", 0]]], "@edit_gvar", 0, "@Parent -1", "@edit_gvar", 3, ["@GVar 3", "arr_push", "@Parent -2"], "@end-if"], "EndTurn"])
@@ -23193,7 +23291,7 @@ function loadModifiers() {
             if (gamemode == 97.50118 && mode_vars[4] != 0) { // Div-Add-Tor with Dual-Tile DIVE spawns
                 statBoxes = [["Score", "@Score", false, false, "Tile", "DIVE"], ["Seeds", "@GVar 0", false, false, "TileArray", "Self"], ["Seeds Seen", ["@GVar 1", "arr_length"], ...[,,,,], ["@GVar 5", "=", 0], [0, "@edit_gvar", 5, 1], true], ["All Seeds Seen", "@GVar 1", true, false, "TileArray", "Self", ["@GVar 5", "=", 1], [0, "@edit_gvar", 5, 0], true]];
                 start_game_vars[0] = [[1n, 2n]];
-                start_game_vars[1] = [[1n, 2n]]
+                start_game_vars[1] = [[1n, 2n]];
                 if (mode_vars[4] == 1) {
                     if (modifiers[13] == "None") {
                         startTileSpawns = [[[["@GVar 0", "@edit_gvar", 7, [0, "rand_int", ["@GVar 0", "arr_length", "-", 1]], "arr_elem", "@GVar 7", "arr_elem", 0], ["@GVar 0", "arr_elem", "@GVar 7", "arr_elem", 1]], 1]];
@@ -23208,7 +23306,7 @@ function loadModifiers() {
                     }
                     scripts = [
                         [
-                            ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "@end_vars", "@Var -1",
+                            ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_map", ["@Var -1", "absB"]], "@end_vars", "@Var -1",
                             "customDIVESeedUnlock", ["@GVar 0", "arr_map", ["@Var -1", "arr_map", ["@Var -1", "absB"]]], "@GVar 6",
                             ["@global_var_retain", ["@Literal"], "arr_push", [["@Var -2", "arr_elem", 0], "*B", ["@Var -1", "arr_elem", 0]], "arr_push", [["@Var -2", "arr_elem", 1], "*B", ["@Var -1", "arr_elem", 1]]],
                             ["@global_var_retain", ["@Literal"], "arr_push", [["@Var -2", "arr_elem", 0], "/B", ["@Var -1", "arr_elem", 0]], "arr_push", [["@Var -2", "arr_elem", 1], "/B", ["@Var -1", "arr_elem", 1]]],
@@ -23221,8 +23319,8 @@ function loadModifiers() {
                             "@if", [[["@Parent -4", "arr_elem", 0, ">", 1n], "||", ["@Parent -4", "arr_elem", 1, ">", 1n]], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"
                         ],
                         [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 1, "arr_filter", ["@Var -1", "arr_elem", 0, "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "arr_elem", 0, "!=", 0n], "&&", ["@var_retain", "@Var 1", "arr_elem", 1, "!=", 0n]], "arr_reduce", true, ["@global_var_copy", "@if", [[["@Var -1", "arr_elem", 0, "absB"], "%B", ["@Var 2", "arr_elem", 0, "absB", "max", 1n], "=", 0n], "&&", [["@Var -1", "arr_elem", 1, "absB"], "%B", ["@Var 2", "arr_elem", 1, "absB", "max", 1n], "=", 0n]], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-                        [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 2", "arr_elem", 1, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 1, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
-                        [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
+                        [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_binaryInsert", "@Var 1"], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 2", "arr_elem", 1, "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 2", "arr_elem", 1, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "str_concat", " × ", "str_concat", ["@var_retain", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+                        [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 0], "str_concat", " × ", "str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
                     ];
                 }
                 else {
@@ -23239,7 +23337,7 @@ function loadModifiers() {
                     }
                     scripts = [
                         [
-                            ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "@end_vars", "@Var -1",
+                            ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_map", ["@Var -1", "absB"]], "@end_vars", "@Var -1",
                             "customDIVESeedUnlock", ["@GVar 0", "arr_map", ["@Var -1", "arr_map", ["@Var -1", "absB"]]], "@GVar 6",
                             ["@global_var_retain", ["@Literal"], "arr_push", [["@Var -2", "arr_elem", 0], "*B", ["@Var -1", "arr_elem", 0]], "arr_push", [["@Var -2", "arr_elem", 1], "*B", ["@Var -1", "arr_elem", 1]], "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]],
                             ["@global_var_retain", ["@Literal"], "@if", [[["@Var -2", "arr_elem", 0], "modB", ["@Var -1", "arr_elem", 0, "max", 1n], "=", 0n], "&&", [["@Var -2", "arr_elem", 1], "modB", ["@Var -1", "arr_elem", 1, "max", 1n], "=", 0n]], "arr_push", [["@Var -2", "arr_elem", 0], "/B", ["@Var -1", "arr_elem", 0]], "arr_push", [["@Var -2", "arr_elem", 1], "/B", ["@Var -1", "arr_elem", 1]], "@end-if", "@else", "arr_push", [["@Var -2", "arr_elem", 0], "/B", ["@Var -1", "arr_elem", 1]], "arr_push", [["@Var -2", "arr_elem", 1], "/B", ["@Var -1", "arr_elem", 0]], "@end-else", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]],
@@ -23252,8 +23350,8 @@ function loadModifiers() {
                             "@if", [[["@Parent -4", "arr_elem", 0, ">", 1n], "||", ["@Parent -4", "arr_elem", 1, ">", 1n]], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1], "&&", ["@GVar 0", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"
                         ],
                         [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 1, "arr_filter", ["@Var -1", "arr_elem", 0, "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "arr_elem", 0, "!=", 0n], "&&", ["@var_retain", "@Var 1", "arr_elem", 1, "!=", 0n]], "arr_reduce", true, ["@global_var_copy", "@if", [[[["@Var -1", "arr_elem", 0, "absB"], "%B", ["@Var 2", "arr_elem", 0, "absB", "max", 1n], "=", 0n], "&&", [["@Var -1", "arr_elem", 1, "absB"], "%B", ["@Var 2", "arr_elem", 1, "absB", "max", 1n], "=", 0n]], "||", [[["@Var -1", "arr_elem", 0, "absB"], "%B", ["@Var 2", "arr_elem", 1, "absB", "max", 1n], "=", 0n], "&&", [["@Var -1", "arr_elem", 1, "absB"], "%B", ["@Var 2", "arr_elem", 0, "absB", "max", 1n], "=", 0n]]], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-                        [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 2", "arr_elem", 1, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 1, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
-                        [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
+                        [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_binaryInsert", "@Var 1"], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 2", "arr_elem", 1, "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 2", "arr_elem", 1, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "str_concat", " × ", "str_concat", ["@var_retain", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+                        [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 0], "str_concat", " × ", "str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 0], "str_concat", " × ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
                     ];
                 }
             }
@@ -23281,7 +23379,7 @@ function loadModifiers() {
                 }
                 scripts = [
                     [
-                        ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "@end_vars", "@Var -1",
+                        ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_map", ["@Var -1", "absB"]], "@end_vars", "@Var -1",
                         "customDIVESeedUnlock", ["@GVar 0", "arr_map", ["@Var -1", "arr_map", ["@Var -1", "absB"]]], "@GVar 6",
                         ["@global_var_retain", ["@Literal"], "arr_push", [["@Var -2", "arr_elem", 0], "*B", ["@Var -1", "arr_elem", 0]], "arr_push", [["@Var -2", "arr_elem", 1], "*B", ["@Var -1", "arr_elem", 1]], "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]],
                         ["@global_var_retain", ["@Literal"], "@if", [[["@Var -2", "arr_elem", 0], "modB", ["@Var -1", "arr_elem", 0, "max", 1n], "=", 0n], "&&", [["@Var -2", "arr_elem", 1], "modB", ["@Var -1", "arr_elem", 1, "max", 1n], "=", 0n]], "arr_push", [["@Var -2", "arr_elem", 0], "/B", ["@Var -1", "arr_elem", 0]], "arr_push", [["@Var -2", "arr_elem", 1], "/B", ["@Var -1", "arr_elem", 1]], "@end-if", "@else", "arr_push", [["@Var -2", "arr_elem", 0], "/B", ["@Var -1", "arr_elem", 1]], "arr_push", [["@Var -2", "arr_elem", 1], "/B", ["@Var -1", "arr_elem", 0]], "@end-else", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]],
@@ -23294,7 +23392,7 @@ function loadModifiers() {
                         "@if", [[["@Parent -4", "arr_elem", 0, ">", 1n], "||", ["@Parent -4", "arr_elem", 1, ">", 1n]], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1], "&&", ["@GVar 0", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"
                     ],
                     [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 1, "arr_filter", ["@Var -1", "arr_elem", 0, "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "arr_elem", 0, "!=", 0n], "&&", ["@var_retain", "@Var 1", "arr_elem", 1, "!=", 0n]], "arr_reduce", true, ["@global_var_copy", "@if", [[[["@Var -1", "arr_elem", 0, "absB"], "%B", ["@Var 2", "arr_elem", 0, "absB", "max", 1n], "=", 0n], "&&", [["@Var -1", "arr_elem", 1, "absB"], "%B", ["@Var 2", "arr_elem", 1, "absB", "max", 1n], "=", 0n]], "||", [[["@Var -1", "arr_elem", 0, "absB"], "%B", ["@Var 2", "arr_elem", 1, "absB", "max", 1n], "=", 0n], "&&", [["@Var -1", "arr_elem", 1, "absB"], "%B", ["@Var 2", "arr_elem", 0, "absB", "max", 1n], "=", 0n]]], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-                    [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 2", "arr_elem", 1, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 1, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+                    [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_binaryInsert", "@Var 1"], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 2", "arr_elem", 1, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 1, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
                     [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
                 ];
             }
@@ -23337,7 +23435,7 @@ function loadModifiers() {
                     }
                 }
             }
-            start_game_vars[6] = mode_vars[2];
+            start_game_vars[4] = modifiers[21];
             if (gamemode == 96.50118 && mode_vars[3] > 0) { // HICEM
                 start_game_vars[10] = mode_vars[4];
                 scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 7"], "@edit_gvar", 9, true, "@end-if"], "Merge"]);
@@ -23410,7 +23508,10 @@ function loadModifiers() {
                     else {
                         if (modifiers[13] == "None") mRule_232240 = [2, [["@This 0", "=", "@Next 1 0"], "||", ["@This 1", "=", "@Next 1 1"], "||", ["@This 0", "=", "@Next 1 1"], "||", ["@This 1", "=", "@Next 1 0"], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"], ["@This 1", "+B", "@Next 1 1"]]], [["@This 0", "*B", "@This 1"], "min", ["@Next 1 0", "*B", "@Next 1 1"]], [false, true]];
                         else if (modifiers[13] == "Non-Interacting") mRule_232240 = [2, [["@This 0", "=", "@Next 1 0"], "||", ["@This 1", "=", "@Next 1 1"], "||", ["@This 0", "=", "@Next 1 1"], "||", ["@This 1", "=", "@Next 1 0"], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]], "&&", [["@This 1", "signB"], "=", ["@Next 1 1", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0"], ["@This 1", "+B", "@Next 1 1"]]], [["@This 0", "*B", "@This 1", "absB"], "min", ["@Next 1 0", "*B", "@Next 1 1", "absB"]], [false, true]];
-                        else mRule_232240 = [2, [["@This 0", "=", "@Next 1 0"], "||", ["@This 1", "=", "@Next 1 1"], "||", ["@This 0", "=", "@Next 1 1"], "||", ["@This 1", "=", "@Next 1 0"], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"], ["@This 1", "+B", "@Next 1 1"]]], [["@This 0", "*B", "@This 1", "absB"], "min", ["@Next 1 0", "*B", "@Next 1 1", "absB"]], [false, true]]
+                        else {
+                            MergeRules.push([2, [["@This 0", "=", "@Next 1 0"], "||", ["@This 1", "=", "@Next 1 1"], "||", ["@This 0", "=", "@Next 1 1"], "||", ["@This 1", "=", "@Next 1 0"], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", [["@This 0", "+B", "@Next 1 0", "=", 0n], "||", ["@This 1", "+B", "@Next 1 1", "=", 0n]]], false, [], 0, [true, true]])
+                            mRule_232240 = [2, [["@This 0", "=", "@Next 1 0"], "||", ["@This 1", "=", "@Next 1 1"], "||", ["@This 0", "=", "@Next 1 1"], "||", ["@This 1", "=", "@Next 1 0"], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"], ["@This 1", "+B", "@Next 1 1"]]], [["@This 0", "*B", "@This 1", "absB"], "min", ["@Next 1 0", "*B", "@Next 1 1", "absB"]], [false, true]]
+                        }
                     }
                     MergeRules.push(mRule_232240);
                 }
@@ -23791,7 +23892,7 @@ function loadModifiers() {
                         if (signlessTiles.length == 0) {
                             for (let i = 1; i < addInfo; i++) MergeRules[m][mstart + 1].push("&&", ["@Next " + i + " " + neganum, "=", "@This " + neganum]);
                             if (eqPrimArrays(MergeRules[m][mstart + 1][0], ["@NextNE -1 0", "!=", "@This 0"])) MergeRules[m][mstart + 1].unshift(["@NextNE -1 " + neganum, "!=", "@This " + neganum], "||");
-                            for (let r = 0; r < MergeRules[m][mstart + 3].length; r++) if (validMergeModifiers.indexOf(MergeRules[m][mstart + 3][r]) == -1/* && MergeRules[m][mstart + 3][r].length <= neganum*/) MergeRules[m][mstart + 3][r].push("@This " + neganum);
+                            for (let r = 0; r < MergeRules[m][mstart + 3].length; r++) if (validMergeModifiers.indexOf(MergeRules[m][mstart + 3][r]) == -1) MergeRules[m][mstart + 3][r].push("@This " + neganum);
                         }
                         else {
                             let negadetector = ["@This " + neganum, "@if", ["@Parent -2", "=", 0], "2nd", "@Next", "arr_reduce", 0, ["@if", ["@var_retain", "@Var -1", "arr_elem", neganum, "!=", 0, "&&", ["@Parent -3", "=", 0]], "2nd", "@Var -1", "arr_elem", neganum, "@end-if"], "@end-if"];
@@ -24195,6 +24296,11 @@ function loadModifiers() {
                     if (Array.isArray(MergeRules[m][mstart + 3][r])) MergeRules[m][mstart + 3][r].push(["@Next", "arr_reduce", 1, ["min", ["@var_retain", "@Var -1", "arr_elem", stillNum]], "min", "@This " + stillNum]);
                 }
             }
+            for (let w = 0; w < winConditions.length; w++) {
+                if (Array.isArray(winConditions[w]) && (eqPrimArrays(arrayTypes(winConditions[w]), ["number"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigint"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["number", "bigint"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigrational"]))) {
+                    winConditions[w].push(1);
+                }
+            }
             movementParameters[2] = [movementParameters[2], "*", "@This " + stillNum, "@if", ["@Parent -2", "!=", "@Parent -2"], "2nd", 0, "@end-if"]; // That reflexive != is an NaN check
             scripts.unshift(
                 [["@global_var_retain_inner", 0, "@end_vars", 0, "@repeat", ["@TileOrder", "arr_length", ">", "@Var 0"], "@if", ["@Grid", "arr_elem", ["@TileOrder", "arr_elem", "@Var 0", "arr_elem", 0], "arr_elem", ["@TileOrder", "arr_elem", "@Var 0", "arr_elem", 1], "typeof", "=", "array"], "@replace_tile", ["@TileOrder", "arr_elem", "@Var 0", "arr_elem", 0], ["@TileOrder", "arr_elem", "@Var 0", "arr_elem", 1], ["@Grid", "arr_elem", ["@TileOrder", "arr_elem", "@Var 0", "arr_elem", 0], "arr_elem", ["@TileOrder", "arr_elem", "@Var 0", "arr_elem", 1], "arr_edit_elem", stillNum, 1], "@end-if", "@edit_var", 0, ["@Var 0", "+", 1], "@end-repeat"], "EndTurn"],
@@ -24243,6 +24349,11 @@ function loadModifiers() {
                 }
                 for (let r = 0; r < MergeRules[m][mstart + 3].length; r++) if (validMergeModifiers.indexOf(MergeRules[m][mstart + 3][r]) == -1) {
                     if (Array.isArray(MergeRules[m][mstart + 3][r])) MergeRules[m][mstart + 3][r].push(1);
+                }
+            }
+            for (let w = 0; w < winConditions.length; w++) {
+                if (Array.isArray(winConditions[w]) && (eqPrimArrays(arrayTypes(winConditions[w]), ["number"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigint"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["number", "bigint"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigrational"]))) {
+                    winConditions[w].push(1);
                 }
             }
             scripts.unshift(
@@ -24522,7 +24633,7 @@ function loadResettingModifiers() { //Randomly-Placed Holes and Randomly-Placed 
             }
         }
         if (gamemode == 73) { // SQUART
-            if (mode_vars[0] > 0) {
+            if (mode_vars[0] > 0 && !mode_vars[2]) {
                 start_game_vars[0] = [6n, 8n][getRndInteger(0, 1)];
                 start_game_vars[3] = [1n, 2n, 4n, start_game_vars[0]];
                 game_vars = compendiumStructuredClone(start_game_vars);
@@ -24590,7 +24701,7 @@ function loadResettingModifiers() { //Randomly-Placed Holes and Randomly-Placed 
             }
         }
         if (gamemode == 88) { // FACTUP
-            if (mode_vars[1] > 0) {
+            if (mode_vars[1] > 0 && mode_vars[4] == 2) {
                 start_game_vars[0] = 2n;
                 start_game_vars[3] = [1n, 2n];
                 game_vars = compendiumStructuredClone(start_game_vars);
@@ -24647,7 +24758,7 @@ function loadResettingModifiers() { //Randomly-Placed Holes and Randomly-Placed 
             }
         }
         if (gamemode == 95) { // 3385
-            if (mode_vars[2] > 0) {
+            if (mode_vars[2] > 0 && !(mode_vars[0] > 2n && mode_vars[1])) {
                 start_game_vars[1] = 4n;
                 start_game_vars[4] = [1n, 2n, 4n];
                 game_vars = compendiumStructuredClone(start_game_vars);
@@ -26723,7 +26834,7 @@ function convertColor(col, system) { // Converts colors between systems; mostly 
     }
     else {
         let colorarray = [];
-        if (Array.isArray(color) && !(color[0] == "@RGBA" || color[0] == "@HSLA" || color[0] == "@HSVA")) color = evaluateColor(color, vcoord, hcoord, gri, vars, globalVarStat);
+        if (Array.isArray(color) && !(color[0] == "@RGBA" || color[0] == "@HSLA" || color[0] == "@HSVA")) color = CalcArray(color, vcoord, hcoord, 0, 0, [1, Infinity, 0], gri, [], vars, globalVarStat)
         if (Array.isArray(color) && (color[0] == "@RGBA" || color[0] == "@HSLA" || color[0] == "@HSVA")) colorarray = color;
         else if (typeof color == "string" && color[0] == "#") { //Any hex colors are converted to RGBA arrays first
             if (system == "@Hex") return color;
@@ -30747,7 +30858,7 @@ function exportCustomSave() {
 
 function exportModifiersSave() {
     try {
-        let SaveCode = "@2048PowCompModifiers|2.1|";
+        let SaveCode = "@2048PowCompModifiers|2.3.4|";
         SaveCode += window.btoa(SCstringify(modifiers.slice(0, 16).concat(modifiers.slice(17)))); // Animation speed is not saved
         SaveCode += "|";
         SaveCode += window.btoa(SCstringify(auto_directions));
@@ -31180,12 +31291,12 @@ function importSave(code) {
             else throw "Invalid update";
         }
         else if (codebits[0] == "@2048PowCompModifiers") {
-            if (codebits[1] == "2.1") {
+            if (codebits[1] == "2.1" || codebits[1] == "2.3.4") {
                 coderesults.push(SCparse(window.atob(codebits[2]))); //coderesults[0] is modifiers
                 coderesults.push(SCparse(window.atob(codebits[3]))); //coderesults[1] is auto_directions
                 if (coderesults[0][5] === "Custom") {
                     coderesults.push(SCparse(window.atob(codebits[4]))); //coderesults[2] is width
-                    coderesults.push(SCparse(window.atob(codebits[5]))); //coderesults[3] is height || codebits[1] == "2.3"
+                    coderesults.push(SCparse(window.atob(codebits[5]))); //coderesults[3] is height
                     coderesults.push(SCparse(window.atob(codebits[6]))); //coderesults[4] is hexagonal
                     coderesults.push(SCparse(window.atob(codebits[7]))); //coderesults[5] is startingGrid
                     coderesults.push(SCparse(window.atob(codebits[8]))); //coderesults[6] is directions
@@ -31193,10 +31304,16 @@ function importSave(code) {
                 //If we've gotten this far, the import is a success, so it's time to do the actual importing
                 let animSpeed = modifiers[16];
                 let replaySpeed = modifiers[29];
-                modifiers = coderesults[0];
+                modifiers = coderesults[0].concat(modifiers.slice(coderesults[0].length + 1));
                 modifiers.splice(16, 0, animSpeed); // Reinsert animation speed into the modifiers
                 if (modifiers.length < 30) modifiers.push(replaySpeed);
                 else modifiers[29] = replaySpeed;
+                if (modifiers[12] === false) modifiers[12] = -1;
+                if (modifiers[12] === true) modifiers[12] = 0;
+                if (!secretsFound[9]) {
+                    modifiers[30] = 0;
+                    modifiers[31] = 0;
+                }
                 auto_directions = coderesults[1];
                 if (modifiers[5] == "Custom") {
                     width = coderesults[2];
