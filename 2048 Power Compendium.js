@@ -1181,7 +1181,7 @@ document.getElementById("Alternate5040_basePrimorials_button").addEventListener(
     gmDisplayVars();
 });
 document.getElementById("Alternate5040_baseSubfactorials_button").addEventListener("click", function(){
-    mode_vars[1] = -2n;
+    mode_vars[1] = new GaussianBigInt(2n, 2n);
     loadGridSize(100, mode_vars);
     gmDisplayVars();
 });
@@ -1251,6 +1251,23 @@ document.getElementById("Alternate5040_baseRational_denominator_change").addEven
 });
 document.getElementById("Alternate5040_baseRational_button").addEventListener("click", function(){
     mode_vars[1] = true;
+    loadGridSize(100, mode_vars);
+    gmDisplayVars();
+});
+document.getElementById("Alternate5040_baseComplex_numerator_change").addEventListener("change", function() {
+    v = BigInt(this.value);
+    if (v > 0n) mode_vars[1] = new GaussianBigInt(v, mode_vars[1].imaginary);
+    loadGridSize(100, mode_vars);
+    gmDisplayVars();
+});
+document.getElementById("Alternate5040_baseComplex_denominator_change").addEventListener("change", function() {
+    v = BigInt(this.value);
+    if (v > 0n) mode_vars[1] = new GaussianBigInt(mode_vars[1].real, v);
+    loadGridSize(100, mode_vars);
+    gmDisplayVars();
+});
+document.getElementById("Alternate5040_baseComplex_button").addEventListener("click", function(){
+    mode_vars[1] = -2n;
     loadGridSize(100, mode_vars);
     gmDisplayVars();
 });
@@ -3189,6 +3206,7 @@ for (let t = 0; t < alt5040_variantOrder.length; t++) { //Adding event listeners
             else if(mode_vars[0] == 14) mode_vars[4] = new BigRational(2n, 1n);
             else if(mode_vars[0] == 15) mode_vars[4] = 0;
             else if(mode_vars[0] == 22) mode_vars[4] = 4;
+            else if(mode_vars[0] == 31) mode_vars[4] == 13;
             else mode_vars[4] = 2;
             if(mode_vars[0] == 24) secretsFound[10] = true;
             loadGridSize(100, mode_vars);
@@ -9511,6 +9529,7 @@ function loadGridSize(mode, mvars = []) {
             }
         }
         if(mode_vars[1] < -1n) defaultSize++;
+        else if(typeof mode_vars[1] === "object") defaultSize += 2;
     }
     else if (mode == 34.50118) { // Partial Flow DiVE
         if (!mvars[3]) defaultSize = 4;
@@ -12978,6 +12997,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
             CAM1Entry = ["@This 0", "+B", 1n];
             nextCAM1Entry = ["@This 0", "+B", 2n];
             nfact = "n!";
@@ -13064,6 +13084,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
             CAM1Entry = ["@This 0", "+B", 1n, "primeB"];
             nextCAM1Entry = ["@This 0", "+B", 2n, "primeB"];
             nfact = "p<sub>n</sub>#";
@@ -13138,6 +13159,96 @@ function gmDisplayVars() {
             else winConditions = [[5n, 1n]];
             
         }
+        else if(typeof mode_vars[1] === "object") {
+            document.getElementById("Alternate5040_baseFactorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_base").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseRational").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_basePrimorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseListIntro").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseComplex_numerator_change").value = mode_vars[1].real;
+            document.getElementById("Alternate5040_baseComplex_denominator_change").value = mode_vars[1].imaginary;
+            document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseSubfactorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "block");
+            spawnTiles = "Spawning tiles: Pulls from a \"box\" that starts with one 1, one i, one -1, and one -i, and only refills once it's empty.";
+            startTileSpawns = [["Box", 1, [0n, new GaussianBigInt(1, 0)], 1, [0n, new GaussianBigInt(-1, 0)], 1, [0n, new GaussianBigInt(0, 1)], 1, [0n, new GaussianBigInt(0, -1)], 1]];
+            MergeRules = [
+                [2, [["@This 0", "=", "@Next 1 0"], "&&", [["@This 1", "+GB", "@Next 1 1"], "normGB", "!=", 0n], "&&", [["@This 1", "+GB", "@Next 1 1"], "/GB", mode_vars[1], "normGB", "=", 1n]], true, [[["@This 0", "+B", 1n], [mode_vars[1], "/GB", ["@This 1", "+GB", "@Next 1 1"]]]], [], [false, true]]
+            ]
+            CAM1Entry = [mode_vars[1].real];
+            //nextCAM1Entry = mode_vars[1][0][0];
+            nfact = defaultAbbreviate(mode_vars[1]) + "<sup>n</sup>";
+            nonefact = defaultAbbreviate(mode_vars[1]) + "<sup>n + 1</sup>";
+            none = defaultAbbreviate(mode_vars[1]);
+            //oneTile[0] = 0n;
+            //twoTile = [0n, 2n];
+            validIndex.push(mode_vars[1]); //????????
+            validPos = ["arr_elem", 0] //??????????
+            //CAM2Entry = [mode_vars[1], "^B", ["@This 0", "+B", 1n]];
+            /*if(mode_vars[0] == 21) {
+                rulesTitle = [mode_vars[1]**goalPow + " (Alternate 5040, ", ""];
+                if(mode_vars[3] == 0) {
+                    nontier = BigInt(Math.max(Math.ceil(Math.log(mode_vars[4]) / Math.log(Number(mode_vars[1])), 1), 1));
+                    ratiopush = Number(mode_vars[1] - 1n) * (mode_vars[4]);
+                }
+                else if(mode_vars[3] == 1) {
+                    nontier = 1n;
+                    ratiopush = Number(mode_vars[1] / 2n);
+                }
+                oneTile = [0n, ["@Literal", -1], 1n]
+                /*if(mode_vars[2] == 1 && mode_vars[1] == 2n) {
+                    oneTile[0] = 1n;
+                    if(mode_vars[4] == 1) oneTile[1] = ["@Literal", false];
+                }*/
+                /*TileTypes = [
+                    [["@This 0", "<", nontier], "@This 2", ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", [["@This 2", "/", [mode_vars[1], "^", "@This 0"]], "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", ["@This 2", "/", [mode_vars[1], "^", "@This 0"]], ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"], "none", 2, 0],
+                    [true, "@This 2", ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", [["@This 2", "/", [mode_vars[1], "^", "@This 0"]], "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", ["@This 2", "/", [mode_vars[1], "^", "@This 0"]], ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"], "none", 2, 0]
+                ]
+                for(let i = 0; i < ratiopush; i++) {
+                    TileTypes[1].push(["PrimeImage", ["@linear-gradient", ["@HSLA", 360 / ratiopush * i, 100, [15, "@if", ["@This 1", "arr_elem", i], "2nd", 75, "@end-if"], 1], 0, "#0000", 25, 75, ["@HSLA", 360 / ratiopush * i, 100, [15, "@if", ["@This 1", "arr_elem", i], "2nd", 85, "@end-if"], 1], 100], ["@linear-gradient", 90, "#0000", 0, 100 / ratiopush * i, "#000", 100 / ratiopush * i, 100 / ratiopush * (i + 1), "#0000", 100 / ratiopush * (i + 1)]])
+                }
+            }*/ /*else if(mode_vars[2] == 1) {
+                validIndex.unshift(mode_vars[1] - 1n);
+                validPos[1] = 1;
+                if(mode_vars[1] == 2n) oneTile[0] = 1n;
+                //else if(mode_vars[0] == 4) oneTile[1] = 2n;
+                else if(mode_vars[1] == 3n) twoTile = [1n, 1n];  
+                TileTypes = [
+                    [["@This 0", "=", 0n], [mode_vars[1], "^", "@This 0", "*", "@This 1"], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]],
+                    [true, [mode_vars[1], "^", "@This 0", "*", "@This 1", "-", 1], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]]
+                ];
+                tileValueFunction = [mode_vars[1], "^", "@This 0", "*", "@This 1", "-", 1];
+            }*/
+            //else {
+                if(mode_vars[0] == 10 && mode_vars[3] == 0) {
+                    oneTile[1] = mode_vars[1];
+                    //startTileSpawns = [[[0n, mode_vars[1]], 1]];
+                    TileTypes = [
+                        [true, [mode_vars[1], "^GB", "@This 0", "*GB", "@This 1", "defaultAbbrevGB"]/*, ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]*/]
+                    ];
+                } else {
+                    //startTileSpawns = [[[0n, 1n], 1]];
+                    TileTypes = [
+                        [true, [mode_vars[1], "^GB", "@This 0", "*GB", "@This 1", "defaultAbbrevGB"], "#ffffff", "#000000"/*, ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]*/]
+                    ];
+                }
+                tileValueFunction = [mode_vars[1], "^", "@This 0", "*", "@This 1"]; //????????
+            //}
+            if (mode_vars[1].norm() < 3n) goalPow = 11n;
+            else if (mode_vars[1].norm() < 4n) goalPow = 7n;
+            else if (mode_vars[1].norm() < 6n) goalPow = 5n;
+            else if (mode_vars[1].norm() < 10n) goalPow = 4n;
+            else if (mode_vars[1].norm() < 22n) goalPow = 3n;
+            else if (mode_vars[1].norm() < 256n) goalPow = 2n;
+            else goalPow = 1n;
+            winConditions = [[goalPow, new GaussianBigInt(1n, 0n)], [goalPow, new GaussianBigInt(-1n, 0n)], [goalPow, new GaussianBigInt(0n, 1n)], [goalPow, new GaussianBigInt(0n, -1n)]];
+            //if(mode_vars[0] == 10 && mode_vars[3] == 0) winConditions[0][1] = mode_vars[1];
+            goalText = defaultAbbreviate(mode_vars[1].pow(goalPow));
+            //if(mode_vars[2] == 1) rulesTitle = [mode_vars[1]**goalPow - 1n + " (Alternate 5039, ", ""];
+            /*else */if(mode_vars[2] == 0) rulesTitle = [defaultAbbreviate(mode_vars[1].pow(goalPow)) + " (Alternate 5040, ", ""];
+        }
         else if (Array.isArray(mode_vars[1])) {
             oneTile[0] = 0n;
             twoTile = [0n, 2n];
@@ -13186,6 +13297,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseListRandomize_button").innerHTML = "Randomize Cycle!";
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "flex");
             document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
             while (document.getElementById("Alternate5040_baseList").children.length > mode_vars[1].length + 3) {
                 document.getElementById("Alternate5040_baseList").removeChild(document.getElementById("Alternate5040_baseList").lastElementChild);
             }
@@ -13359,6 +13471,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseRational_numerator_change").value = mode_vars[1].numerator;
             document.getElementById("Alternate5040_baseRational_denominator_change").value = mode_vars[1].denominator;
             oneTile = [0n, new BigRational(1n)];
@@ -13391,6 +13504,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
             CAM1Entry = ["@This 0"];
             nfact = "!n + !(n - 1)";
             nonefact = "!(n + 1)";
@@ -13458,6 +13572,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseMultifactorials_counter").innerHTML = (-1n * mode_vars[1]).toString();
             if(mode_vars[1] == -2n) document.getElementById("Alternate5040_baseMultifactorials_minus").style.setProperty("display", "none");
             else document.getElementById("Alternate5040_baseMultifactorials_minus").style.setProperty("display", "block");
+            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
             CAM1Entry = ["@This 0", "+B", [-1n, "*B", mode_vars[1]]];
             nfact = "n!<sup>(" + (-1n * mode_vars[1]).toString() + ")</sup>";
             nonefact = "(n + " + (-1n * mode_vars[1]).toString() + ")!<sup>(" + (-1n * mode_vars[1]).toString() + ")</sup>";
@@ -13548,6 +13663,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
             document.getElementById("Alternate5040_base_change").value = mode_vars[1];
             document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
             CAM1Entry = mode_vars[1];
             nextCAM1Entry = mode_vars[1];
             nfact = mode_vars[1] + "<sup>n</sup>";
@@ -13621,7 +13737,7 @@ function gmDisplayVars() {
             if(mode_vars[2] == 1) rulesTitle = [mode_vars[1]**goalPow - 1n + " (Alternate 5039, ", ""];
             else if(mode_vars[2] == 0) rulesTitle = [mode_vars[1]**goalPow + " (Alternate 5040, ", ""];
         }
-        startTileSpawns = [[oneTile, 1]];
+        if(typeof mode_vars[1] !== "object") startTileSpawns = [[oneTile, 1]];
         if (mode_vars[2] == 0) {
             document.getElementById("Alternate5040_diff_text").innerHTML = "Tiles are their normal values.";
             document.getElementById("Alternate5040_diff_text").style.setProperty("color", "#224498");
@@ -13830,6 +13946,14 @@ function gmDisplayVars() {
                 document.getElementById("Alternate5040_extra_text").innerHTML = "All of the merge rules are always allowed.";
             }
         }
+        else if(mode_vars[0] == 31) {
+            if (mode_vars[3] == 0) {
+                document.getElementById("Alternate5040_extra_text").innerHTML = "The path is based on the modulus of the wraparound.";
+            }
+            else if (mode_vars[3] == 1) {
+                document.getElementById("Alternate5040_extra_text").innerHTML = "The path is based on the prime factorization of the base.";
+            }
+        }
         if (mode_vars[0] == 0) { // 1762 variant
              document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
             document.getElementById("Alternate5040_num").style.setProperty("display", "block");
@@ -13839,7 +13963,15 @@ function gmDisplayVars() {
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #afe726, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
             knownMergeLookbackDistance = 0;
             if(mode_vars[4] == 0) {
-                if(mode_vars[2] == 0) {
+                if(typeof mode_vars[1] === "object") {
+                    MergeRules.push(
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", [["@This 1", "reGB", "=", 0n], "&&", ["@Next 1 1", "reGB", "=", 0n], "&&", [["@This 1", "imGB", "signB"], "=", ["@Next 1 1", "imGB", "signB"]]], "&&", [["@This 1", "imGB", "absB"], "-B", ["@Next 1 1", "imGB", "absB"], "absB", "<", 2n], "&&", [["@This 1", "imGB", "absB"], "+B", ["@Next 1 1", "imGB", "absB"], "<=", max(mode_vars[1].imaginary, mode_vars[1].real)], "&&", [[[2n, "^B", [mode_vars[1].imaginary, "/", [["@This 1", "imGB", "absB"], "+", ["@Next 1 1", "imGB", "absB"]], "log", 2, "round", 1, "max", 0]], "@end_vars", mode_vars[1].imaginary, "-B", ["@var_retain", ["@This 1", "imGB", "absB"], "+B", ["@Next 1 1", "imGB", "absB"], "*B", "@Var 0"], "absB", "<", "@Var 0"], "||", [[2n, "^B", [mode_vars[1].real, "/", [["@This 1", "imGB", "absB"], "+", ["@Next 1 1", "imGB", "absB"]], "log", 2, "round", 1, "max", 0]], "@end_vars", mode_vars[1].real, "-B", ["@var_retain", ["@This 1", "imGB", "absB"], "+B", ["@Next 1 1", "imGB", "absB"], "*B", "@Var 0"], "absB", "<", "@Var 0"]]], true, [["@This 0", ["@This 1", "+GB", "@Next 1 1"]]], [], [false, true]],
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", [["@This 1", "imGB", "=", 0n], "&&", ["@Next 1 1", "imGB", "=", 0n], "&&", [["@This 1", "reGB", "signB"], "=", ["@Next 1 1", "reGB", "signB"]]], "&&", [["@This 1", "reGB", "absB"], "-B", ["@Next 1 1", "reGB", "absB"], "absB", "<", 2n], "&&", [["@This 1", "reGB", "absB"], "+B", ["@Next 1 1", "reGB", "absB"], "<=", max(mode_vars[1].imaginary, mode_vars[1].real)], "&&", [[[2n, "^B", [mode_vars[1].real, "/", [["@This 1", "reGB", "absB"], "+", ["@Next 1 1", "reGB", "absB"]], "log", 2, "round", 1, "max", 0]], "@end_vars", mode_vars[1].real, "-B", ["@var_retain", ["@This 1", "reGB", "absB"], "+B", ["@Next 1 1", "reGB", "absB"], "*B", "@Var 0"], "absB", "<", "@Var 0"], "||", [[2n, "^B", [mode_vars[1].imaginary, "/", [["@This 1", "reGB", "absB"], "+", ["@Next 1 1", "reGB", "absB"]], "log", 2, "round", 1, "max", 0]], "@end_vars", mode_vars[1].imaginary, "-B", ["@var_retain", ["@This 1", "reGB", "absB"], "+B", ["@Next 1 1", "reGB", "absB"], "*B", "@Var 0"], "absB", "<", "@Var 0"]]], true, [["@This 0", ["@This 1", "+GB", "@Next 1 1"]]], [], [false, true]],
+                    )
+                    rulesDescription += "Two tiles can merge if they are equal or they are consecutive multiples of " + nfact + " that are smaller than " + nonefact + ", and their sum is less than " + nfact + " away from " + nonefact + " divided by some nonnegative integer power of two. (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow the path to get from 1 to " + none + " in 1762.) ";
+                    knownMergeMaxLength = 2;
+                }
+                else if(mode_vars[2] == 0) {
                     MergeRules.push(
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "-B", "@Next 1 1", "absB", "<", 2n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "-B", "@Next 1 1", "absB", "<", 2n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [[2n, "^B", [CAM1Entry, "/", ["@This 1", "+", "@Next 1 1"], "log", 2, "round", 1, "max", 0]], "@end_vars", CAM1Entry, "-B", ["@var_retain", "@This 1", "+B", "@Next 1 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], true, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
@@ -16969,6 +17101,103 @@ function gmDisplayVars() {
                 else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
             }
         }
+        else if(mode_vars[0] == 31) { // 5040 variant
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_extra").style.setProperty("display", "block");
+            document.getElementById("Alternate5040_num").style.setProperty("display", "block");
+            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #8ad4c7, #0000, #0000 90deg), repeating-conic-gradient(#bfc4bc 0deg, #ffffa1 45deg, #bfc4bc 90deg)");
+            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #8ad4c7, #0000, #0000 90deg), repeating-conic-gradient(#bfc4bc 0deg,#eeee65 45deg,#bfc4bc 90deg)");
+            knownMergeLookbackDistance = 1;
+            let allPowers = [
+                [
+                    [2, true]
+                ],
+                [
+                    [2, ["@This 1", "=", 1n]]
+                ],
+                [
+                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 3n]],
+                    [3, ["@This 1", "+B", "@Next 1 1", "=", 4n]]
+                ],
+                [
+                    [2, [["@This 1", "+B", "@Next 1 1", "<=", 5n]]]
+                ],
+                [
+                    [3, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 1", "<", 3n]]],
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "=", 3n], "||", ["@NextNE -1 1", "!=", 1n]]]]
+                ],
+                [
+                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 3n]],
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "=", 2n], "||", [["@This 1", "=", 1n], "&&", ["@NextNE -1 1", "!=", 1n]]]]],
+                    [2, ["@This 1", "+B", "@Next 1 1", "=", 7n]]
+                ],
+                [
+                    [2, [["@This 1", "*B", 2n, "-B", 1n, "=", "@Next 1 1"]]]
+                ],
+                [
+                    [4, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "+B", "@Next 3 1", "=", 4n]],
+                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 9n]],
+                ],
+                [
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "%B", 2n, "=", 1n]]],
+                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 5n]],
+                ],
+                [
+                    [2, [["@This 1", "=", 1n], "&&", ["@Next 1 1", "<", 3n]]],
+                    [3, [["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"], "%B", 5n, "=", 1n]]
+                ],
+                [
+                    // 12
+                ],
+                [
+                    [2, [["@This 1", "=", 1n], "&&", ["@Next 1 1", "<", 4n]]],
+                    [2, [["@This 1", ">", 3n], "&&", [["@This 1", "+B", "@Next 1 1", "=", 6n], "||", ["@This 1", "+B", "@Next 1 1", "=", 9n], "||", ["@This 1", "+B", "@Next 1 1", "=", 13n]]]]
+                ],
+                [
+                    // 14
+                ],
+                [
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "<", 5n]]],
+                    [2, [["@This 1", ">", 3n], "&&", [["@This 1", "+B", "@Next 1 1", "=", 9n], "||", ["@This 1", "+B", "@Next 1 1", "=", 11n], "||", ["@This 1", "+B", "@Next 1 1", "=", 15n]]]]
+                ],
+                [
+                    // 16
+                ],
+                [
+                    // 17
+                ],
+                [
+                    // 18
+                ],
+                [
+                    // 19
+                ],
+                [
+                    // 20
+                ],
+                [
+                    // 21
+                ],
+                [
+                    // 22
+                ],
+                [
+                    // 23
+                ]
+            ]
+            if(mode_vars[3] == 0) {
+                document.getElementById("Alternate5040_num_title").innerHTML = "Wraparound:";
+                
+            }
+            else if(mode_vars[3] == 1) {
+                document.getElementById("Alternate5040_num_title").innerHTML = "Largest Prime:";
+
+            }
+            rulesTitle[1] = "5040";
+            if(Array.isArray(mode_vars[1])) {
+                rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+            }
+        }
         if(mode_vars[0] == 8) {} // don't add text for XXXX variant
         else if(mode_vars[2] == 0) {
             if(Array.isArray(mode_vars[1])) rulesDescription += "Get to the " + arrayWinCondition + " tile to win!";
@@ -16980,11 +17209,14 @@ function gmDisplayVars() {
             else if(mode_vars[1] < -1n) rulesDescription += "Get to any of the following tiles: " + goalText + " to win!";
             else rulesDescription += "Get to the " + (goalText - 1n) + " tile to win!"
         }
-        displayRules("rules_text", ["h1", rulesTitle.join("") + " Variant)"], ["p", rulesDescription], ["p", "Spawning tiles: 1 (100%)"]);
-        if(mode_vars[0] == 4 && (arrayContainsRational || mode_vars[1] instanceof BigRational)) displayRules("gm_rules_text", ["p", "You found a hidden mode! The Partial Absorb 243 variant of Alternate 5040 can have a rational number for its base(s), though this isn't affected by the tiles minus 1 modifier. Enjoy the chaos..."], ["h1", rulesTitle.join("") + " Variant)"], ["p", rulesDescription], ["p", "Spawning tiles: 1 (100%)"]);
-        else if(mode_vars[0] == 8 && (arrayContainsRational || mode_vars[1] instanceof BigRational)) displayRules("gm_rules_text", ["p", "You found a hidden mode! The XXXX variant of Alternate 5040 can have a rational number for its base(s), though this isn't affected by the tiles minus 1 modifier. Enjoy the chaos..."], ["h1", rulesTitle.join("") + " Variant)"], ["p", rulesDescription], ["p", "Spawning tiles: 1 (100%)"]);
-        else if(mode_vars[0] == 5 && mode_vars[3] == 2) displayRules("gm_rules_text", ["p", "You found a hidden variant! The Partial Absorb 257 variant of Alternate 5040 can have a modifier based on Merge Overflow 256. Enjoy the chaos..."], ["h1", rulesTitle.join("") + " Variant)"], ["p", rulesDescription], ["p", "Spawning tiles: 1 (100%)"]);
-        else if(mode_vars[0] == 24) displayRules("gm_rules_text", ["p", "You found a hidden variant!"], ["h1", rulesTitle.join("") + " Variant)"], ["p", rulesDescription], ["p", "Spawning tiles: 1 (100%)"]);
+
+        if(Array.isArray(mode_vars[1]) && mode_vars[1].length == 1) document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+
+        displayRules("rules_text", ["h1", rulesTitle.join("") + " Variant)"], ["p", rulesDescription], ["p", spawnTiles]);
+        if(mode_vars[0] == 4 && (arrayContainsRational || mode_vars[1] instanceof BigRational)) displayRules("gm_rules_text", ["p", "You found a hidden mode! The Partial Absorb 243 variant of Alternate 5040 can have a rational number for its base(s), though this isn't affected by the tiles minus 1 modifier. Enjoy the chaos..."], ["h1", rulesTitle.join("") + " Variant)"], ["p", rulesDescription], ["p", spawnTiles]);
+        else if(mode_vars[0] == 8 && (arrayContainsRational || mode_vars[1] instanceof BigRational)) displayRules("gm_rules_text", ["p", "You found a hidden mode! The XXXX variant of Alternate 5040 can have a rational number for its base(s), though this isn't affected by the tiles minus 1 modifier. Enjoy the chaos..."], ["h1", rulesTitle.join("") + " Variant)"], ["p", rulesDescription], ["p", spawnTiles]);
+        else if(mode_vars[0] == 5 && mode_vars[3] == 2) displayRules("gm_rules_text", ["p", "You found a hidden variant! The Partial Absorb 257 variant of Alternate 5040 can have a modifier based on Merge Overflow 256. Enjoy the chaos..."], ["h1", rulesTitle.join("") + " Variant)"], ["p", rulesDescription], ["p", spawnTiles]);
+        else if(mode_vars[0] == 24) displayRules("gm_rules_text", ["p", "You found a hidden variant!"], ["h1", rulesTitle.join("") + " Variant)"], ["p", rulesDescription], ["p", spawnTiles]);
         else displayRules("gm_rules_text", ["h1", rulesTitle.join("") + " Variant)"], ["p", rulesDescription], ["p", spawnTiles]);
 
         //if(modifiers[13] == "Non-Interacting" && mode_vars[2] == 2) MergeRules.shift();  // removes annihilation merge
