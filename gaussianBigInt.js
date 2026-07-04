@@ -15,6 +15,10 @@ class GaussianBigInt {
      */
     imaginary;
     /**
+     * The real number equal to the square of the imaginary part of the Gaussian integer.
+     */
+    discriminant;
+    /**
      * The real part of the Gaussian integer.
      */
     get Re() {
@@ -32,13 +36,30 @@ class GaussianBigInt {
     set Im(Im) {
         this.imaginary = Im;
     }
+    /**
+     * The discriminant of the Gaussian integer.
+     */
+    get Di() {
+        return this.discriminant;
+    }
+    set Di(Di) {
+        this.discriminant = Di;
+    }
     // Constructors
-    constructor(value, second) {
+    constructor(value, second, third) {
+        if (third !== undefined) {
+            if (typeof third == "number" || typeof third == "bigint")
+                this.discriminant = BigInt(third);
+            else
+                throw new Error("Gaussian bigint constructor called with three arguments and the third was not a bigint or number");
+        }
+        else
+            this.discriminant = -1n;
         if (value !== undefined && second !== undefined) {
             if (typeof value == "number" || typeof value == "bigint")
                 this.fromPair(value, second);
             else
-                throw new Error("Gaussian bigint constructor called with two arguments and the first was not a bigint or number");
+                throw new Error("Gaussian bigint constructor called with three arguments and the first was not a bigint or number");
         }
         else if (typeof value == "bigint" || typeof value == "number")
             this.fromBigInt(value);
@@ -100,7 +121,18 @@ class GaussianBigInt {
                 return this;
             }
             catch { }
-            if (input[input.length - 1] == "i" || input[input.length - 1] == "j") { // Just an imaginary number
+            if (input[input.length - 1] == "i" || input[input.length - 1] == "j" || input[input.length - 1] == "e" || input[input.length - 1] == "\u03B5" || (input[input.length - 1] == ")" && input.indexOf("sqrt(") !== -1)) { // Just an imaginary number
+                switch(input[input.length - 1]) {
+                    case "i": this.discriminant = -1n; break;
+                    case "j": this.discriminant = 1n; break;
+                    case "e": 
+                    case "\u03B5": this.discriminant = 0n; break;
+                    case ")": {
+                        let index = input.indexOf("sqrt(");
+                        this.discriminant = BigInt(input.slice(index + 5, -1));
+                        input = input.slice(0, index + 1);
+                    } break;
+                }
                 input = input.slice(0, input.length - 1);
                 while (input[0] == " ")
                     input = input.slice(1);
@@ -157,7 +189,18 @@ class GaussianBigInt {
                 imString = imString.slice(1);
             while (imString[imString.length - 1] == " ")
                 imString = imString.slice(0, imString.length - 1);
-            if (imString[imString.length - 1] == "i" || imString[imString.length - 1] == "j") {
+            if (imString[imString.length - 1] == "i" || imString[imString.length - 1] == "j" || imString[imString.length - 1] == "e" || imString[imString.length - 1] == "\u03B5" || (imString[imString.length - 1] == ")" && imString.indexOf("sqrt(") !== -1)) {
+                switch(input[input.length - 1]) {
+                    case "i": this.discriminant = -1n; break;
+                    case "j": this.discriminant = 1n; break;
+                    case "e": 
+                    case "\u03B5": this.discriminant = 0n; break;
+                    case ")": {
+                        let index = imString.indexOf("sqrt(");
+                        this.discriminant = BigInt(imString.slice(index + 5, -1));
+                        imString = imString.slice(0, index + 1);
+                    } break;
+                }
                 imString = imString.slice(0, imString.length - 1);
                 let imaginaryNegative = false;
                 if (imString[0] == "-") {
@@ -193,15 +236,27 @@ class GaussianBigInt {
     static fromGaussianBigInt(input) {
         return new GaussianBigInt().fromGaussianBigInt(input);
     }
+    fromSplitGaussianBigInt(input) {
+        this.real = input.real;
+        this.imaginary = input.imaginary;
+        return this;
+    }
+    static fromSplitGaussianBigInt(input) {
+        return new GaussianBigInt().fromSplitGaussianBigInt(input);
+    }
     toString() {
+        let imagstring = "sqrt(" + Number(this.discriminant) + ")";
+        if (this.discriminant == -1n) imagstring = "i";
+        else if (this.discriminant == 0n) imagstring = "\u03B5";
+        else if (this.discriminant == 1n) imagstring = "j";
         if (this.imaginary == 0n)
             return String(this.real);
         else if (this.real == 0n)
-            return String(this.imaginary) + "i";
+            return String(this.imaginary) + imagstring;
         else if (this.imaginary < 0n)
-            return String(this.real) + "-" + String(GaussianBigInt.#absB(this.imaginary)) + "i";
+            return String(this.real) + "-" + String(GaussianBigInt.#absB(this.imaginary)) + imagstring;
         else
-            return String(this.real) + "+" + String(this.imaginary) + "i";
+            return String(this.real) + "+" + String(this.imaginary) + imagstring;
     }
     static toString(value) {
         return value.toString();
@@ -216,7 +271,7 @@ class GaussianBigInt {
         return value.valueOf();
     }
     toArrayPair() {
-        return [this.real, this.imaginary];
+        return [this.real, this.imaginary, this.discriminant];
     }
     static toArrayPair(value) {
         return value.toArrayPair();
@@ -227,7 +282,8 @@ class GaussianBigInt {
      */
     eq(other) {
         other = new GaussianBigInt(other);
-        return (this.real == other.real && this.imaginary == other.imaginary);
+        if(this.discriminant == other.discriminant) return (this.real == other.real && this.imaginary == other.imaginary);
+        else return (this.real == other.real && this.imaginary == 0n && other.imaginary == 0n);
     }
     /**
      * Returns true if the two Gaussian integers are equal, false otherwise.
@@ -287,7 +343,7 @@ class GaussianBigInt {
      * Returns the negative of a Gaussian integer (negates both the real and imaginary parts).
      */
     neg() {
-        return new GaussianBigInt(-this.real, -this.imaginary);
+        return new GaussianBigInt(-this.real, -this.imaginary, this.discriminant);
     }
     /**
      * Returns the negative of a Gaussian integer (negates both the real and imaginary parts).
@@ -323,13 +379,13 @@ class GaussianBigInt {
         return value.neg();
     }
     /**
-     * Multiplies a Gaussian integer by i, i.e. rotates it 90 degrees.
+     * Multiplies a Gaussian integer by its imaginary constant.
      */
     muli() {
-        return new GaussianBigInt(-this.imaginary, this.real);
+        return new GaussianBigInt(this.imaginary * this.discriminant, this.real, this.discriminant);
     }
     /**
-     *  Multiplies a Gaussian integer by i, i.e. rotates it 90 degrees.
+     *  Multiplies a Gaussian integer by its imaginary constant.
      */
     static muli(value) {
         value = new GaussianBigInt(value);
@@ -339,23 +395,23 @@ class GaussianBigInt {
      * Multiplies a Gaussian integer by i, i.e. rotates it 90 degrees.
      */
     rot90() {
-        return this.muli();
+        return new GaussianBigInt(-this.imaginary, this.real, this.discriminant);
     }
     /**
      *  Multiplies a Gaussian integer by i, i.e. rotates it 90 degrees.
      */
     static rot90(value) {
         value = new GaussianBigInt(value);
-        return value.muli();
+        return value.rot90();
     }
     /**
-     * Multiplies a Gaussian integer by -i, i.e. rotates it 270 degrees.
+     * Multiplies a Gaussian integer by the negative of its imaginary constant.
      */
     mulnegi() {
-        return new GaussianBigInt(this.imaginary, -this.real);
+        return new GaussianBigInt(-this.imaginary * this.discriminant, -this.real, this.discriminant);
     }
     /**
-     * Multiplies a Gaussian integer by -i, i.e. rotates it 270 degrees.
+     * Multiplies a Gaussian integer by the negative of its imaginary constant.
      */
     static mulnegi(value) {
         value = new GaussianBigInt(value);
@@ -365,83 +421,92 @@ class GaussianBigInt {
      * Multiplies a Gaussian integer by -i, i.e. rotates it 270 degrees.
      */
     rot270() {
-        return this.mulnegi();
+        return new GaussianBigInt(this.imaginary, -this.real, this.discriminant);
     }
     /**
      * Multiplies a Gaussian integer by -i, i.e. rotates it 270 degrees.
      */
     static rot270(value) {
         value = new GaussianBigInt(value);
-        return value.mulnegi();
+        return value.rot270();
     }
     /**
-     * Returns the complex conjugate of a Gaussian integer (the complex conjugate of a + bi is a - bi).
+     * Returns the complex conjugate of a Gaussian integer (the complex conjugate of a + bI is a - bI).
      */
     conj() {
-        return new GaussianBigInt(this.real, -this.imaginary);
+        return new GaussianBigInt(this.real, -this.imaginary, this.discriminant);
     }
     /**
-     * Returns the complex conjugate of a Gaussian integer (the complex conjugate of a + bi is a - bi).
+     * Returns the complex conjugate of a Gaussian integer (the complex conjugate of a + bI is a - bI).
      */
     static conj(value) {
         value = new GaussianBigInt(value);
         return value.conj();
     }
     /**
-     * Returns the complex conjugate of a Gaussian integer (the complex conjugate of a + bi is a - bi).
+     * Returns the complex conjugate of a Gaussian integer (the complex conjugate of a + bI is a - bI).
      */
     conjugate() {
         return this.conj();
     }
     /**
-     * Returns the complex conjugate of a Gaussian integer (the complex conjugate of a + bi is a - bi).
+     * Returns the complex conjugate of a Gaussian integer (the complex conjugate of a + bI is a - bI).
      */
     static conjugate(value) {
         value = new GaussianBigInt(value);
         return value.conj();
     }
     /**
-     * Returns the norm of a Gaussian integer (The norm of a + bi is a^2 + b^2). This function returns a bigint.
+     * Returns the norm of a Gaussian integer (The norm of a + bI is a^2 - b^2 * I^2). This function returns a bigint.
      */
     norm() {
-        return this.real ** 2n + this.imaginary ** 2n;
+        return this.real ** 2n - this.imaginary ** 2n * this.discriminant;
     }
     /**
-     * Returns the norm of a Gaussian integer (The norm of a + bi is a^2 + b^2). This function returns a bigint.
+     * Returns the norm of a Gaussian integer (The norm of a + bI is a^2 - b^2 * I^2). This function returns a bigint.
      */
     static norm(value) {
         value = new GaussianBigInt(value);
         return value.norm();
     }
     /**
-     * Returns the norm of a Gaussian integer (The norm of a + bi is a^2 + b^2). This function returns a GaussianBigInt.
+     * Returns the norm of a Gaussian integer (The norm of a + bI is a^2 - b^2 * I^2). This function returns a GaussianBigInt.
      */
     normG() {
         return new GaussianBigInt(this.norm());
     }
     /**
-     * Returns the norm of a Gaussian integer (The norm of a + bi is a^2 + b^2). This function returns a GaussianBigInt.
+     * Returns the norm of a Gaussian integer (The norm of a + bI is a^2 - b^2 * I^2). This function returns a GaussianBigInt.
      */
     static normG(value) {
         value = new GaussianBigInt(value);
         return value.normG();
     }
     /**
-     * Returns i^(power). The power must be a bigint, because complex powers of i would not be gaussian integers.
+     * Returns I^(power). The power must be a bigint, because complex powers of I would not be gaussian integers.
      */
-    static ipow(power) {
+    static ipow(power, sq) {
         power = BigInt(power);
-        let mod4 = GaussianBigInt.#modB(power, 4n);
-        if (mod4 == 0n)
-            return new GaussianBigInt(1n, 0n);
-        else if (mod4 == 1n)
-            return new GaussianBigInt(0n, 1n);
-        if (mod4 == 2n)
-            return new GaussianBigInt(-1n, 0n);
-        else if (mod4 == 3n)
-            return new GaussianBigInt(0n, -1n);
-        else
-            return new GaussianBigInt(1n, 0n); // This shouldn't happen
+        sq = BigInt(sq);
+        if(sq == 0n) {
+            if (power > 1n) return new GaussianBigInt(0n, 0n, 0n);
+            else if (power == 1n) return new GaussianBigInt(0n, 1n, 0n);
+            else if (power == 0n) return new GaussianBigInt(1n, 0n, 0n);
+            else return undefined;
+        }
+        else {
+            let mod4 = GaussianBigInt.#modB(power, 4n);
+            if (mod4 == 0n)
+                return new GaussianBigInt((sq * sq)  ** (power / 4n), 0n, sq);
+            else if (mod4 == 1n)
+                return new GaussianBigInt(0n, (sq * sq) ** ((power - 1n) / 4n), sq);
+            if (mod4 == 2n)
+                return new GaussianBigInt((sq * sq)  ** ((power - 2n) / 4n) * sq, 0n, sq);
+            else if (mod4 == 3n)
+                return new GaussianBigInt(0n, (sq * sq) ** ((power - 3n) / 4n) * sq, sq);
+            else
+                return new GaussianBigInt(1n, 0n, sq); // This shouldn't happen
+        }
     }
     /**
      * What quadrant is this Gaussian integer in?
@@ -466,12 +531,12 @@ class GaussianBigInt {
         value = new GaussianBigInt(value);
         return value.quadrant();
     }
-    /**
+    /** HEREEEEEEEEEEEEEEEEEEEEE
      * What unit do we have to multiply by to rotate this gaussian integer into the first quadrant?
      */
     firstQuadrantUnit() {
         if (this.eq(GaussianBigInt.zero))
-            return new GaussianBigInt(0n, 0n);
+            return new GaussianBigInt(0n, 0n, this.discriminant);
         return GaussianBigInt.ipow(4n - this.quadrant());
     }
     /**
@@ -500,7 +565,8 @@ class GaussianBigInt {
      */
     add(other) {
         other = new GaussianBigInt(other);
-        return new GaussianBigInt(this.real + other.real, this.imaginary + other.imaginary);
+        if (this.discriminant !== other.discriminant) throw new Error("Gaussian bigint operation called with bigints of different imaginary constants");
+        else return new GaussianBigInt(this.real + other.real, this.imaginary + other.imaginary, this.discriminant);
     }
     /**
      * Addition of two Gaussian integers.
@@ -530,7 +596,8 @@ class GaussianBigInt {
      */
     sub(other) {
         other = new GaussianBigInt(other);
-        return new GaussianBigInt(this.real - other.real, this.imaginary - other.imaginary);
+        if (this.discriminant !== other.discriminant) throw new Error("Gaussian bigint operation called with bigints of different imaginary constants");
+        else return new GaussianBigInt(this.real - other.real, this.imaginary - other.imaginary, this.discriminant);
     }
     /**
      * Subtraction of two Gaussian integers.
@@ -575,7 +642,8 @@ class GaussianBigInt {
      */
     mul(other) {
         other = new GaussianBigInt(other);
-        return new GaussianBigInt(this.real * other.real - this.imaginary * other.imaginary, this.real * other.imaginary + this.imaginary * other.real);
+        if (this.discriminant !== other.discriminant) throw new Error("Gaussian bigint operation called with bigints of different imaginary constants");
+        else return new GaussianBigInt(this.real * other.real + this.imaginary * other.imaginary * this.discriminant, this.real * other.imaginary + this.imaginary * other.real, this.discriminant);
     }
     /**
      * Multiplication of two Gaussian integers.
@@ -615,7 +683,7 @@ class GaussianBigInt {
         other = new GaussianBigInt(other);
         return value.sub(other);
     }
-    /**
+    /** HEREEEEEEEEEEEE
      * Division of two Gaussian integers (rounds in the same way that bigint division does)
      */
     div(other) {

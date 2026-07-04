@@ -1254,19 +1254,19 @@ document.getElementById("Alternate5040_baseRational_button").addEventListener("c
     loadGridSize(100, mode_vars);
     gmDisplayVars();
 });
-document.getElementById("Alternate5040_baseComplex_numerator_change").addEventListener("change", function() {
+document.getElementById("Alternate5040_baseSplitComplex_numerator_change").addEventListener("change", function() {
     v = BigInt(this.value);
     if (v > 0n) mode_vars[1] = new GaussianBigInt(v, mode_vars[1].imaginary);
     loadGridSize(100, mode_vars);
     gmDisplayVars();
 });
-document.getElementById("Alternate5040_baseComplex_denominator_change").addEventListener("change", function() {
+document.getElementById("Alternate5040_baseSplitComplex_denominator_change").addEventListener("change", function() {
     v = BigInt(this.value);
     if (v > 0n) mode_vars[1] = new GaussianBigInt(mode_vars[1].real, v);
     loadGridSize(100, mode_vars);
     gmDisplayVars();
 });
-document.getElementById("Alternate5040_baseComplex_button").addEventListener("click", function(){
+document.getElementById("Alternate5040_baseSplitComplex_button").addEventListener("click", function(){
     mode_vars[1] = -2n;
     loadGridSize(100, mode_vars);
     gmDisplayVars();
@@ -3652,7 +3652,7 @@ function gaussianPrimesUpdate(maxNorm) {
         let thisnorm = gp.norm();
         for (let r = 1n; r * gp.real < arr.length; r++) {
             for (let i = (r == 1n) ? 1n : 0n; (r**2n + i**2n) * thisnorm <= maxNorm; i++) {
-                let [fr, fi] = gp.mul([r, i]).toFirstQuadrant().toArrayPair().map(Number)
+                let [fr, fi] = gp.mul([r, i]).toFirstQuadrant().toArrayPair().pop().map(Number)
                 if (arr[fr] === undefined || arr[fr][fi] === undefined) continue;
                 arr[fr][fi] = false;
             }
@@ -12997,7 +12997,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseSplitComplex").style.setProperty("display", "none");
             CAM1Entry = ["@This 0", "+B", 1n];
             nextCAM1Entry = ["@This 0", "+B", 2n];
             nfact = "n!";
@@ -13084,7 +13084,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseSplitComplex").style.setProperty("display", "none");
             CAM1Entry = ["@This 0", "+B", 1n, "primeB"];
             nextCAM1Entry = ["@This 0", "+B", 2n, "primeB"];
             nfact = "p<sub>n</sub>#";
@@ -13159,96 +13159,6 @@ function gmDisplayVars() {
             else winConditions = [[5n, 1n]];
             
         }
-        else if(typeof mode_vars[1] === "object") {
-            document.getElementById("Alternate5040_baseFactorials").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_base").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseRational").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_basePrimorials").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseListIntro").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseComplex_numerator_change").value = mode_vars[1].real;
-            document.getElementById("Alternate5040_baseComplex_denominator_change").value = mode_vars[1].imaginary;
-            document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseSubfactorials").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "block");
-            spawnTiles = "Spawning tiles: Pulls from a \"box\" that starts with one 1, one i, one -1, and one -i, and only refills once it's empty.";
-            startTileSpawns = [["Box", 1, [0n, new GaussianBigInt(1, 0)], 1, [0n, new GaussianBigInt(-1, 0)], 1, [0n, new GaussianBigInt(0, 1)], 1, [0n, new GaussianBigInt(0, -1)], 1]];
-            MergeRules = [
-                [2, [["@This 0", "=", "@Next 1 0"], "&&", [["@This 1", "+GB", "@Next 1 1"], "normGB", "!=", 0n], "&&", [["@This 1", "+GB", "@Next 1 1"], "/GB", mode_vars[1], "normGB", "=", 1n]], true, [[["@This 0", "+B", 1n], [mode_vars[1], "/GB", ["@This 1", "+GB", "@Next 1 1"]]]], [], [false, true]]
-            ]
-            CAM1Entry = [mode_vars[1].real];
-            //nextCAM1Entry = mode_vars[1][0][0];
-            nfact = defaultAbbreviate(mode_vars[1]) + "<sup>n</sup>";
-            nonefact = defaultAbbreviate(mode_vars[1]) + "<sup>n + 1</sup>";
-            none = defaultAbbreviate(mode_vars[1]);
-            //oneTile[0] = 0n;
-            //twoTile = [0n, 2n];
-            validIndex.push(mode_vars[1]); //????????
-            validPos = ["arr_elem", 0] //??????????
-            //CAM2Entry = [mode_vars[1], "^B", ["@This 0", "+B", 1n]];
-            /*if(mode_vars[0] == 21) {
-                rulesTitle = [mode_vars[1]**goalPow + " (Alternate 5040, ", ""];
-                if(mode_vars[3] == 0) {
-                    nontier = BigInt(Math.max(Math.ceil(Math.log(mode_vars[4]) / Math.log(Number(mode_vars[1])), 1), 1));
-                    ratiopush = Number(mode_vars[1] - 1n) * (mode_vars[4]);
-                }
-                else if(mode_vars[3] == 1) {
-                    nontier = 1n;
-                    ratiopush = Number(mode_vars[1] / 2n);
-                }
-                oneTile = [0n, ["@Literal", -1], 1n]
-                /*if(mode_vars[2] == 1 && mode_vars[1] == 2n) {
-                    oneTile[0] = 1n;
-                    if(mode_vars[4] == 1) oneTile[1] = ["@Literal", false];
-                }*/
-                /*TileTypes = [
-                    [["@This 0", "<", nontier], "@This 2", ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", [["@This 2", "/", [mode_vars[1], "^", "@This 0"]], "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", ["@This 2", "/", [mode_vars[1], "^", "@This 0"]], ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"], "none", 2, 0],
-                    [true, "@This 2", ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", [["@This 2", "/", [mode_vars[1], "^", "@This 0"]], "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", ["@This 2", "/", [mode_vars[1], "^", "@This 0"]], ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"], "none", 2, 0]
-                ]
-                for(let i = 0; i < ratiopush; i++) {
-                    TileTypes[1].push(["PrimeImage", ["@linear-gradient", ["@HSLA", 360 / ratiopush * i, 100, [15, "@if", ["@This 1", "arr_elem", i], "2nd", 75, "@end-if"], 1], 0, "#0000", 25, 75, ["@HSLA", 360 / ratiopush * i, 100, [15, "@if", ["@This 1", "arr_elem", i], "2nd", 85, "@end-if"], 1], 100], ["@linear-gradient", 90, "#0000", 0, 100 / ratiopush * i, "#000", 100 / ratiopush * i, 100 / ratiopush * (i + 1), "#0000", 100 / ratiopush * (i + 1)]])
-                }
-            }*/ /*else if(mode_vars[2] == 1) {
-                validIndex.unshift(mode_vars[1] - 1n);
-                validPos[1] = 1;
-                if(mode_vars[1] == 2n) oneTile[0] = 1n;
-                //else if(mode_vars[0] == 4) oneTile[1] = 2n;
-                else if(mode_vars[1] == 3n) twoTile = [1n, 1n];  
-                TileTypes = [
-                    [["@This 0", "=", 0n], [mode_vars[1], "^", "@This 0", "*", "@This 1"], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]],
-                    [true, [mode_vars[1], "^", "@This 0", "*", "@This 1", "-", 1], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]]
-                ];
-                tileValueFunction = [mode_vars[1], "^", "@This 0", "*", "@This 1", "-", 1];
-            }*/
-            //else {
-                if(mode_vars[0] == 10 && mode_vars[3] == 0) {
-                    oneTile[1] = mode_vars[1];
-                    //startTileSpawns = [[[0n, mode_vars[1]], 1]];
-                    TileTypes = [
-                        [true, [mode_vars[1], "^GB", "@This 0", "*GB", "@This 1", "defaultAbbrevGB"]/*, ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]*/]
-                    ];
-                } else {
-                    //startTileSpawns = [[[0n, 1n], 1]];
-                    TileTypes = [
-                        [true, [mode_vars[1], "^GB", "@This 0", "*GB", "@This 1", "defaultAbbrevGB"], "#ffffff", "#000000"/*, ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]*/]
-                    ];
-                }
-                tileValueFunction = [mode_vars[1], "^", "@This 0", "*", "@This 1"]; //????????
-            //}
-            if (mode_vars[1].norm() < 3n) goalPow = 11n;
-            else if (mode_vars[1].norm() < 4n) goalPow = 7n;
-            else if (mode_vars[1].norm() < 6n) goalPow = 5n;
-            else if (mode_vars[1].norm() < 10n) goalPow = 4n;
-            else if (mode_vars[1].norm() < 22n) goalPow = 3n;
-            else if (mode_vars[1].norm() < 256n) goalPow = 2n;
-            else goalPow = 1n;
-            winConditions = [[goalPow, new GaussianBigInt(1n, 0n)], [goalPow, new GaussianBigInt(-1n, 0n)], [goalPow, new GaussianBigInt(0n, 1n)], [goalPow, new GaussianBigInt(0n, -1n)]];
-            //if(mode_vars[0] == 10 && mode_vars[3] == 0) winConditions[0][1] = mode_vars[1];
-            goalText = defaultAbbreviate(mode_vars[1].pow(goalPow));
-            //if(mode_vars[2] == 1) rulesTitle = [mode_vars[1]**goalPow - 1n + " (Alternate 5039, ", ""];
-            /*else */if(mode_vars[2] == 0) rulesTitle = [defaultAbbreviate(mode_vars[1].pow(goalPow)) + " (Alternate 5040, ", ""];
-        }
         else if (Array.isArray(mode_vars[1])) {
             oneTile[0] = 0n;
             twoTile = [0n, 2n];
@@ -13297,7 +13207,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseListRandomize_button").innerHTML = "Randomize Cycle!";
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "flex");
             document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseSplitComplex").style.setProperty("display", "none");
             while (document.getElementById("Alternate5040_baseList").children.length > mode_vars[1].length + 3) {
                 document.getElementById("Alternate5040_baseList").removeChild(document.getElementById("Alternate5040_baseList").lastElementChild);
             }
@@ -13471,7 +13381,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseSplitComplex").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseRational_numerator_change").value = mode_vars[1].numerator;
             document.getElementById("Alternate5040_baseRational_denominator_change").value = mode_vars[1].denominator;
             oneTile = [0n, new BigRational(1n)];
@@ -13494,6 +13404,97 @@ function gmDisplayVars() {
             rulesTitle = [defaultAbbreviate(mode_vars[1].pow(goalPow)) + " (Alternate 5040, ", ""];
             goalText = defaultAbbreviate(mode_vars[1].pow(goalPow));
         }
+        else if(mode_vars[1] instanceof GaussianBigInt) {
+            document.getElementById("Alternate5040_baseFactorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_base").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseRational").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_basePrimorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseListIntro").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseSplitComplex_numerator_change").value = mode_vars[1].real;
+            document.getElementById("Alternate5040_baseSplitComplex_denominator_change").value = mode_vars[1].imaginary;
+            document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseSubfactorials").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseSplitComplex").style.setProperty("display", "block");
+            spawnTiles = "Spawning tiles: Pulls from a \"box\" that starts with one 1 and one j, and only refills once it's empty.";
+            startTileSpawns = [["Box", 1, [0n, new GaussianBigInt(1n, 0n)], 1, [0n, new GaussianBigInt(0n, 1n)], 1]];
+            MergeRules = [
+                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+GB", "@Next 1 1", "=", mode_vars[1]]], true, [[["@This 0", "+B", 1n], new GaussianBigInt(1n, 0n)]], [], [false, true]],
+                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+GB", "@Next 1 1", "=", new GaussianBigInt(mode_vars[1].imaginary, mode_vars[1].real)]], true, [[["@This 0", "+B", 1n], new GaussianBigInt(0n, 1n)]], [], [false, true]]
+            ]
+            CAM1Entry = [mode_vars[1].real];
+            //nextCAM1Entry = mode_vars[1][0][0];
+            nfact = defaultAbbreviate(mode_vars[1]).slice(0,-1) + "j<sup>n</sup>";
+            nonefact = defaultAbbreviate(mode_vars[1]).slice(0,-1) + "j<sup>n + 1</sup>";
+            none = defaultAbbreviate(mode_vars[1]).slice(0,-1) + "j";
+            //oneTile[0] = 0n;
+            //twoTile = [0n, 2n];
+            validIndex.push(mode_vars[1]); //????????
+            validPos = ["arr_elem", 0] //??????????
+            //CAM2Entry = [mode_vars[1], "^B", ["@This 0", "+B", 1n]];
+            /*if(mode_vars[0] == 21) {
+                rulesTitle = [mode_vars[1]**goalPow + " (Alternate 5040, ", ""];
+                if(mode_vars[3] == 0) {
+                    nontier = BigInt(Math.max(Math.ceil(Math.log(mode_vars[4]) / Math.log(Number(mode_vars[1])), 1), 1));
+                    ratiopush = Number(mode_vars[1] - 1n) * (mode_vars[4]);
+                }
+                else if(mode_vars[3] == 1) {
+                    nontier = 1n;
+                    ratiopush = Number(mode_vars[1] / 2n);
+                }
+                oneTile = [0n, ["@Literal", -1], 1n]
+                /*if(mode_vars[2] == 1 && mode_vars[1] == 2n) {
+                    oneTile[0] = 1n;
+                    if(mode_vars[4] == 1) oneTile[1] = ["@Literal", false];
+                }*/
+                /*TileTypes = [
+                    [["@This 0", "<", nontier], "@This 2", ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", [["@This 2", "/", [mode_vars[1], "^", "@This 0"]], "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", ["@This 2", "/", [mode_vars[1], "^", "@This 0"]], ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"], "none", 2, 0],
+                    [true, "@This 2", ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", [["@This 2", "/", [mode_vars[1], "^", "@This 0"]], "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", ["@This 2", "/", [mode_vars[1], "^", "@This 0"]], ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"], "none", 2, 0]
+                ]
+                for(let i = 0; i < ratiopush; i++) {
+                    TileTypes[1].push(["PrimeImage", ["@linear-gradient", ["@HSLA", 360 / ratiopush * i, 100, [15, "@if", ["@This 1", "arr_elem", i], "2nd", 75, "@end-if"], 1], 0, "#0000", 25, 75, ["@HSLA", 360 / ratiopush * i, 100, [15, "@if", ["@This 1", "arr_elem", i], "2nd", 85, "@end-if"], 1], 100], ["@linear-gradient", 90, "#0000", 0, 100 / ratiopush * i, "#000", 100 / ratiopush * i, 100 / ratiopush * (i + 1), "#0000", 100 / ratiopush * (i + 1)]])
+                }
+            }*/ /*else if(mode_vars[2] == 1) {
+                validIndex.unshift(mode_vars[1] - 1n);
+                validPos[1] = 1;
+                if(mode_vars[1] == 2n) oneTile[0] = 1n;
+                //else if(mode_vars[0] == 4) oneTile[1] = 2n;
+                else if(mode_vars[1] == 3n) twoTile = [1n, 1n];  
+                TileTypes = [
+                    [["@This 0", "=", 0n], [mode_vars[1], "^", "@This 0", "*", "@This 1"], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]],
+                    [true, [mode_vars[1], "^", "@This 0", "*", "@This 1", "-", 1], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]]
+                ];
+                tileValueFunction = [mode_vars[1], "^", "@This 0", "*", "@This 1", "-", 1];
+            }*/
+            //else {
+                if(mode_vars[0] == 10 && mode_vars[3] == 0) {
+                    oneTile[1] = mode_vars[1];
+                    //startTileSpawns = [[[0n, mode_vars[1]], 1]];
+                    TileTypes = [
+                        [true, [mode_vars[1], "^GB", "@This 0", "*GB", "@This 1", "defaultAbbrevGB", "str_slice", 0, -1, "str_concat", "j"]/*, ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]*/]
+                    ];
+                } else {
+                    //startTileSpawns = [[[0n, 1n], 1]];
+                    TileTypes = [
+                        [true, [mode_vars[1], "^GB", "@This 0", "*GB", "@This 1", "defaultAbbrevGB", "str_slice", 0, -1, "str_concat", "j"], "#ffffff", "#000000"/*, ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]*/]
+                    ];
+                }
+                tileValueFunction = [mode_vars[1], "^", "@This 0", "*", "@This 1"]; //????????
+            //}
+            if (mode_vars[1].norm() < 3n) goalPow = 11n;
+            else if (mode_vars[1].norm() < 4n) goalPow = 7n;
+            else if (mode_vars[1].norm() < 6n) goalPow = 5n;
+            else if (mode_vars[1].norm() < 10n) goalPow = 4n;
+            else if (mode_vars[1].norm() < 22n) goalPow = 3n;
+            else if (mode_vars[1].norm() < 256n) goalPow = 2n;
+            else goalPow = 1n;
+            winConditions = [[goalPow, new GaussianBigInt(1n, 0n)], [goalPow, new GaussianBigInt(0n, 1n)]];
+            //if(mode_vars[0] == 10 && mode_vars[3] == 0) winConditions[0][1] = mode_vars[1];
+            goalText = defaultAbbreviate(mode_vars[1].pow(goalPow)).slice(0,-1) + "j";
+            //if(mode_vars[2] == 1) rulesTitle = [mode_vars[1]**goalPow - 1n + " (Alternate 5039, ", ""];
+            /*else */if(mode_vars[2] == 0) rulesTitle = [defaultAbbreviate(mode_vars[1].pow(goalPow)).slice(0,-1) + "j (Alternate 5040, ", ""];
+        }
         else if(mode_vars[1] === 0n) {
             document.getElementById("Alternate5040_baseFactorials").style.setProperty("display", "none");
             document.getElementById("Alternate5040_base").style.setProperty("display", "none");
@@ -13504,7 +13505,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseListRandomize").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseSplitComplex").style.setProperty("display", "none");
             CAM1Entry = ["@This 0"];
             nfact = "!n + !(n - 1)";
             nonefact = "!(n + 1)";
@@ -13572,7 +13573,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseMultifactorials_counter").innerHTML = (-1n * mode_vars[1]).toString();
             if(mode_vars[1] == -2n) document.getElementById("Alternate5040_baseMultifactorials_minus").style.setProperty("display", "none");
             else document.getElementById("Alternate5040_baseMultifactorials_minus").style.setProperty("display", "block");
-            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseSplitComplex").style.setProperty("display", "none");
             CAM1Entry = ["@This 0", "+B", [-1n, "*B", mode_vars[1]]];
             nfact = "n!<sup>(" + (-1n * mode_vars[1]).toString() + ")</sup>";
             nonefact = "(n + " + (-1n * mode_vars[1]).toString() + ")!<sup>(" + (-1n * mode_vars[1]).toString() + ")</sup>";
@@ -13663,7 +13664,7 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseList").style.setProperty("display", "none");
             document.getElementById("Alternate5040_base_change").value = mode_vars[1];
             document.getElementById("Alternate5040_baseMultifactorials").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_baseComplex").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_baseSplitComplex").style.setProperty("display", "none");
             CAM1Entry = mode_vars[1];
             nextCAM1Entry = mode_vars[1];
             nfact = mode_vars[1] + "<sup>n</sup>";
