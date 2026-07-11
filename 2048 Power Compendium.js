@@ -3163,7 +3163,7 @@ let waves_order = [
     [96, 96.50118], [35, 101], [34, 34.50118], [70, 50.1], [69, 50.22], [91, 91.50118], [73, 73.50118], [89, 89.50118], [97, 97.50118], [37, 102], [40, 50.248], [95, 50.7101113], [50, 50]
 ]
 let wavesModeModified = [96.50118, 34.50118, 50.22, 91.50118, 73.50118, 89.50118, 97.50118, 50.248]
-let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 26, 27, 28, 29, 30, 24];
+let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 26, 27, 28, 29, 30, 32, 24];
 for (let t = 1; t <= modes_order.length; t++) { //Adding event listeners to the main mode tiles on the menu
     let mtile = document.getElementById("menu_grid_storage").firstElementChild;
     let position = modes_order.indexOf(t);
@@ -14000,7 +14000,7 @@ function gmDisplayVars() {
                 }
                 if(Array.isArray(mode_vars[1])) {
                     if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from 1 to n in 1762, for the following n's in a cycle: " + arrayListString + ". ";
-                    else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from 1 to n in 1762, with extra merge including an extra 1, for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
+                    else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from 1 to n in 1762, with every merge including an extra 1, for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
                 }
                 rulesTitle[1] = "1762";
             }
@@ -17336,6 +17336,77 @@ function gmDisplayVars() {
             rulesTitle[1] = "5040";
             if(Array.isArray(mode_vars[1])) {
                 rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+            }
+        }
+        else if(mode_vars[0] == 32) { // Bitwise 2048 variant
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
+            document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_num").style.setProperty("display", "block");
+            document.getElementById("Alternate5040_num_title").innerHTML = "Base:";
+            if(mode_vars[4] == 2) document.getElementById("Alternate5040_num_minus").style.setProperty("display", "none");
+            else document.getElementById("Alternate5040_num_minus").style.setProperty("display", "block");
+            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #13eb50, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
+            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #13eb50, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
+            knownMergeLookbackDistance = 0;
+            let bitNames = [];
+            if (mode_vars[4] == 2n) bitNames = ["Bitwise", "binary"];
+            else if (mode_vars[4] == 3n) bitNames = ["Tritwise", "ternary"];
+            else {
+                let baseNames = ["quaternary", "quinary", "seximal", "septimal", "octal", "nonary", "decimal", "hendecimal", "duodecimal", "tredecimal", "tetradecimal", "pentadecimal", "hexadecimal", "heptadecimal", "octodecimal", "enneadecimal", "vigesimal", "unvigesimal", "duovigesimal", "trevigesimal", "tetravigesimal", "pentavigesimal", "hexavigesimal", "heptavigesimal", "octovigesimal", "enneavigesimal", "trigesimal", "untrigesimal", "duotrigesimal", "tretrigesimal", "tetratrigesimal", "pentatrigesimal", "hexatrigesimal"];
+                let baseNamesUpper = baseNames.map(x => (x[0].toUpperCase() + x.slice(1)));
+                if (mode_vars[4] < 37) {
+                    bitNames.push(baseNamesUpper[Number(mode_vars[4]) - 4] + "-Digitwise");
+                    bitNames.push(baseNames[Number(mode_vars[4]) - 4])
+                }
+                else {
+                    bitNames.push("Base " + mode_vars[4]);
+                    bitNames.push("base " + mode_vars[4]);
+                }
+            }
+            let goalPow2;
+            if (mode_vars[4] < 3n) goalPow2 = 11n;
+            else if (mode_vars[4] < 4n) goalPow2 = 7n;
+            else if (mode_vars[4] < 6n) goalPow2 = 5n;
+            else if (mode_vars[4] < 10n) goalPow2 = 4n;
+            else if (mode_vars[4] < 22n) goalPow2 = 3n;
+            else if (mode_vars[4] < 256n) goalPow2 = 2n;
+            else goalPow2 = 1n;
+            rulesTitle[1] = bitNames[0] + " " + BigInt(mode_vars[4])**goalPow2;
+            if(mode_vars[2] == 0) {
+                knownMergeMaxLength = 2;
+                MergeRules.push(
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [["@This 1", "+B", "@Next 1 1"], "=", ["@This 1", "basebit^B", "@Next 1 1", BigInt(mode_vars[4])]], "&&", [[mode_vars[4], "^", [["@This 1", "+B", "@Next 1 1"], "Number", "log", mode_vars[4], "ceil", 1]], "<=", [CAM1Entry, "Number"]]], true, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [["@This 1", "+B", "@Next 1 1"], "=", ["@This 1", "basebit^B", "@Next 1 1", BigInt(mode_vars[4])]], "&&", [[mode_vars[4], "^", [["@This 1", "+B", "@Next 1 1"], "Number", "log", mode_vars[4], "ceil", 1]], ">", [CAM1Entry, "Number"]], "&&", [["@This 1", "+B", "@Next 1 1"], "basebit|B", CAM1Entry, BigInt(mode_vars[4]), "=", CAM1Entry]], true, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "+B", 1n, "expomodB", BigInt(mode_vars[4])], "=", ["@This 1", "+B", 1n]], "&&", ["@Next 1 1", "=", 1n]], false, [["@This 0", ["@This 1", "+B", 1n]]], [], [false, true]],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", [["@This 1", "+B", "@Next 1 1"], "=", ["@This 1", "basebit^B", "@Next 1 1", BigInt(mode_vars[4])]], "&&", [[mode_vars[4], "^", [["@This 1", "+B", "@Next 1 1"], "Number", "log", mode_vars[4], "ceil", 1]], ">", [CAM1Entry, "Number"]], "&&", [["@This 1", "+B", "@Next 1 1"], "basebit|B", CAM1Entry, BigInt(mode_vars[4]), "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "+B", 1n, "expomodB", BigInt(mode_vars[4])], "=", ["@This 1", "+B", 1n]], "&&", ["@Next 1 1", "=", 1n]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]]
+                );
+                rulesDescription += "Two multiples of " + nfact + " that sum to less than " + nfact + " times the greatest power of " + mode_vars[4] + " smaller than " + none + " can merge if those two numbers, when added in " + bitNames[1] + ", add without any carries. If their sum is greater than that power of " + mode_vars[4] + ", then they can merge if their sum and " + none + "'s base-" + mode_vars[4] + " digitwise maximum is equal to " + none + ". A tile that is " + nfact + " less than a power of " + mode_vars[4] + " can merge with a " + nfact + " if it is no greater than " + nonefact + ". (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow the path to get from 1 to " + none + " in " + rulesTitle[1] + ".) ";
+            }
+            else if(mode_vars[2] == 1) {
+                knownMergeMaxLength = 3;
+                if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
+                if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
+                    [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]], "&&", [["@This 1", "+B", "@Next 1 1"], "=", ["@This 1", "basebit^B", "@Next 1 1", BigInt(mode_vars[4])]], "&&", [[mode_vars[4], "^", [["@This 1", "+B", "@Next 1 1"], "Number", "log", mode_vars[4], "ceil", 1]], "<=", [[CAM1Entry, "-B", 1n], "Number"]]], true, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]], "&&", [["@This 1", "+B", "@Next 1 1"], "=", ["@This 1", "basebit^B", "@Next 1 1", BigInt(mode_vars[4])]], "&&", [[mode_vars[4], "^", [["@This 1", "+B", "@Next 1 1"], "Number", "log", mode_vars[4], "ceil", 1]], ">", [[CAM1Entry, "-B", 1n], "Number"]], "&&", [["@This 1", "+B", "@Next 1 1"], "basebit|B", [CAM1Entry, "-B", 1n], BigInt(mode_vars[4]), "=", [CAM1Entry, "-B", 1n]]], true, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "+B", 1n, "expomodB", BigInt(mode_vars[4])], "=", ["@This 1", "+B", 1n]], "&&", ["@Next 1 1", "=", 1n]], false, [[0n, ["@This 1", "+B", 1n]]], [], [false, true]],
+                    [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]], "&&", [["@This 1", "+B", "@Next 1 1"], "=", ["@This 1", "basebit^B", "@Next 1 1", BigInt(mode_vars[4])]], "&&", [[mode_vars[4], "^", [["@This 1", "+B", "@Next 1 1"], "Number", "log", mode_vars[4], "ceil", 1]], ">", [[CAM1Entry, "-B", 1n], "Number"]], "&&", [["@This 1", "+B", "@Next 1 1"], "basebit|B", [CAM1Entry, "-B", 1n], BigInt(mode_vars[4]), "=", [CAM1Entry, "-B", 1n]]], true, [[1n, 1n]], [], [false, true]],
+                    [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "+B", 1n, "expomodB", BigInt(mode_vars[4])], "=", ["@This 1", "+B", 1n]], "&&", ["@Next 1 1", "=", 1n]], false, [[1n, 1n]], [], [false, true]]
+                );
+                MergeRules.push(
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [["@This 1", "+B", "@Next 1 1"], "=", ["@This 1", "basebit^B", "@Next 1 1", BigInt(mode_vars[4])]], "&&", [[mode_vars[4], "^", [["@This 1", "+B", "@Next 1 1"], "Number", "log", mode_vars[4], "ceil", 1]], "<=", [CAM1Entry, "Number"]]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]],
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [["@This 1", "+B", "@Next 1 1"], "=", ["@This 1", "basebit^B", "@Next 1 1", BigInt(mode_vars[4])]], "&&", [[mode_vars[4], "^", [["@This 1", "+B", "@Next 1 1"], "Number", "log", mode_vars[4], "ceil", 1]], ">", [CAM1Entry, "Number"]], "&&", [["@This 1", "+B", "@Next 1 1"], "basebit|B", CAM1Entry, BigInt(mode_vars[4]), "=", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]],
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "+B", 1n, "expomodB", BigInt(mode_vars[4])], "=", ["@This 1", "+B", 1n]], "&&", ["@Next 1 1", "=", 1n]], false, [["@This 0", ["@This 1", "+B", 1n]]], [], [false, true, true]],
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", [["@This 1", "+B", "@Next 1 1"], "=", ["@This 1", "basebit^B", "@Next 1 1", BigInt(mode_vars[4])]], "&&", [[mode_vars[4], "^", [["@This 1", "+B", "@Next 1 1"], "Number", "log", mode_vars[4], "ceil", 1]], ">", [CAM1Entry, "Number"]], "&&", [["@This 1", "+B", "@Next 1 1"], "basebit|B", CAM1Entry, BigInt(mode_vars[4]), "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "+B", 1n, "expomodB", BigInt(mode_vars[4])], "=", ["@This 1", "+B", 1n]], "&&", ["@Next 1 1", "=", 1n]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]]
+                );
+                rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " can merge with a 1 if they all sum to less than one less than " + nfact + " times the greatest power of " + mode_vars[4] + " smaller than " + none + " can merge if those two numbers, when added in " + bitNames[1] + ", add without any carries. If their sum is greater than one less than that power of " + mode_vars[4] + ", then they can merge if their sum and " + none + "'s base-" + mode_vars[4] + " digitwise maximum is equal to " + none + ". A tile that is " + nfact + " less than a power of " + mode_vars[4] + " can merge with a " + nfact + " - 1 if it is no greater than " + nonefact + " - 1. ";
+                if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow the path to get from 1 to " + none + " in " + rulesTitle[1] + ", but every merge must be done with an additional 1 except for the first power, where you go to " + (mode_vars[1] - 1n) + " instead.) ";
+                else rulesDescription += "(In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow the path to get from 1 to " + none + " in " + rulesTitle[1] + ", but every merge must be done with an additional 1.) ";
+            }
+            if(Array.isArray(mode_vars[1])) {
+                if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from 1 to n in " + rulesTitle[1] + ", for the following n's in a cycle: " + arrayListString + ". ";
+                else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from 1 to n in " + rulesTitle[1] + ", with every merge including an extra 1, for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
             }
         }
         if(mode_vars[0] == 8) {} // don't add text for XXXX variant
