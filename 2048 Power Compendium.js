@@ -9529,7 +9529,7 @@ function loadGridSize(mode, mvars = []) {
             }
         }
         if(mode_vars[1] < -1n) defaultSize++;
-        else if(typeof mode_vars[1] === "object") defaultSize += 2;
+        else if(typeof mode_vars[1] === "gaussianbigint") defaultSize += 2;
     }
     else if (mode == 34.50118) { // Partial Flow DiVE
         if (!mvars[3]) defaultSize = 4;
@@ -13966,7 +13966,7 @@ function gmDisplayVars() {
             document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #afe726, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #afe726, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
             knownMergeLookbackDistance = 0;
-            /*if(mode_vars[4] == 0) {
+            if(mode_vars[4] == 0) {
                 if(typeof mode_vars[1] === "object") {
                     MergeRules.push(
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", [["@This 1", "reGB", "=", 0n], "&&", ["@Next 1 1", "reGB", "=", 0n], "&&", [["@This 1", "imGB", "signB"], "=", ["@Next 1 1", "imGB", "signB"]]], "&&", [["@This 1", "imGB", "absB"], "-B", ["@Next 1 1", "imGB", "absB"], "absB", "<", 2n], "&&", [["@This 1", "imGB", "absB"], "+B", ["@Next 1 1", "imGB", "absB"], "<=", max(mode_vars[1].imaginary, mode_vars[1].real)], "&&", [[[2n, "^B", [mode_vars[1].imaginary, "/", [["@This 1", "imGB", "absB"], "+", ["@Next 1 1", "imGB", "absB"]], "log", 2, "round", 1, "max", 0]], "@end_vars", mode_vars[1].imaginary, "-B", ["@var_retain", ["@This 1", "imGB", "absB"], "+B", ["@Next 1 1", "imGB", "absB"], "*B", "@Var 0"], "absB", "<", "@Var 0"], "||", [[2n, "^B", [mode_vars[1].real, "/", [["@This 1", "imGB", "absB"], "+", ["@Next 1 1", "imGB", "absB"]], "log", 2, "round", 1, "max", 0]], "@end_vars", mode_vars[1].real, "-B", ["@var_retain", ["@This 1", "imGB", "absB"], "+B", ["@Next 1 1", "imGB", "absB"], "*B", "@Var 0"], "absB", "<", "@Var 0"]]], true, [["@This 0", ["@This 1", "+GB", "@Next 1 1"]]], [], [false, true]],
@@ -13978,7 +13978,7 @@ function gmDisplayVars() {
                 else if(mode_vars[2] == 0) {
                     MergeRules.push(
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "-B", "@Next 1 1", "absB", "<", 2n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
-                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "-B", "@Next 1 1", "absB", "<", 2n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [[2n, "^B", [CAM1Entry, "/", ["@This 1", "+", "@Next 1 1"], "log", 2, "round", 1, "max", 0]], "@end_vars", CAM1Entry, "-B", ["@var_retain", "@This 1", "+B", "@Next 1 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], true, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "-B", "@Next 1 1", "absB", "<", 2n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [[2n, "^B", [CAM1Entry, "/B", ["@This 1", "+B", "@Next 1 1", "+B", 1n], "logB", 2n, "+B", 1n, "max", 0n]], "@end_vars", CAM1Entry, "-B", ["@var_retain", "@This 1", "+B", "@Next 1 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], true, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
                     )
                     rulesDescription += "Two tiles can merge if they are equal or they are consecutive multiples of " + nfact + " that are smaller than " + nonefact + ", and their sum is less than " + nfact + " away from " + nonefact + " divided by some nonnegative integer power of two. (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow the path to get from 1 to " + none + " in 1762.) ";
                     knownMergeMaxLength = 2;
@@ -13987,11 +13987,11 @@ function gmDisplayVars() {
                     if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
                     if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
                         [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "-B", "@Next 1 1", "absB", "<", 2n], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]]], true, [[1n, 1n]], [], [false, true]],
-                        [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "-B", "@Next 1 1", "absB", "<", 2n], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]], "&&", [[2n, "^B", [[CAM1Entry, "-", 1], "/", ["@This 1", "+", "@Next 1 1"], "log", 2, "round", 1, "max", 0]], "@end_vars", [CAM1Entry, "-B", 1n], "-B", ["@var_retain", "@This 1", "+B", "@Next 1 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], true, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
+                        [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "-B", "@Next 1 1", "absB", "<", 2n], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]], "&&", [[2n, "^B", [[CAM1Entry, "-B", 1n], "/B", ["@This 1", "+B", "@Next 1 1", "+B", 1n], "logB", 2n, "+B", 1n, "max", 0n]], "@end_vars", [CAM1Entry, "-B", 1n], "-B", ["@var_retain", "@This 1", "+B", "@Next 1 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], true, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
                     );
                     MergeRules.push(
                         [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "-B", "@Next 1 1", "absB", "<", 2n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
-                        [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "-B", "@Next 1 1", "absB", "<", 2n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [[2n, "^B", [CAM1Entry, "/", ["@This 1", "+", "@Next 1 1"], "log", 2, "round", 1, "max", 0]], "@end_vars", CAM1Entry, "-B", ["@var_retain", "@This 1", "+B", "@Next 1 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]]
+                        [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "-B", "@Next 1 1", "absB", "<", 2n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [[2n, "^B", [CAM1Entry, "/B", ["@This 1", "+B", "@Next 1 1", "+B", 1n], "logB", 2n, "+B", 1n, "max", 0n]], "@end_vars", CAM1Entry, "-B", ["@var_retain", "@This 1", "+B", "@Next 1 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]]
                     );
                     rulesDescription += "Two tiles can merge with a 1 if they are equal or they are each one less than consecutive multiples of " + nfact + " that are smaller than " + nonefact + ", and their sum plus one is less than " + nfact + " away from " + nonefact + " divided by some nonnegative integer power of two. ";
                     if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow the path to get from 1 to " + none + " in 1762, but every merge must be done with an additional 1 except for the first power, where you go to " + (mode_vars[1] - 1n) + " instead.) ";
@@ -14004,7 +14004,7 @@ function gmDisplayVars() {
                 }
                 rulesTitle[1] = "1762";
             }
-            else {*/
+            else {
                 let tierTiles = [];
                 function split1762(n, shift) { // n merges with n + shift or n + shift + 1
                     if(tierTiles.includes(n) || n <= 1n) return;
@@ -14028,8 +14028,8 @@ function gmDisplayVars() {
                     MergeRules.push(
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@Next 1 1", "<=", BigInt(mode_vars[4])], "&&", ["@Next 1 1", "+B", 1n, "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@Next 1 1", "<=", BigInt(mode_vars[4])], "&&", ["@Next 1 1", "+B", 1n, "<", CAM1Entry]], false, [["@This 0", ["@Next 1 1", "+B", 1n]]], [], [false, true]],
-                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "-B", "@Next 1 1", "-B", BigInt(mode_vars[4]), "absB", "<=", 1n]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
-                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "-B", "@Next 1 1", "-B", BigInt(mode_vars[4]), "absB", "<=", 1n], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "-B", "@Next 1 1", "-B", BigInt(mode_vars[4]), "absB", "<=", 1n]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "-B", "@Next 1 1", "-B", BigInt(mode_vars[4]), "absB", "<=", 1n], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
                     )
                     rulesDescription += "Two tiles can merge if they are each multiples of " + nfact + " with a difference of either " + mode_vars[4] + " * " + nfact + " or " + (mode_vars[4] + 1) + " * " + nfact + ", and their sum can get to " + nonefact + " with further such merges. A tile that is less than or equal to " + mode_vars[4] + " * " + nfact + " can always merge with a " + nfact + ". ";
                     knownMergeMaxLength = 2;
@@ -14057,7 +14057,7 @@ function gmDisplayVars() {
                     if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
                     else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
                 }
-            //}
+            }
         }
         else if (mode_vars[0] == 1) { // 2047 variant
             document.getElementById("Alternate5040_extra").style.setProperty("display", "block");
@@ -14254,7 +14254,7 @@ function gmDisplayVars() {
                 MergeRules.push(
                     [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n], "&&", [CAM1Entry, "=", 2n]], true, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
                     [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 2 1", "!=", 0n], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "-B", "@Next 2 1", "absB", "<", 2n], "&&", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
-                    [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 2 1", "!=", 0n], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "-B", "@Next 2 1", "absB", "<", 2n], "&&", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "<", CAM1Entry], "&&", [[3n, "^B", [CAM1Entry, "/", ["@This 1", "*", 2, "+", "@Next 2 1"], "log", 3, "round", 1, "max", 0]], "@end_vars", CAM1Entry, "-B", ["@var_retain", "@This 1", "*B", 2n, "+B", "@Next 2 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], false, [["@This 0", ["@This 1", "*B", 2n, "+B", "@Next 2 1"]]], [], [false, true, true]],
+                    [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 2 1", "!=", 0n], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "-B", "@Next 2 1", "absB", "<", 2n], "&&", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "<", CAM1Entry], "&&", [[3n, "^B", [CAM1Entry, "/B", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "+B", 1n], "logB", 3n, "+B", 1n, "max", 0n]], "@end_vars", CAM1Entry, "-B", ["@var_retain", "@This 1", "*B", 2n, "+B", "@Next 2 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], false, [["@This 0", ["@This 1", "*B", 2n, "+B", "@Next 2 1"]]], [], [false, true, true]],
                     [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n], "&&", [CAM1Entry, "/B", [3n, "^B", [CAM1Entry, "expomodB", 3n]], "!=", 1n], "&&", [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", 1n], "||", [[3n, "^B", [CAM1Entry, "*B", 2n, "logB", 3n, "-B", 1n, "max", 0n]], "@end_vars", CAM1Entry, "-B", ["@var_retain", "@Var 0", "*B", 3n], "absB", ">=", "@Var 0"]], "&&", [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", 2n], "||", [[3n, "^B", [CAM1Entry, "logB", 3n, "-B", 1n, "max", 0n]], "@end_vars", CAM1Entry, "-B", ["@var_retain", "@Var 0", "*B", 4n], "absB", ">=", "@Var 0"]]], true, [["@This 0", ["@This 1", "*B", 2n]]], [], [false, true]]
                 )
                 rulesDescription += "Two equal tiles that are an " + nfact + " can merge unless " + none + " is a power of three, and three tiles that are multiples of " + nfact + " and less than " + nonefact + " can merge if two of them are equal and the third one is equal to the other two or exactly " + nfact + " away from the other two, and their sum is less than " + nfact + " away from " + nonefact + " divided by some nonnegative integer power of three. (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow the path to get from 1 to " + none + " in 1668.) ";
@@ -14310,7 +14310,7 @@ function gmDisplayVars() {
                     else MergeRules.push(
                         [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n], "&&", [CAM1Entry, "=", 3n]], true, [[1n, 1n]], [], [false, true]],
                         [3, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@Next 2 0", "=", 0n], "&&", ["@This 1", "-B", "@Next 2 1", "absB", "<", 2n], "&&", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n]], [], [false, true, true]],
-                        [3, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@Next 2 0", "=", 0n], "&&", ["@This 1", "-B", "@Next 2 1", "absB", "<", 2n], "&&", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "<", [CAM1Entry, "-B", 1n]], "&&", [[3n, "^B", [[CAM1Entry, "-B", 1n], "/", ["@This 1", "*", 2, "+", "@Next 2 1"], "log", 3, "round", 1, "max", 0]], "@end_vars", [CAM1Entry, "-B", 1n], "-B", ["@var_retain", "@This 1", "*B", 2n, "+B", "@Next 2 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], false, [[0n, ["@This 1", "*B", 2n, "+B", "@Next 2 1"]]], [], [false, true, true]],
+                        [3, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 2 1", "!=", 0n], "&&", ["@Next 2 0", "=", 0n], "&&", ["@This 1", "-B", "@Next 2 1", "absB", "<", 2n], "&&", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "<", [CAM1Entry, "-B", 1n]], "&&", [[3n, "^B", [[CAM1Entry, "-B", 1n], "/B", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "+B", 1n], "logB", 3n, "+B", 1n, "max", 0n]], "@end_vars", [CAM1Entry, "-B", 1n], "-B", ["@var_retain", "@This 1", "*B", 2n, "+B", "@Next 2 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], false, [[0n, ["@This 1", "*B", 2n, "+B", "@Next 2 1"]]], [], [false, true, true]],
                         [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n], "&&", [[CAM1Entry, "-B", 1n], "/B", [3n, "^B", [[CAM1Entry, "-B", 1n], "expomodB", 3n]], "!=", 1n], "&&", [["@NextNE -1 0", "!=", 0n], "||", ["@NextNE -1 1", "!=", 1n], "||", [[3n, "^B", [[CAM1Entry, "-B", 1n], "*B", 2n, "logB", 3n, "-B", 1n, "max", 0n]], "@end_vars", [CAM1Entry, "-B", 1n], "-B", ["@var_retain", "@Var 0", "*B", 3n], "absB", ">=", "@Var 0"]], "&&", [["@NextNE -1 0", "!=", 0n], "||", ["@NextNE -1 1", "!=", 2n], "||", [[3n, "^B", [[CAM1Entry, "-B", 1n], "logB", 3n, "-B", 1n, "max", 0n]], "@end_vars", [CAM1Entry, "-B", 1n], "-B", ["@var_retain", "@Var 0", "*B", 4n], "absB", ">=", "@Var 0"]]], true, [[0n, 2n]], [], [false, true]],
                         [3, [["@This 0", ">", 0n], "&&", ["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", [CAM1Entry, "=", 2n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n]], false, [[["@This 0", "+B", 1n], 1n]], [], [false, true, true]] // special case for if CAM1Entry is 2 
                     );
@@ -14326,13 +14326,13 @@ function gmDisplayVars() {
                     MergeRules.push(
                         [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n], "&&", [CAM1Entry, "=", 3n]], true, [[1n, 1n]], [], [false, true]],
                         [3, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@Next 2 0", "=", 0n], "&&", ["@This 1", "-B", "@Next 2 1", "absB", "<", 2n], "&&", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n]], [], [false, true, true]],
-                        [3, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@Next 2 0", "=", 0n], "&&", ["@This 1", "-B", "@Next 2 1", "absB", "<", 2n], "&&", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "<", [CAM1Entry, "-B", 1n]], "&&", [[3n, "^B", [[CAM1Entry, "-B", 1n], "/", ["@This 1", "*", 2, "+", "@Next 2 1"], "log", 3, "round", 1, "max", 0]], "@end_vars", [CAM1Entry, "-B", 1n], "-B", ["@var_retain", "@This 1", "*B", 2n, "+B", "@Next 2 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], false, [[0n, ["@This 1", "*B", 2n, "+B", "@Next 2 1"]]], [], [false, true, true]],
+                        [3, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 2 1", "!=", 0n], "&&", ["@Next 2 0", "=", 0n], "&&", ["@This 1", "-B", "@Next 2 1", "absB", "<", 2n], "&&", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "<", [CAM1Entry, "-B", 1n]], "&&", [[3n, "^B", [[CAM1Entry, "-B", 1n], "/B", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "+B", 1n], "logB", 3n, "+B", 1n, "max", 0n]], "@end_vars", [CAM1Entry, "-B", 1n], "-B", ["@var_retain", "@This 1", "*B", 2n, "+B", "@Next 2 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], false, [[0n, ["@This 1", "*B", 2n, "+B", "@Next 2 1"]]], [], [false, true, true]],
                         [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n], "&&", [[CAM1Entry, "-B", 1n], "/B", [3n, "^B", [[CAM1Entry, "-B", 1n], "expomodB", 3n]], "!=", 1n], "&&", [["@NextNE -1 0", "!=", 0n], "||", ["@NextNE -1 1", "!=", 1n], "||", [[3n, "^B", [[CAM1Entry, "-B", 1n], "*B", 2n, "logB", 3n, "-B", 1n, "max", 0n]], "@end_vars", [CAM1Entry, "-B", 1n], "-B", ["@var_retain", "@Var 0", "*B", 3n], "absB", ">=", "@Var 0"]], "&&", [["@NextNE -1 0", "!=", 0n], "||", ["@NextNE -1 1", "!=", 2n], "||", [[3n, "^B", [[CAM1Entry, "-B", 1n], "logB", 3n, "-B", 1n, "max", 0n]], "@end_vars", [CAM1Entry, "-B", 1n], "-B", ["@var_retain", "@Var 0", "*B", 4n], "absB", ">=", "@Var 0"]]], true, [[0n, ["@This 1", "*B", 2n]]], [], [false, true]]
                     );
                 }
                 MergeRules.push(
                     [4, [["@This 0", ">", 0n], "&&", ["@This 1", ">", 0n], "&&", ["@Next 2 1", ">", 0n], "&&", ["@Next 3 0", "=", twoTile[0]], "&&", ["@Next 3 1", "=", twoTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "-B", "@Next 2 1", "absB", "<", 2n], "&&", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true, true]],
-                    [4, [["@This 0", ">", 0n], "&&", ["@This 1", ">", 0n], "&&", ["@Next 2 1", ">", 0n], "&&", ["@Next 3 0", "=", twoTile[0]], "&&", ["@Next 3 1", "=", twoTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "-B", "@Next 2 1", "absB", "<", 2n], "&&", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "<", CAM1Entry], "&&", [[3n, "^B", [CAM1Entry, "/", ["@This 1", "*", 2, "+", "@Next 2 1"], "log", 3, "round", 1, "max", 0]], "@end_vars", CAM1Entry, "-B", ["@var_retain", "@This 1", "*B", 2n, "+B", "@Next 2 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], false, [["@This 0", ["@This 1", "*B", 2n, "+B", "@Next 2 1"]]], [], [false, true, true, true]],
+                    [4, [["@This 0", ">", 0n], "&&", ["@This 1", ">", 0n], "&&", ["@Next 2 1", ">", 0n], "&&", ["@Next 3 0", "=", twoTile[0]], "&&", ["@Next 3 1", "=", twoTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 2 1", "!=", 0n], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "-B", "@Next 2 1", "absB", "<", 2n], "&&", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "<", CAM1Entry], "&&", [[3n, "^B", [CAM1Entry, "/B", ["@This 1", "*B", 2n, "+B", "@Next 2 1", "+B", 1n], "logB", 3n, "+B", 1n, "max", 0n]], "@end_vars", CAM1Entry, "-B", ["@var_retain", "@This 1", "*B", 2n, "+B", "@Next 2 1", "*B", "@Var 0"], "absB", "<", "@Var 0"]], false, [["@This 0", ["@This 1", "*B", 2n, "+B", "@Next 2 1"]]], [], [false, true, true, true]],
                     [3, [["@This 0", ">", 0n], "&&", ["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n], "&&", [CAM1Entry, "/B", [3n, "^B", [CAM1Entry, "expomodB", 3n]], "!=", 1n], "&&", [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", 1n], "||", [[3n, "^B", [CAM1Entry, "*B", 2n, "logB", 3n, "-B", 1n, "max", 0n]], "@end_vars", CAM1Entry, "-B", ["@var_retain", "@Var 0", "*B", 3n], "absB", ">=", "@Var 0"]], "&&", [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", 2n], "||", [[3n, "^B", [CAM1Entry, "logB", 3n, "-B", 1n, "max", 0n]], "@end_vars", CAM1Entry, "-B", ["@var_retain", "@Var 0", "*B", 4n], "absB", ">=", "@Var 0"]]], false, [["@This 0", ["@This 1", "*B", 2n]]], [], [false, true, true]]
                 );
                 rulesDescription += rulesDescription += "Two equal tiles that are an " + nfact + " - 1 can merge with a 1 unless " + none + " is a power of three, and three tiles that are each one less than multiples of " + nfact + " and less than " + nonefact + " - 1 can merge with a 2 if two of them are equal and the third one is equal to the other two or exactly " + nfact + " away from the other two, and their sum is less than " + nfact + " - 1 away from " + nonefact + " divided by some nonnegative integer power of three. (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow the path to get from 1 to " + none + " in 1668, but every two-tile merge includes an extra 1 and every three-tile merge includes an extra 2.) ";
@@ -17240,61 +17240,64 @@ function gmDisplayVars() {
             knownMergeLookbackDistance = 1;
             let allPowers = [
                 [
-                    [2, true]
+                    [2, true, true]
                 ],
                 [
-                    [2, ["@This 1", "=", 1n]]
+                    [2, ["@This 1", "=", 1n], false]
                 ],
                 [
-                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 3n]],
-                    [3, ["@This 1", "+B", "@Next 1 1", "=", 4n]]
+                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 3n], true],
+                    [3, ["@This 1", "+B", "@Next 1 1", "=", 4n], true]
                 ],
                 [
-                    [2, [["@This 1", "+B", "@Next 1 1", "<=", 5n]]]
+                    [2, [["@This 1", "+B", "@Next 1 1", "<=", 5n]], true]
                 ],
                 [
-                    [3, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 1", "<", 3n]]],
-                    [2, [["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "=", 3n], "||", ["@NextNE -1 1", "!=", 1n]]]]
+                    [3, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 1", "<", 3n]], true],
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "=", 3n], "||", ["@NextNE -1 1", "!=", 1n]]], true]
                 ],
                 [
-                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 3n]],
-                    [2, [["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "=", 2n], "||", [["@This 1", "=", 1n], "&&", ["@NextNE -1 1", "!=", 1n]]]]],
-                    [2, ["@This 1", "+B", "@Next 1 1", "=", 7n]]
+                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 3n], true],
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "=", 2n], "||", [["@This 1", "=", 1n], "&&", ["@NextNE -1 1", "!=", 1n]]]], true],
+                    [2, ["@This 1", "+B", "@Next 1 1", "=", 7n], true]
                 ],
                 [
-                    [2, [["@This 1", "*B", 2n, "-B", 1n, "=", "@Next 1 1"]]]
+                    [2, [["@This 1", "*B", 2n, "-B", 1n, "=", "@Next 1 1"]], false]
                 ],
                 [
-                    [4, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "+B", "@Next 3 1", "=", 4n]],
-                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 9n]],
+                    [4, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "+B", "@Next 3 1", "=", 4n], true],
+                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 9n], true],
                 ],
                 [
-                    [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "%B", 2n, "=", 1n]]],
-                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 5n]],
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "%B", 2n, "=", 1n]], true],
+                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 5n], true],
                 ],
                 [
-                    [2, [["@This 1", "=", 1n], "&&", ["@Next 1 1", "<", 3n]]],
-                    [3, [["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"], "%B", 5n, "=", 1n]]
+                    [2, [["@This 1", "=", 1n], "&&", ["@Next 1 1", "<", 3n]], false],
+                    [3, [["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"], "%B", 5n, "=", 1n], true]
                 ],
                 [
-                    // 12
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", [12n, "%B", ["@This 1", "*B", 2n], "=", 0n]], true],
+                    [3, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", [12n, "%B", ["@This 1", "*B", 3n], "=", 0n]], true],
+                    [4, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 1", "=", "@Next 3 1"], "&&", [12n, "%B", ["@This 1", "*B", 4n], "=", 0n]], true] 
                 ],
                 [
-                    [2, [["@This 1", "=", 1n], "&&", ["@Next 1 1", "<", 4n]]],
-                    [2, [["@This 1", ">", 3n], "&&", [["@This 1", "+B", "@Next 1 1", "=", 6n], "||", ["@This 1", "+B", "@Next 1 1", "=", 9n], "||", ["@This 1", "+B", "@Next 1 1", "=", 13n]]]]
+                    [2, [["@This 1", "=", 1n], "&&", ["@Next 1 1", "<", 4n]], false],
+                    [2, [["@This 1", ">", 3n], "&&", [["@This 1", "+B", "@Next 1 1", "=", 6n], "||", ["@This 1", "+B", "@Next 1 1", "=", 9n], "||", ["@This 1", "+B", "@Next 1 1", "=", 13n]]], false]
                 ],
                 [
                     // 14
                 ],
                 [
-                    [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "<", 5n]]],
-                    [2, [["@This 1", ">", 3n], "&&", [["@This 1", "+B", "@Next 1 1", "=", 9n], "||", ["@This 1", "+B", "@Next 1 1", "=", 11n], "||", ["@This 1", "+B", "@Next 1 1", "=", 15n]]]]
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "<", 5n]], true],
+                    [2, [["@This 1", "+B", "@Next 1 1", "=", 9n], "||", ["@This 1", "+B", "@Next 1 1", "=", 11n], "||", ["@This 1", "+B", "@Next 1 1", "=", 15n]], true]
                 ],
                 [
                     // 16
                 ],
                 [
-                    // 17
+                    [3, [["@This 1", "=", 1n], "&&", ["@Next 1 1", "*B", 2n, "+B", 1n, "=", "@Next 2 1"]], false],
+                    [3, [["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", "@Next 2 1"], "&&", ["@Next 1 1", "%B", 4n, "=", 1n]], false]
                 ],
                 [
                     // 18
@@ -17303,7 +17306,8 @@ function gmDisplayVars() {
                     // 19
                 ],
                 [
-                    // 20
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "%B", 5n, "=", 1n]], true]
+                    [3, [["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"], "%B", 14n, "=", 6n], true]
                 ],
                 [
                     // 21
@@ -17313,6 +17317,12 @@ function gmDisplayVars() {
                 ],
                 [
                     // 23
+                ],
+                [
+                    // 24
+                ],
+                [
+                    // 25
                 ]
             ]
             if(mode_vars[3] == 0) {
