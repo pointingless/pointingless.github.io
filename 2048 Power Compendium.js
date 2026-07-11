@@ -13738,7 +13738,7 @@ function gmDisplayVars() {
             if(mode_vars[2] == 1) rulesTitle = [mode_vars[1]**goalPow - 1n + " (Alternate 5039, ", ""];
             else if(mode_vars[2] == 0) rulesTitle = [mode_vars[1]**goalPow + " (Alternate 5040, ", ""];
         }
-        if(typeof mode_vars[1] !== "object") startTileSpawns = [[oneTile, 1]];
+        if(typeof mode_vars[1] !== "gaussianbigint") startTileSpawns = [[oneTile.slice(), 1]];
         if (mode_vars[2] == 0) {
             document.getElementById("Alternate5040_diff_text").innerHTML = "Tiles are their normal values.";
             document.getElementById("Alternate5040_diff_text").style.setProperty("color", "#224498");
@@ -15456,7 +15456,7 @@ function gmDisplayVars() {
             }
         }
         else if(mode_vars[0] == 9) { // 180 variant
-            document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_extra").style.setProperty("display", "block");
             document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
             document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #eec812, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #eec812, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
@@ -15588,23 +15588,23 @@ function gmDisplayVars() {
             }
             else if(mode_vars[3] == 1) { // 2592 variant
                 statBoxes = [["Moves", "@Moves"], ["Score", "@Score"]];
+                mergeResultKnownLevel = 0;
                 if(mode_vars[1] === true) {
                     MergeRules = [];
                     for(let f = 2; f <= 200; f++) {
                         if(listFactors(f, true) == 2n && f > max(width, height)) break;
-                        let conditional = [["@This 0", "=", BigInt(f - 1)], "&&", [], "&&", [["@This 0", "!=", "@NextNE -1 0"], "||", ["@This 1", "!=", "@NextNE -1 1"]], "&&", [["@This 0", "!=", "@Next 1 0"], "||", ["@This 1", "!=", "@Next 1 1"]]];
+                        let conditional = [["@This 0", "=", BigInt(f - 1)], "&&", [], "&&", []];
                         let lastArray = [false];
                         let specialCondition = ["@This 1"];
                         for(let i = 2; i <= f; i++) {
+                            conditional[4] = [CAM1Entry, "primeFactorizeB", 2, "arr_elem", ["@Moves", "%", [CAM1Entry, "primeFactorizeB", 2, "arr_length"]], "=", BigInt(i)]
                             conditional.push("&&", ["@This 0", "=", "@Next " + (i - 1) + " 0"], "&&", ["@This 1", "=", "@Next " + (i - 1) + " 1"]);
                             lastArray.push(true);
                             specialCondition.push("+B", "@Next " + (i - 1) + " 1")
                             if(listFactors(i, true) == 2n && f % i === 0) {
-                                conditional[6][0][2] = "@Next " + i + " 0";
-                                conditional[6][2][2] = "@Next " + i + " 1";
-                                conditional[2] = [["@This 0", "+B", 1n], "%B", specialCondition.slice(), "=", 0n];
+                                conditional[2] = [CAM1Entry, "%B", specialCondition.slice(), "=", 0n];
                                 MergeRules.unshift([i, conditional.slice(), true, [["@This 0", specialCondition.slice()]], [], lastArray.slice()]);
-                                conditional[2] = [["@This 0", "+B", 1n], "=", specialCondition.slice()];
+                                conditional[2] = [CAM1Entry, "=", specialCondition.slice()];
                                 MergeRules.unshift([i, conditional.slice(), true, [[["@This 0", "+B", 1n], 1n]], [], lastArray.slice()]);
                             }
                         }
@@ -15632,14 +15632,15 @@ function gmDisplayVars() {
                         if(listFactors(f, true) == 2n && f > max(width, height)) break;
                         let lastArray = [false];
                         let specialCondition = ["@This 1"];
-                        let conditional = [[["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"]], "&&", ["@This 0", "%", mode_vars[1].length, "=", f]];
+                        let conditional = [[], "&&", ["@This 0", "%", mode_vars[1].length, "=", f]];
                         for(let i = 2; i <= mode_vars[1][f]; i++) { 
+                            conditional[0] = [CAM1Entry, "primeFactorizeB", 2, "arr_elem", ["@Moves", "%", [CAM1Entry, "primeFactorizeB", 2, "arr_length"]], "=", BigInt(i)];
                             conditional.push("&&", ["@This 0", "=", "@Next " + (i - 1) + " 0"], "&&", ["@This 1", "=", "@Next " + (i - 1) + " 1"]);
                             lastArray.push(true);
                             specialCondition.push("+B", "@Next " + (i - 1) + " 1")
                             if(listFactors(i, true) == 2n && Number(mode_vars[1][f]) % i === 0) {
-                                MergeRules.unshift([i, [[CAM1Entry, "%B", specialCondition.slice(), "=", 0n], "&&", [["@Next " + i + " 0", "!=", "@This 0"], "||", ["@Next " + i + " 1", "!=", "@This 1"]], "&&", conditional.slice()], true, [["@This 0", specialCondition.slice()]], [[arrayProduct, "^", ["@This 0", "/B", mode_vars[1].length, "Number"]], "*", [arraySubproducts, "arr_elem", ["@This 0", "%", mode_vars[1].length]], "*", specialCondition.slice()], lastArray.slice()]);
-                                MergeRules.unshift([i, [[CAM1Entry, "=", specialCondition.slice()], "&&", [["@Next " + i + " 0", "!=", "@This 0"], "||", ["@Next " + i + " 1", "!=", "@This 1"]], "&&", conditional.slice()], true, [[["@This 0", "+B", 1n], 1n]], [[arrayProduct, "^", [["@This 0", "+B", 1n], "/B", mode_vars[1].length, "Number"]], "*", [arraySubproducts, "arr_elem", [["@This 0", "+", 1], "%", mode_vars[1].length]]], lastArray.slice()]);
+                                MergeRules.unshift([i, [[CAM1Entry, "%B", specialCondition.slice(), "=", 0n], "&&", conditional.slice()], true, [["@This 0", specialCondition.slice()]], [], lastArray.slice()]);
+                                MergeRules.unshift([i, [[CAM1Entry, "=", specialCondition.slice()], "&&", conditional.slice()], true, [[["@This 0", "+B", 1n], 1n]], [], lastArray.slice()]);
                             }
                         }
                     }
@@ -15651,7 +15652,7 @@ function gmDisplayVars() {
                     ];
                     for(let f = 2; f <= 200; f++) {
                         if(listFactors(f - 1, true) == 2n && f - 1 > max(width, height)) break;
-                        let conditional = [["@This 0", "=", BigInt(f - 1)], "&&", [], "&&", [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"]], "&&", [["@Next 1 0", "!=", "@This 0"], "||", ["@Next 1 1", "!=", "@This 1"]]];
+                        let conditional = [["@This 0", "=", BigInt(f - 1)], "&&", []];
                         let lastArray = [false];
                         let specialCondition = ["@This 1"];
                         for(let i = 2; i <= f; i++) {
@@ -15659,11 +15660,11 @@ function gmDisplayVars() {
                             lastArray.push(true);
                             specialCondition.push("+B", "@Next " + (i - 1) + " 1")
                             if(listFactors(i, true) == 2n && (f - 1) % i === 0) {
-                                conditional[6][0] = "@Next " + i;
+                                conditional[0] = [CAM1Entry, "primeFactorizeB", 2, "arr_elem", ["@Moves", "%", [CAM1Entry, "primeFactorizeB", 2, "arr_length"]], "=", BigInt(i)];
                                 conditional[2] = [[specialCondition.slice(), "!=", 0n], "&&", ["@This 0", "%B", specialCondition.slice(), "=", 0n]];
-                                MergeRules.unshift([i, conditional.slice(), true, [["@This 0", specialCondition.slice()]], ["@This 0", "subfactorial", "*", specialCondition.slice()], lastArray.slice()]);
+                                MergeRules.unshift([i, conditional.slice(), true, [["@This 0", specialCondition.slice()]], [], lastArray.slice()]);
                                 conditional[2] = ["@This 0", "=", specialCondition.slice()];
-                                MergeRules.unshift([i, conditional.slice(), true, [[["@This 0", "+B", 1n], 0n]], [["@This 0", "+", 1], "subfactorial"], lastArray.slice()]);
+                                MergeRules.unshift([i, conditional.slice(), true, [[["@This 0", "+B", 1n], 0n]], [], lastArray.slice()]);
                             }
                         }
                     }
@@ -15696,20 +15697,21 @@ function gmDisplayVars() {
                     MergeRules = [];
                     let lastArray = [false];
                     let specialCondition = ["@This 1"];
-                    let conditional = [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"]];
+                    let conditional = [[]];
                     for(let f = 2; f <= Number(mode_vars[1]); f++) {
                         if(listFactors(f, true) == 2n && f > max(width, height)) break;
                         conditional.push("&&", ["@This 0", "=", "@Next " + (f - 1) + " 0"], "&&", ["@This 1", "=", "@Next " + (f - 1) + " 1"]);
                         lastArray.push(true);
                         specialCondition.push("+B", "@Next " + (f - 1) + " 1")
                         if(listFactors(f, true) == 2n && Number(mode_vars[1]) % f === 0) {
-                            MergeRules.unshift([f, [[mode_vars[1], "%B", specialCondition.slice(), "=", 0n], "&&", [["@Next " + f + " 0", "!=", "@This 0"], "||", ["@Next " + f + " 1", "!=", "@This 1"]], "&&", conditional.slice()], true, [["@This 0", specialCondition.slice()]], [mode_vars[1], "^", "@This 0", "*", specialCondition.slice()], lastArray.slice()]);
-                            MergeRules.unshift([f, [[mode_vars[1], "=", specialCondition.slice()], "&&", [["@Next " + f + " 0", "!=", "@This 0"], "||", ["@Next " + f + " 1", "!=", "@This 1"]], "&&", conditional.slice()], true, [[["@This 0", "+B", 1n], 1n]], [mode_vars[1], "^", ["@This 0", "+", 1]], lastArray.slice()]);
+                            conditional[0] = [CAM1Entry, "primeFactorizeB", 2, "arr_elem", ["@Moves", "%", [CAM1Entry, "primeFactorizeB", 2, "arr_length"]], "=", BigInt(f)];
+                            MergeRules.unshift([f, [[mode_vars[1], "%B", specialCondition.slice(), "=", 0n], "&&", conditional.slice()], true, [["@This 0", specialCondition.slice()]], [], lastArray.slice()]);
+                            MergeRules.unshift([f, [[mode_vars[1], "=", specialCondition.slice()], "&&", conditional.slice()], true, [[["@This 0", "+B", 1n], 1n]], [], lastArray.slice()]);
                         }
                     }
                 }
                 knownMergeLookbackDistance = 2;
-                rulesDescription += "A prime amount of equal multiples of " + nfact + " that sum to a divisor of " + nonefact + " can merge. A line of four, six, eight, etc. of the same tile will not merge. ";
+                rulesDescription += "A prime amount of equal multiples of " + nfact + " that sum to a divisor of " + nonefact + " can merge if the (number of moves made so far) % (the number of factors of " + none + ") -th factor of " + none + " in increasing order is equal to that prime number. ";
                 if(Array.isArray(mode_vars[1])) rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (180 Variant) for the following n's in a cycle: " + arrayListString + ". ";
                 rulesTitle[1] = "2592";
             }
