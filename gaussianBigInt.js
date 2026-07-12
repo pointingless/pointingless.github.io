@@ -486,6 +486,7 @@ class GaussianBigInt {
      * Returns I^(power). The power must be a bigint, because complex powers of I would not be gaussian integers.
      */
     static ipow(power, sq) {
+        if(sq == undefined) sq = -1n;
         power = BigInt(power);
         sq = BigInt(sq);
         if(sq == 0n) {
@@ -531,13 +532,17 @@ class GaussianBigInt {
         value = new GaussianBigInt(value);
         return value.quadrant();
     }
-    /** HEREEEEEEEEEEEEEEEEEEEEE
+    /**
      * What unit do we have to multiply by to rotate this gaussian integer into the first quadrant?
      */
     firstQuadrantUnit() {
-        if (this.eq(GaussianBigInt.zero))
-            return new GaussianBigInt(0n, 0n, this.discriminant);
-        return GaussianBigInt.ipow(4n - this.quadrant());
+        if (this.discriminant == -1n) {
+            if (this.eq(GaussianBigInt.zero))
+                return new GaussianBigInt(0n, 0n, -1n);
+            else
+                return GaussianBigInt.ipow(4n - this.quadrant(), -1n);
+        } else
+            throw new Error("First quadrant functions can only be called with a discriminant of -1")
     }
     /**
      * What unit do we have to multiply by to rotate this gaussian integer into the first quadrant?
@@ -683,14 +688,20 @@ class GaussianBigInt {
         other = new GaussianBigInt(other);
         return value.sub(other);
     }
-    /** HEREEEEEEEEEEEE
+    /**
      * Division of two Gaussian integers (rounds in the same way that bigint division does)
      */
     div(other) {
         other = new GaussianBigInt(other);
-        let denominator = other.norm();
-        let numerator = this.mul(other.conj());
-        return new GaussianBigInt(numerator.real / denominator, numerator.imaginary / denominator);
+        if (this.discriminant !== other.discriminant) throw new Error("Gaussian bigint operation called with bigints of different imaginary constants");
+        else {
+            let denominator = other.norm();
+            if (denominator == 0n) throw new Error("Cannot divide by a zero divisor");
+            else {
+                let numerator = this.mul(other.conj());
+                return new GaussianBigInt(numerator.real / denominator, numerator.imaginary / denominator, this.discriminant);
+            }
+        }
     }
     /**
      * Division of two Gaussian integers (rounds in the same way that bigint division does)
@@ -715,11 +726,12 @@ class GaussianBigInt {
         other = new GaussianBigInt(other);
         return value.divide(other);
     }
-    /**
+    /** HEREEEEEEEEEE
      * Modulo, a.k.a. remainder: what is the remainder of a / b?
      */
     mod(other) {
         other = new GaussianBigInt(other);
+        if (this.discriminant !== other.discriminant) throw new Error("Gaussian bigint operation called with bigints of different imaginary constants");
         let result = this.sub(this.div(other).mul(other));
         while (result.plus(other).norm() < result.norm()) {
             result = result.plus(other);
@@ -763,6 +775,7 @@ class GaussianBigInt {
      */
     divM(other) {
         other = new GaussianBigInt(other);
+        if (this.discriminant !== other.discriminant) throw new Error("Gaussian bigint operation called with bigints of different imaginary constants");
         return this.sub(this.mod(other)).div(other);
     }
     /**

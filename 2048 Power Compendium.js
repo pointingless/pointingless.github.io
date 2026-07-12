@@ -173,7 +173,7 @@ let string_operators = ["str_char", "str_concat", "str_concat_front", "str_lengt
 let boolean_operators = ["&&", "||", "!", "&&nsc", "||nsc"];
 let array_operators = ["arr_copy", "arr_elem", "arr_edit_elem", "arr_length", "arr_push", "arr_pop", "arr_shift", "arr_unshift", "arr_concat", "arr_concat_front", "arr_flat", "arr_splice", "arr_slice", "arr_indexOf", "arr_lastIndexOf", "arr_indexOfFrom", "arr_lastIndexOfFrom", "arr_includes", "arr_reverse", "arr_sort", "arr_map", "arr_filter", "arr_reduce", "arr_reduceRight", "arr_binarySearch", "arr_binaryInsert", "arr_eqRearrange", "CalcArray", "primeDefactorizeB", "weightedRandomArrayEntry", "multicolor"];
 let bigint_operators = ["+B", "-B", "*B", "/B", "%B", "modB", "^B", "**B", "rootB", "logB", "roundB", "floorB", "ceilB", "ceilingB", "absB", "signB", "gcdB", "lcmB", "factorialB", "subfactorialB", "primeB", "zeckendorfB", "expomodB", "primeFactorizeB", "factorAmountB", "factorListB", "baseConvert", "bit&B", "bit|B", "bit~B", "bit^B", "bit<<B", "bit>>B", "bit>>>B", "basebit&B", "basebit|B", "basebit~B", "basebit^B", "rand_bigint", "defaultAbbrevB", "perfectPowerFormB", "DIVESeedUnlock", "ipowGB", "gaussian_prime"];
-let gaussianbigint_operators = ["reGB", "imGB", "+GB", "-GB", "*GB", "/GB", "/mGB", "modGB", "^GB", "**GB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "gcdGB", "lcmGB", "expomodGB", "defaultAbbrevGB", "GaussianDIVESeedUnlock", "gaussianSort"];
+let gaussianbigint_operators = ["reGB", "imGB", "diGB", "+GB", "-GB", "*GB", "/GB", "/mGB", "modGB", "^GB", "**GB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "gcdGB", "lcmGB", "expomodGB", "defaultAbbrevGB", "GaussianDIVESeedUnlock", "gaussianSort"];
 let bigrational_operators = ["numeratorBR", "denominatorBR", "+BR", "-BR", "*BR", "/BR", "modBR", "^BR", "**BR", "roundBR", "floorBR", "ceilBR", "ceilingBR", "negBR", "recipBR", "absBR", "signBR", "gcdBR", "lcmBR", "expomodBR", "defaultAbbrevBR", "perfectPowerFormBR"];
 let pop_1_operators = ["abs", "absB", "sign", "signB", "reGB", "imGB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "ipowGB", "numeratorBR", "denominatorBR", "negBR", "recipBR", "absBR", "signBR", "sin", "cos", "tan", "!", "factorial", "factorialB", "prime", "primeB", "primeGB", "factorAmountB", "factorListB", "defaultAbbrev", "defaultAbbrevB", "defaultAbbrevGB", "defaultAbbrevBR", "defaultAbbrevAny", "bit~", "bit~B", "str_length", "str_toUpperCase", "str_toLowerCase", "arr_copy", "arr_length", "arr_pop", "arr_shift", "arr_reverse", "Number", "String", "Boolean", "Array", "BigInt", "GaussianBigInt", "BigRational", "typeof"]; //CalcArray, the operator, also only takes 1 input, but it's a special case so it's not in this list. Same goes for evaluateColor.
 let calcArray_startModifiers = ["@var_retain", "@var_copy", "@global_var_retain", "@global_var_copy", "@global_var_none", "@global_var_retain_inner", "@global_var_copy_inner", "@global_var_none_inner"];
@@ -1181,7 +1181,7 @@ document.getElementById("Alternate5040_basePrimorials_button").addEventListener(
     gmDisplayVars();
 });
 document.getElementById("Alternate5040_baseSubfactorials_button").addEventListener("click", function(){
-    mode_vars[1] = new GaussianBigInt(2n, 2n);
+    mode_vars[1] = new GaussianBigInt(2n, 2n, 1n);
     loadGridSize(100, mode_vars);
     gmDisplayVars();
 });
@@ -1256,13 +1256,13 @@ document.getElementById("Alternate5040_baseRational_button").addEventListener("c
 });
 document.getElementById("Alternate5040_baseSplitComplex_numerator_change").addEventListener("change", function() {
     v = BigInt(this.value);
-    if (v > 0n) mode_vars[1] = new GaussianBigInt(v, mode_vars[1].imaginary);
+    if (v > 0n) mode_vars[1] = new GaussianBigInt(v, mode_vars[1].imaginary, 1n);
     loadGridSize(100, mode_vars);
     gmDisplayVars();
 });
 document.getElementById("Alternate5040_baseSplitComplex_denominator_change").addEventListener("change", function() {
     v = BigInt(this.value);
-    if (v > 0n) mode_vars[1] = new GaussianBigInt(mode_vars[1].real, v);
+    if (v > 0n) mode_vars[1] = new GaussianBigInt(mode_vars[1].real, v, 1n);
     loadGridSize(100, mode_vars);
     gmDisplayVars();
 });
@@ -3163,7 +3163,7 @@ let waves_order = [
     [96, 96.50118], [35, 101], [34, 34.50118], [70, 50.1], [69, 50.22], [91, 91.50118], [73, 73.50118], [89, 89.50118], [97, 97.50118], [37, 102], [40, 50.248], [95, 50.7101113], [50, 50]
 ]
 let wavesModeModified = [96.50118, 34.50118, 50.22, 91.50118, 73.50118, 89.50118, 97.50118, 50.248]
-let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 26, 27, 28, 29, 30, 32, 24];
+let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 26, 27, 28, 29, 30, 32, /*33,*/ 24];
 for (let t = 1; t <= modes_order.length; t++) { //Adding event listeners to the main mode tiles on the menu
     let mtile = document.getElementById("menu_grid_storage").firstElementChild;
     let position = modes_order.indexOf(t);
@@ -4124,14 +4124,18 @@ function abbreviateNumber(num, system, decimals, commas, ...more) {
         return result;
     }
     else if (system == "GaussianBigInt") {
+        let imagstring = "sqrt(" + Number(num.discriminant) + ")";
+        if (num.discriminant == -1n) imagstring = "i";
+        else if (num.discriminant == 0n) imagstring = "\u03B5";
+        else if (num.discriminant == 1n) imagstring = "j";
         if (num.imaginary == 0n)
             return abbreviateNumber(num.real, "BigInt", decimals, commas, ...more);
         else if (num.real == 0n)
-            return abbreviateNumber(num.imaginary, "BigInt", decimals, commas, ...more) + "i";
+            return abbreviateNumber(num.imaginary, "BigInt", decimals, commas, ...more) + imagstring;
         else if (num.imaginary < 0n)
-            return abbreviateNumber(num.real, "BigInt", decimals, commas, ...more) + "-" + abbreviateNumber(num.imaginary * -1n, "BigInt", decimals, commas, ...more) + "i";
+            return abbreviateNumber(num.real, "BigInt", decimals, commas, ...more) + "-" + abbreviateNumber(num.imaginary * -1n, "BigInt", decimals, commas, ...more) + imagstring;
         else
-            return abbreviateNumber(num.real, "BigInt", decimals, commas, ...more) + "+" + abbreviateNumber(num.imaginary, "BigInt", decimals, commas, ...more) + "i";
+            return abbreviateNumber(num.real, "BigInt", decimals, commas, ...more) + "+" + abbreviateNumber(num.imaginary, "BigInt", decimals, commas, ...more) + imagstring;
     }
     else if (system == "BigRational") {
         let result = "";
@@ -9529,7 +9533,7 @@ function loadGridSize(mode, mvars = []) {
             }
         }
         if(mode_vars[1] < -1n) defaultSize++;
-        else if(typeof mode_vars[1] === "gaussianbigint") defaultSize += 2;
+        else if(mode_vars[1] instanceof GaussianBigInt) defaultSize += 1;
     }
     else if (mode == 34.50118) { // Partial Flow DiVE
         if (!mvars[3]) defaultSize = 4;
@@ -13418,16 +13422,16 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseSubfactorials").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseSplitComplex").style.setProperty("display", "block");
             spawnTiles = "Spawning tiles: Pulls from a \"box\" that starts with one 1 and one j, and only refills once it's empty.";
-            startTileSpawns = [["Box", 1, [0n, new GaussianBigInt(1n, 0n)], 1, [0n, new GaussianBigInt(0n, 1n)], 1]];
+            //startTileSpawns = [["Box", 1, [0n, new GaussianBigInt(1n, 0n, 1n)], 1, [0n, new GaussianBigInt(0n, 1n, 1n)], 1]];
             MergeRules = [
-                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+GB", "@Next 1 1", "=", mode_vars[1]]], true, [[["@This 0", "+B", 1n], new GaussianBigInt(1n, 0n)]], [], [false, true]],
-                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+GB", "@Next 1 1", "=", new GaussianBigInt(mode_vars[1].imaginary, mode_vars[1].real)]], true, [[["@This 0", "+B", 1n], new GaussianBigInt(0n, 1n)]], [], [false, true]]
+                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+GB", "@Next 1 1", "=", mode_vars[1]]], true, [[["@This 0", "+B", 1n], new GaussianBigInt(1n, 0n, 1n)]], [], [false, true]],
+                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+GB", "@Next 1 1", "=", new GaussianBigInt(mode_vars[1].imaginary, mode_vars[1].real, 1n)]], true, [[["@This 0", "+B", 1n], new GaussianBigInt(0n, 1n, 1n)]], [], [false, true]]
             ]
             CAM1Entry = [mode_vars[1].real];
             //nextCAM1Entry = mode_vars[1][0][0];
-            nfact = defaultAbbreviate(mode_vars[1]).slice(0,-1) + "j<sup>n</sup>";
-            nonefact = defaultAbbreviate(mode_vars[1]).slice(0,-1) + "j<sup>n + 1</sup>";
-            none = defaultAbbreviate(mode_vars[1]).slice(0,-1) + "j";
+            nfact = mode_vars[1].toString() + "<sup>n</sup>";
+            nonefact = mode_vars[1].toString() + "<sup>n + 1</sup>";
+            none = mode_vars[1].toString();
             //oneTile[0] = 0n;
             //twoTile = [0n, 2n];
             validIndex.push(mode_vars[1]); //????????
@@ -13472,12 +13476,12 @@ function gmDisplayVars() {
                     oneTile[1] = mode_vars[1];
                     //startTileSpawns = [[[0n, mode_vars[1]], 1]];
                     TileTypes = [
-                        [true, [mode_vars[1], "^GB", "@This 0", "*GB", "@This 1", "defaultAbbrevGB", "str_slice", 0, -1, "str_concat", "j"]/*, ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]*/]
+                        [true, [mode_vars[1], "^GB", "@This 0", "*GB", "@This 1", "defaultAbbrevGB"]/*, ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]*/]
                     ];
                 } else {
                     //startTileSpawns = [[[0n, 1n], 1]];
                     TileTypes = [
-                        [true, [mode_vars[1], "^GB", "@This 0", "*GB", "@This 1", "defaultAbbrevGB", "str_slice", 0, -1, "str_concat", "j"], "#ffffff", "#000000"/*, ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]*/]
+                        [true, [mode_vars[1], "^GB", "@This 0", "*GB", "@This 1", "defaultAbbrevGB"], "#ffffff", "#000000"/*, ["@radial-gradient", ["@HSLA", ["@This 0", "*", 49, "+", (Number(mode_vars[1]) - 2) * 222.49223595], 100, [0.925, "^", ["@This 0", "*", Math.log2(Number(mode_vars[1]))], "*", 90, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "log", mode_vars[1], "*", 360], 100, [40, "@if", [mode_vars[1], "^B", "@This 0", "*B", "@This 1", ">=", 512n], "2nd", 60, "@end-if"], 1], 100], ["#393900", "@if", [mode_vars[1], "^B", "@This 0", ">=", 512n], "2nd", "#ffffd3", "@end-if"]*/]
                     ];
                 }
                 tileValueFunction = [mode_vars[1], "^", "@This 0", "*", "@This 1"]; //????????
@@ -13489,11 +13493,11 @@ function gmDisplayVars() {
             else if (mode_vars[1].norm() < 22n) goalPow = 3n;
             else if (mode_vars[1].norm() < 256n) goalPow = 2n;
             else goalPow = 1n;
-            winConditions = [[goalPow, new GaussianBigInt(1n, 0n)], [goalPow, new GaussianBigInt(0n, 1n)]];
+            winConditions = [[goalPow, new GaussianBigInt(1n, 0n, 1n)], [goalPow, new GaussianBigInt(0n, 1n, 1n)]];
             //if(mode_vars[0] == 10 && mode_vars[3] == 0) winConditions[0][1] = mode_vars[1];
-            goalText = defaultAbbreviate(mode_vars[1].pow(goalPow)).slice(0,-1) + "j";
+            goalText = mode_vars[1].pow(goalPow).toString();
             //if(mode_vars[2] == 1) rulesTitle = [mode_vars[1]**goalPow - 1n + " (Alternate 5039, ", ""];
-            /*else */if(mode_vars[2] == 0) rulesTitle = [defaultAbbreviate(mode_vars[1].pow(goalPow)).slice(0,-1) + "j (Alternate 5040, ", ""];
+            /*else */if(mode_vars[2] == 0) rulesTitle = [mode_vars[1].pow(goalPow).toString() + " (Alternate 5040, ", ""];
         }
         else if(mode_vars[1] === 0n) {
             document.getElementById("Alternate5040_baseFactorials").style.setProperty("display", "none");
@@ -13738,7 +13742,8 @@ function gmDisplayVars() {
             if(mode_vars[2] == 1) rulesTitle = [mode_vars[1]**goalPow - 1n + " (Alternate 5039, ", ""];
             else if(mode_vars[2] == 0) rulesTitle = [mode_vars[1]**goalPow + " (Alternate 5040, ", ""];
         }
-        if(typeof mode_vars[1] !== "gaussianbigint") startTileSpawns = [[oneTile.slice(), 1]];
+        if(mode_vars[1] instanceof GaussianBigInt) startTileSpawns = [["Box", 1, [0n, new GaussianBigInt(1n, 0n, 1n)], 1, [0n, new GaussianBigInt(0n, 1n, 1n)]]]
+        else startTileSpawns = [[oneTile.slice(), 1]];
         if (mode_vars[2] == 0) {
             document.getElementById("Alternate5040_diff_text").innerHTML = "Tiles are their normal values.";
             document.getElementById("Alternate5040_diff_text").style.setProperty("color", "#224498");
@@ -13967,7 +13972,7 @@ function gmDisplayVars() {
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #afe726, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
             knownMergeLookbackDistance = 0;
             if(mode_vars[4] == 0) {
-                if(typeof mode_vars[1] === "object") {
+                if(mode_vars[1] instanceof GaussianBigInt) {
                     MergeRules.push(
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", [["@This 1", "reGB", "=", 0n], "&&", ["@Next 1 1", "reGB", "=", 0n], "&&", [["@This 1", "imGB", "signB"], "=", ["@Next 1 1", "imGB", "signB"]]], "&&", [["@This 1", "imGB", "absB"], "-B", ["@Next 1 1", "imGB", "absB"], "absB", "<", 2n], "&&", [["@This 1", "imGB", "absB"], "+B", ["@Next 1 1", "imGB", "absB"], "<=", max(mode_vars[1].imaginary, mode_vars[1].real)], "&&", [[[2n, "^B", [mode_vars[1].imaginary, "/", [["@This 1", "imGB", "absB"], "+", ["@Next 1 1", "imGB", "absB"]], "log", 2, "round", 1, "max", 0]], "@end_vars", mode_vars[1].imaginary, "-B", ["@var_retain", ["@This 1", "imGB", "absB"], "+B", ["@Next 1 1", "imGB", "absB"], "*B", "@Var 0"], "absB", "<", "@Var 0"], "||", [[2n, "^B", [mode_vars[1].real, "/", [["@This 1", "imGB", "absB"], "+", ["@Next 1 1", "imGB", "absB"]], "log", 2, "round", 1, "max", 0]], "@end_vars", mode_vars[1].real, "-B", ["@var_retain", ["@This 1", "imGB", "absB"], "+B", ["@Next 1 1", "imGB", "absB"], "*B", "@Var 0"], "absB", "<", "@Var 0"]]], true, [["@This 0", ["@This 1", "+GB", "@Next 1 1"]]], [], [false, true]],
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", [["@This 1", "imGB", "=", 0n], "&&", ["@Next 1 1", "imGB", "=", 0n], "&&", [["@This 1", "reGB", "signB"], "=", ["@Next 1 1", "reGB", "signB"]]], "&&", [["@This 1", "reGB", "absB"], "-B", ["@Next 1 1", "reGB", "absB"], "absB", "<", 2n], "&&", [["@This 1", "reGB", "absB"], "+B", ["@Next 1 1", "reGB", "absB"], "<=", max(mode_vars[1].imaginary, mode_vars[1].real)], "&&", [[[2n, "^B", [mode_vars[1].real, "/", [["@This 1", "reGB", "absB"], "+", ["@Next 1 1", "reGB", "absB"]], "log", 2, "round", 1, "max", 0]], "@end_vars", mode_vars[1].real, "-B", ["@var_retain", ["@This 1", "reGB", "absB"], "+B", ["@Next 1 1", "reGB", "absB"], "*B", "@Var 0"], "absB", "<", "@Var 0"], "||", [[2n, "^B", [mode_vars[1].imaginary, "/", [["@This 1", "reGB", "absB"], "+", ["@Next 1 1", "reGB", "absB"]], "log", 2, "round", 1, "max", 0]], "@end_vars", mode_vars[1].imaginary, "-B", ["@var_retain", ["@This 1", "reGB", "absB"], "+B", ["@Next 1 1", "reGB", "absB"], "*B", "@Var 0"], "absB", "<", "@Var 0"]]], true, [["@This 0", ["@This 1", "+GB", "@Next 1 1"]]], [], [false, true]],
@@ -17409,6 +17414,41 @@ function gmDisplayVars() {
                 else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from 1 to n in " + rulesTitle[1] + ", with every merge including an extra 1, for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
             }
         }
+        else if(mode_vars[0] == 33) { // 2583 variant
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
+            document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_num").style.setProperty("display", "none");
+            if(mode_vars[4] == 2) document.getElementById("Alternate5040_num_minus").style.setProperty("display", "none");
+            else document.getElementById("Alternate5040_num_minus").style.setProperty("display", "block");
+            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #99c857, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
+            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #99c857, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
+            knownMergeLookbackDistance = 0;
+            rulesTitle[1] = "2583";
+            if(mode_vars[2] == 0) {
+                knownMergeMaxLength = 2;
+                MergeRules.push(
+                    
+                );
+                rulesDescription += "";
+            }
+            else if(mode_vars[2] == 1) {
+                knownMergeMaxLength = 3;
+                if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
+                if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
+                    
+                );
+                MergeRules.push(
+                    
+                );
+                rulesDescription += "";
+                if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "";
+                else rulesDescription += "";
+            }
+            if(Array.isArray(mode_vars[1])) {
+                if(mode_vars[2] == 0) rulesDescription = "";
+                else if(mode_vars[2] == 1) rulesDescription = "";
+            }
+        }
         if(mode_vars[0] == 8) {} // don't add text for XXXX variant
         else if(mode_vars[2] == 0) {
             if(Array.isArray(mode_vars[1])) rulesDescription += "Get to the " + arrayWinCondition + " tile to win!";
@@ -19002,14 +19042,18 @@ function defaultAbbreviate(n) { // Tiles whose text values are of type number, b
         else return abbreviateNumber(n, "BigInt", 0, true);
     }
     else if (n instanceof GaussianBigInt) {
+        let imagstring = "sqrt(" + Number(n.discriminant) + ")";
+        if (n.discriminant == -1n) imagstring = "i";
+        else if (n.discriminant == 0n) imagstring = "\u03B5";
+        else if (n.discriminant == 1n) imagstring = "j";
         if (n.imaginary == 0n)
             return defaultAbbreviate(n.real);
         else if (n.real == 0n)
-            return defaultAbbreviate(n.imaginary) + "i";
+            return defaultAbbreviate(n.imaginary) + imagstring;
         else if (n.imaginary < 0n)
-            return defaultAbbreviate(n.real) + "-" +  defaultAbbreviate(n.imaginary * -1n) + "i";
+            return defaultAbbreviate(n.real) + "-" +  defaultAbbreviate(n.imaginary * -1n) + imagstring;
         else
-            return defaultAbbreviate(n.real) + "+" +  defaultAbbreviate(n.imaginary) + "i";
+            return defaultAbbreviate(n.real) + "+" +  defaultAbbreviate(n.imaginary) + imagstring;
     }
     else if (n instanceof BigRational) {
         return abbreviateNumber(n, "BigRational", 0, true, 10000n);
@@ -26033,6 +26077,9 @@ function operation(n1, operator, n2) {
         case "imGB":
             result = n1.imaginary;
         break;
+        case "diGB":
+            result = n1.discriminant;
+        break;
         case "numeratorBR":
             result = n1.numerator;
         break;
@@ -31070,7 +31117,7 @@ function makeCustomModePlayable() { // Creates and loads a playable mode out of 
 function SCstringify(input) { // My version of BigInts-compatible JSON.stringify, converting 100n into "@BigInt 100", which fits for this project because @ is the "this string is special" character for CalcArrays. Also allows infinities.
     return JSON.stringify(input, function(key, value) {
         if (typeof value == "bigint") return "@BigInt " + String(value);
-        else if (value instanceof GaussianBigInt) return "@GaussianBigInt " + String(value.real) + " " + String(value.imaginary);
+        else if (value instanceof GaussianBigInt) return "@GaussianBigInt " + String(value.real) + " " + String(value.imaginary) + " " + String(value.discriminant);
         else if (value instanceof BigRational) return "@BigRational " + String(value.numerator) + " " + String(value.denominator);
         else if (value === Infinity) return "@Infinity";
         else if (value === -Infinity) return "@-Infinity";
@@ -31084,7 +31131,7 @@ function SCparse(input) { // Undoes SCstringify
         if (typeof value == "string" && value.substring(0, 8) == "@BigInt ") return BigInt(value.substring(8));
         else if (typeof value == "string" && value.substring(0, 16) == "@GaussianBigInt ") {
             let split = value.substring(16).split(" ");
-            return new GaussianBigInt(BigInt(split[0]), BigInt(split[1]))
+            return new GaussianBigInt(BigInt(split[0]), BigInt(split[1]), BigInt(split[2]))
         }
         else if (typeof value == "string" && value.substring(0, 13) == "@BigRational ") {
             let split = value.substring(13).split(" ");
