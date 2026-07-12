@@ -57,7 +57,7 @@ class GaussianBigInt {
             this.discriminant = -1n;
         if (value !== undefined && second !== undefined) {
             if (typeof value == "number" || typeof value == "bigint")
-                this.fromPair(value, second);
+                this.fromPair(value, second, this.discriminant);
             else
                 throw new Error("Gaussian bigint constructor called with three arguments and the first was not a bigint or number");
         }
@@ -78,6 +78,7 @@ class GaussianBigInt {
     fromBigInt(input) {
         this.real = BigInt(input);
         this.imaginary = 0n;
+        this.discriminant = -1n;
         return this;
     }
     static fromBigInt(input) {
@@ -86,18 +87,22 @@ class GaussianBigInt {
     fromArrayPair(input) {
         this.real = BigInt(input[0]);
         this.imaginary = BigInt(input[1]);
+        if(input[2] == undefined) this.discriminant = -1n;
+        this.discriminant = BigInt(input[2])
         return this;
     }
     static fromArrayPair(input) {
         return new GaussianBigInt().fromArrayPair(input);
     }
-    fromPair(real, imaginary) {
+    fromPair(real, imaginary, discriminant) {
         this.real = BigInt(real);
         this.imaginary = BigInt(imaginary);
+        if(discriminant == undefined) this.discriminant = -1n;
+        else this.discriminant = discriminant;
         return this;
     }
-    static fromPair(real, imaginary) {
-        return new GaussianBigInt().fromPair(real, imaginary);
+    static fromPair(real, imaginary, discriminant) {
+        return new GaussianBigInt().fromPair(real, imaginary, discriminant);
     }
     fromString(input) {
         while (input[0] == " ")
@@ -231,18 +236,11 @@ class GaussianBigInt {
     fromGaussianBigInt(input) {
         this.real = input.real;
         this.imaginary = input.imaginary;
+        this.discriminant = input.discriminant;
         return this;
     }
     static fromGaussianBigInt(input) {
         return new GaussianBigInt().fromGaussianBigInt(input);
-    }
-    fromSplitGaussianBigInt(input) {
-        this.real = input.real;
-        this.imaginary = input.imaginary;
-        return this;
-    }
-    static fromSplitGaussianBigInt(input) {
-        return new GaussianBigInt().fromSplitGaussianBigInt(input);
     }
     toString() {
         let imagstring = "sqrt(" + Number(this.discriminant) + ")";
@@ -481,6 +479,32 @@ class GaussianBigInt {
     static normG(value) {
         value = new GaussianBigInt(value);
         return value.normG();
+    }
+    /**
+     * Returns the magnitude of a Gaussian integer (The norm of a + bI is a^2 + b^2). This function returns a bigint.
+     */
+    mag() {
+        return this.real ** 2n + this.imaginary ** 2n;
+    }
+    /**
+     * Returns the magnitude of a Gaussian integer (The norm of a + bI is a^2 + b^2). This function returns a bigint.
+     */
+    static mag(value) {
+        value = new GaussianBigInt(value);
+        return value.mag();
+    }
+    /**
+     * Returns the norm of a Gaussian integer (The norm of a + bI is a^2 + b^2). This function returns a GaussianBigInt.
+     */
+    magG() {
+        return new GaussianBigInt(this.magG());
+    }
+    /**
+     * Returns the norm of a Gaussian integer (The norm of a + bI is a^2 + b^2). This function returns a GaussianBigInt.
+     */
+    static magG(value) {
+        value = new GaussianBigInt(value);
+        return value.magG();
     }
     /**
      * Returns I^(power). The power must be a bigint, because complex powers of I would not be gaussian integers.
@@ -808,18 +832,12 @@ class GaussianBigInt {
         exponent = BigInt(exponent);
         if (exponent < 0n)
             throw new RangeError("Gaussian bigint negative exponent");
-        let result = new GaussianBigInt(1n, 0n);
+        let result = new GaussianBigInt(1n, 0n, this.discriminant);
         let base = new GaussianBigInt(this);
         // Exponentiation by squaring
         while (exponent > 0n) {
-            if (exponent % 2n == 0n) {
-                exponent /= 2n;
-                base = base.mul(base);
-            }
-            else {
-                exponent -= 1n;
-                result = result.mul(base);
-            }
+            result = result.mul(base);
+            exponent--;
         }
         return result;
     }

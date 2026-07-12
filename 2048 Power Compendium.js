@@ -173,7 +173,7 @@ let string_operators = ["str_char", "str_concat", "str_concat_front", "str_lengt
 let boolean_operators = ["&&", "||", "!", "&&nsc", "||nsc"];
 let array_operators = ["arr_copy", "arr_elem", "arr_edit_elem", "arr_length", "arr_push", "arr_pop", "arr_shift", "arr_unshift", "arr_concat", "arr_concat_front", "arr_flat", "arr_splice", "arr_slice", "arr_indexOf", "arr_lastIndexOf", "arr_indexOfFrom", "arr_lastIndexOfFrom", "arr_includes", "arr_reverse", "arr_sort", "arr_map", "arr_filter", "arr_reduce", "arr_reduceRight", "arr_binarySearch", "arr_binaryInsert", "arr_eqRearrange", "CalcArray", "primeDefactorizeB", "weightedRandomArrayEntry", "multicolor"];
 let bigint_operators = ["+B", "-B", "*B", "/B", "%B", "modB", "^B", "**B", "rootB", "logB", "roundB", "floorB", "ceilB", "ceilingB", "absB", "signB", "gcdB", "lcmB", "factorialB", "subfactorialB", "primeB", "zeckendorfB", "expomodB", "primeFactorizeB", "factorAmountB", "factorListB", "baseConvert", "bit&B", "bit|B", "bit~B", "bit^B", "bit<<B", "bit>>B", "bit>>>B", "basebit&B", "basebit|B", "basebit~B", "basebit^B", "rand_bigint", "defaultAbbrevB", "perfectPowerFormB", "DIVESeedUnlock", "ipowGB", "gaussian_prime"];
-let gaussianbigint_operators = ["reGB", "imGB", "diGB", "+GB", "-GB", "*GB", "/GB", "/mGB", "modGB", "^GB", "**GB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "gcdGB", "lcmGB", "expomodGB", "defaultAbbrevGB", "GaussianDIVESeedUnlock", "gaussianSort"];
+let gaussianbigint_operators = ["reGB", "imGB", "diGB", "+GB", "-GB", "*GB", "/GB", "/mGB", "modGB", "^GB", "**GB", "muliGB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "gcdGB", "lcmGB", "expomodGB", "defaultAbbrevGB", "GaussianDIVESeedUnlock", "gaussianSort"];
 let bigrational_operators = ["numeratorBR", "denominatorBR", "+BR", "-BR", "*BR", "/BR", "modBR", "^BR", "**BR", "roundBR", "floorBR", "ceilBR", "ceilingBR", "negBR", "recipBR", "absBR", "signBR", "gcdBR", "lcmBR", "expomodBR", "defaultAbbrevBR", "perfectPowerFormBR"];
 let pop_1_operators = ["abs", "absB", "sign", "signB", "reGB", "imGB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "ipowGB", "numeratorBR", "denominatorBR", "negBR", "recipBR", "absBR", "signBR", "sin", "cos", "tan", "!", "factorial", "factorialB", "prime", "primeB", "primeGB", "factorAmountB", "factorListB", "defaultAbbrev", "defaultAbbrevB", "defaultAbbrevGB", "defaultAbbrevBR", "defaultAbbrevAny", "bit~", "bit~B", "str_length", "str_toUpperCase", "str_toLowerCase", "arr_copy", "arr_length", "arr_pop", "arr_shift", "arr_reverse", "Number", "String", "Boolean", "Array", "BigInt", "GaussianBigInt", "BigRational", "typeof"]; //CalcArray, the operator, also only takes 1 input, but it's a special case so it's not in this list. Same goes for evaluateColor.
 let calcArray_startModifiers = ["@var_retain", "@var_copy", "@global_var_retain", "@global_var_copy", "@global_var_none", "@global_var_retain_inner", "@global_var_copy_inner", "@global_var_none_inner"];
@@ -1257,12 +1257,14 @@ document.getElementById("Alternate5040_baseRational_button").addEventListener("c
 document.getElementById("Alternate5040_baseSplitComplex_numerator_change").addEventListener("change", function() {
     v = BigInt(this.value);
     if (v > 0n) mode_vars[1] = new GaussianBigInt(v, mode_vars[1].imaginary, 1n);
+    if(mode_vars[1].real < mode_vars[1].imaginary) mode_vars[1] = mode_vars[1].muli();
     loadGridSize(100, mode_vars);
     gmDisplayVars();
 });
 document.getElementById("Alternate5040_baseSplitComplex_denominator_change").addEventListener("change", function() {
     v = BigInt(this.value);
     if (v > 0n) mode_vars[1] = new GaussianBigInt(mode_vars[1].real, v, 1n);
+    if(mode_vars[1].real < mode_vars[1].imaginary) mode_vars[1] = mode_vars[1].muli();
     loadGridSize(100, mode_vars);
     gmDisplayVars();
 });
@@ -13422,10 +13424,10 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_baseSubfactorials").style.setProperty("display", "none");
             document.getElementById("Alternate5040_baseSplitComplex").style.setProperty("display", "block");
             spawnTiles = "Spawning tiles: Pulls from a \"box\" that starts with one 1 and one j, and only refills once it's empty.";
-            //startTileSpawns = [["Box", 1, [0n, new GaussianBigInt(1n, 0n, 1n)], 1, [0n, new GaussianBigInt(0n, 1n, 1n)], 1]];
+            mode_vars[2] = 0;
             MergeRules = [
-                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+GB", "@Next 1 1", "=", mode_vars[1]]], true, [[["@This 0", "+B", 1n], new GaussianBigInt(1n, 0n, 1n)]], [], [false, true]],
-                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+GB", "@Next 1 1", "=", new GaussianBigInt(mode_vars[1].imaginary, mode_vars[1].real, 1n)]], true, [[["@This 0", "+B", 1n], new GaussianBigInt(0n, 1n, 1n)]], [], [false, true]]
+                [2, [["@This 0", "=", "@Next 1 0"], "&&", [[mode_vars[1], "^GB", "@This 0", "*GB", ["@This 1", "+GB", "@Next 1 1"], "=", [mode_vars[1], "^GB", ["@This 0", "+B", 1n]]]]], true, [[["@This 0", "+B", 1n], new GaussianBigInt(1n, 0n, 1n)]], [], [false, true]],
+                [2, [["@This 0", "=", "@Next 1 0"], "&&", [[mode_vars[1], "^GB", "@This 0", "*GB", ["@This 1", "+GB", "@Next 1 1"], "=", [mode_vars[1], "^GB", ["@This 0", "+B", 1n], "muliGB"]]]], true, [[["@This 0", "+B", 1n], new GaussianBigInt(0n, 1n, 1n)]], [], [false, true]]
             ]
             CAM1Entry = [mode_vars[1].real];
             //nextCAM1Entry = mode_vars[1][0][0];
@@ -13434,7 +13436,7 @@ function gmDisplayVars() {
             none = mode_vars[1].toString();
             //oneTile[0] = 0n;
             //twoTile = [0n, 2n];
-            validIndex.push(mode_vars[1]); //????????
+            validIndex.push(mode_vars[1].real, mode_vars[1].imaginary); //????????
             validPos = ["arr_elem", 0] //??????????
             //CAM2Entry = [mode_vars[1], "^B", ["@This 0", "+B", 1n]];
             /*if(mode_vars[0] == 21) {
@@ -13486,12 +13488,13 @@ function gmDisplayVars() {
                 }
                 tileValueFunction = [mode_vars[1], "^", "@This 0", "*", "@This 1"]; //????????
             //}
-            if (mode_vars[1].norm() < 3n) goalPow = 11n;
-            else if (mode_vars[1].norm() < 4n) goalPow = 7n;
-            else if (mode_vars[1].norm() < 6n) goalPow = 5n;
-            else if (mode_vars[1].norm() < 10n) goalPow = 4n;
-            else if (mode_vars[1].norm() < 22n) goalPow = 3n;
-            else if (mode_vars[1].norm() < 256n) goalPow = 2n;
+            if (mode_vars[1].mag() < 3n) goalPow = 11n;
+            else if (mode_vars[1].mag() < 4n) goalPow = 7n;
+            else if (mode_vars[1].mag() < 8n) goalPow = 6n;
+            else if (mode_vars[1].mag() < 16n) goalPow = 5n;
+            else if (mode_vars[1].mag() < 64n) goalPow = 4n;
+            else if (mode_vars[1].mag() < 256n) goalPow = 3n;
+            else if (mode_vars[1].mag() < 8192n) goalPow = 2n;
             else goalPow = 1n;
             winConditions = [[goalPow, new GaussianBigInt(1n, 0n, 1n)], [goalPow, new GaussianBigInt(0n, 1n, 1n)]];
             //if(mode_vars[0] == 10 && mode_vars[3] == 0) winConditions[0][1] = mode_vars[1];
@@ -13964,7 +13967,7 @@ function gmDisplayVars() {
             }
         }
         if (mode_vars[0] == 0) { // 1762 variant
-             document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
             document.getElementById("Alternate5040_num").style.setProperty("display", "block");
             if(mode_vars[4] < 1) document.getElementById("Alternate5040_num_minus").style.setProperty("display", "none");
             document.getElementById("Alternate5040_num_title").innerHTML = "Smaller Difference:";
@@ -17461,7 +17464,7 @@ function gmDisplayVars() {
             else rulesDescription += "Get to the " + (goalText - 1n) + " tile to win!"
         }
 
-        if(Array.isArray(mode_vars[1]) && mode_vars[1].length == 1) document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+        if(mode_vars[1] instanceof GaussianBigInt) document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
 
         displayRules("rules_text", ["h1", rulesTitle.join("") + " Variant)"], ["p", rulesDescription], ["p", spawnTiles]);
         if(mode_vars[0] == 4 && (arrayContainsRational || mode_vars[1] instanceof BigRational)) displayRules("gm_rules_text", ["p", "You found a hidden mode! The Partial Absorb 243 variant of Alternate 5040 can have a rational number for its base(s), though this isn't affected by the tiles minus 1 modifier. Enjoy the chaos..."], ["h1", rulesTitle.join("") + " Variant)"], ["p", rulesDescription], ["p", spawnTiles]);
@@ -26114,6 +26117,9 @@ function operation(n1, operator, n2) {
         case "**BR":
         case "^BR":
             result = n1.pow(n2);
+        break;
+        case "muliGB":
+            result = n1.muli();
         break;
         case "negGB":
         case "negBR":
