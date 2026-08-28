@@ -481,26 +481,26 @@ class GaussianBigInt {
         return value.normG();
     }
     /**
-     * Returns the magnitude of a Gaussian integer (The norm of a + bI is a^2 + b^2). This function returns a bigint.
+     * Returns the magnitude of a Gaussian integer (The magnitude of a + bI is a^2 + b^2). This function returns a bigint.
      */
     mag() {
         return this.real ** 2n + this.imaginary ** 2n;
     }
     /**
-     * Returns the magnitude of a Gaussian integer (The norm of a + bI is a^2 + b^2). This function returns a bigint.
+     * Returns the magnitude of a Gaussian integer (The magnitude of a + bI is a^2 + b^2). This function returns a bigint.
      */
     static mag(value) {
         value = new GaussianBigInt(value);
         return value.mag();
     }
     /**
-     * Returns the norm of a Gaussian integer (The norm of a + bI is a^2 + b^2). This function returns a GaussianBigInt.
+     * Returns the magnitude of a Gaussian integer (The magnitude of a + bI is a^2 + b^2). This function returns a GaussianBigInt.
      */
     magG() {
         return new GaussianBigInt(this.magG());
     }
     /**
-     * Returns the norm of a Gaussian integer (The norm of a + bI is a^2 + b^2). This function returns a GaussianBigInt.
+     * Returns the magnitude of a Gaussian integer (The magnitude of a + bI is a^2 + b^2). This function returns a GaussianBigInt.
      */
     static magG(value) {
         value = new GaussianBigInt(value);
@@ -558,6 +558,7 @@ class GaussianBigInt {
     }
     /**
      * What unit do we have to multiply by to rotate this gaussian integer into the first quadrant?
+     * Must be an ordinary complex number
      */
     firstQuadrantUnit() {
         if (this.discriminant == -1n) {
@@ -570,6 +571,7 @@ class GaussianBigInt {
     }
     /**
      * What unit do we have to multiply by to rotate this gaussian integer into the first quadrant?
+     * Must be an ordinary complex number
      */
     static firstQuadrantUnit(value) {
         value = new GaussianBigInt(value);
@@ -577,12 +579,14 @@ class GaussianBigInt {
     }
     /**
      * Multiplies the gaussian integer in question by some power of i to put it into the first quadrant.
+     * Must be an ordinary complex number
     */
     toFirstQuadrant() {
         return this.mul(this.firstQuadrantUnit());
     }
     /**
      * Multiplies the gaussian integer in question by some power of i to put it into the first quadrant.
+     * Must be an ordinary complex number
     */
     static toFirstQuadrant(value) {
         value = new GaussianBigInt(value);
