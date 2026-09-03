@@ -11140,6 +11140,7 @@ function gmDisplayVars() {
             document.getElementById("3888_baseList").removeChild(document.getElementById("3888_baseList").lastElementChild);
         }
         while (document.getElementById("3888_baseList").children.length < mode_vars[0].length + 3) {
+            document.getElementById("3888_baseList_form0").style.setProperty("display", "flex");
             let newBaseForm = document.getElementById("3888_baseList_form0").cloneNode(true);
             newBaseForm.id = "3888_baseList_form" + (document.getElementById("3888_baseList").children.length - 1);
             newBaseForm.firstElementChild.id = "3888_baseList_input" + (document.getElementById("3888_baseList").children.length - 1);
@@ -11149,7 +11150,9 @@ function gmDisplayVars() {
                 let v;
                 try {
                     v = Number(this.value);
-                    if (v <= 1) throw new Error();
+                    if (Number.isNaN(v) || v <= 1) {
+                        throw new Error();
+                    }
                     if (MV1Index >= mode_vars[0].length) mode_vars[0].push(v);
                     else mode_vars[0][MV1Index] = v;
                     mode_vars[0] = [...new Set(mode_vars[0])];
@@ -11157,13 +11160,8 @@ function gmDisplayVars() {
                     //mode_vars[0] = mode_vars[0].filter((n, i, arr) => factorMatch(arr.slice(0, i), n));
                 }
                 catch {
-                    try {
-                        throw new Error();
-                    }
-                    catch {
-                        if (MV1Index > 0) {
-                            mode_vars[0] = mode_vars[0].slice(0, MV1Index);
-                        }
+                    if (MV1Index > 0) {
+                        mode_vars[0] = mode_vars[0].slice(0, MV1Index);
                     }
                 }
                 gmDisplayVars();
@@ -11174,6 +11172,7 @@ function gmDisplayVars() {
             document.getElementById("3888_baseList_input" + (m + 1)).value = String(mode_vars[0][m]);
         }
         document.getElementById("3888_baseList_input" + (mode_vars[0].length + 1)).value = "";
+        document.getElementById("3888_baseList_form0").style.setProperty("display", "none");
         /*function makeRules(arr) {
             let res = [];
             for(let i = 0; i <= arr.length; i++) {
