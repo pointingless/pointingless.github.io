@@ -6689,7 +6689,7 @@ function loadMode(mode) {
     else if (mode == 54) { // 3888
         // width = 4; height = 4;
         TileNumAmount = 1;
-        mode_vars = [[2, 3], [[[1], []], [[0], []], [[], []]]]; // mode_vars[0] is an array of the selected prime powers, mode_vars[1] is an array of the selected merges per length per prime gained
+        mode_vars = [[2, 3], [[[1], []], [[0], []], [[], []]], 3]; // mode_vars[0] is an array of the selected prime powers, mode_vars[1] is an array of the selected merges per length per prime gained, mode_vars[2] is the max merge length of the generated rules
         start_game_vars = [0] // Controls the display of Discovered Tiles.
         statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"], false, ...[,,,], ["@GVar 0", "=", 0], [0, "@edit_gvar", 0, 1], true], ["Discovered Tiles", ["@DiscTiles"], true, false, "TileArray", "Self", ["@GVar 0", "=", 1], [0, "@edit_gvar", 0, 0], true], ["Score", "@Score"]];
         document.documentElement.style.setProperty("background-image", "radial-gradient(#3399ff 0%, #ffffb6 70%, #fff 140%)");
@@ -11128,15 +11128,53 @@ function gmDisplayVars() {
     }
     else if (gamemode == 54) { // 3888
         function factorMatch(arr1, num) { // Checks if num is made up of the primes in arr1
-            let pf = primeFactorize(num, Infinity, false, 2)[0];
-            for(let i = 0; i < pf.length; i++) {
-                if(!arr1.includes(Number(pf[i]))) {
-                    return false;
+            for(let i = 0; i < arr1.length; i++) {
+                while(num % arr1[i] == 0) {
+                    num /= arr1[i];
                 }
             }
-            return true;
+            return num === 1;
         }
-        function makeRules(arr) {
+        document.getElementById("3888_baseList").style.setProperty("display", "flex");
+        while (document.getElementById("3888_baseList").children.length > mode_vars[0].length + 3) {
+            document.getElementById("3888_baseList").removeChild(document.getElementById("3888_baseList").lastElementChild);
+        }
+        while (document.getElementById("3888_baseList").children.length < mode_vars[0].length + 3) {
+            let newBaseForm = document.getElementById("3888_baseList_form0").cloneNode(true);
+            newBaseForm.id = "3888_baseList_form" + (document.getElementById("3888_baseList").children.length - 1);
+            newBaseForm.firstElementChild.id = "3888_baseList_input" + (document.getElementById("3888_baseList").children.length - 1);
+            newBaseForm.firstElementChild.name = "3888_baseList_input" + (document.getElementById("3888_baseList").children.length - 1);
+            let MV1Index = document.getElementById("3888_baseList").children.length - 2;
+            newBaseForm.firstElementChild.addEventListener("change", function(){
+                let v;
+                try {
+                    v = Number(this.value);
+                    if (v <= 1) throw new Error();
+                    if (MV1Index >= mode_vars[0].length) mode_vars[0].push(v);
+                    else mode_vars[0][MV1Index] = v;
+                    mode_vars[0] = [...new Set(mode_vars[0])];
+                    mode_vars[0].sort((a, b) => a - b);
+                    //mode_vars[0] = mode_vars[0].filter((n, i, arr) => factorMatch(arr.slice(0, i), n));
+                }
+                catch {
+                    try {
+                        throw new Error();
+                    }
+                    catch {
+                        if (MV1Index > 0) {
+                            mode_vars[0] = mode_vars[0].slice(0, MV1Index);
+                        }
+                    }
+                }
+                gmDisplayVars();
+            });
+            document.getElementById("3888_baseList").appendChild(newBaseForm);
+        }
+        for (let m = 0; m < mode_vars[1].length; m++) {
+            document.getElementById("3888_baseList_input" + (m + 1)).value = String(mode_vars[0][m]);
+        }
+        document.getElementById("3888_baseList_input" + (mode_vars[0].length + 1)).value = "";
+        /*function makeRules(arr) {
             let res = [];
             for(let i = 0; i <= arr.length; i++) {
                 res.push([[], []]);
@@ -11149,8 +11187,8 @@ function gmDisplayVars() {
                     if(factorMatch(arr, high + mid) && gcd(high, mid) === 1) {
                         let push = -1;
                         for(let i = 0; i < arr.length; i++) {
-                            let sumPow = expomod(high + mid, arr[i]);
-                            if(sumPow > expomod(high, arr[i]) && sumPow > expomod(mid, arr[i]) && push === -1) push = i;
+                            let pure = Math.log(high + mid) / Math.log(arr[i]);
+                            if(pure % 1 == 0 && push === -1) push = i;
                         }
                         if(push > -1) res[push][0].push([mid, high]);
                         else res[arr.length][0].push([mid, high]);
@@ -11158,11 +11196,12 @@ function gmDisplayVars() {
                     // Three length merges
                     for(let low = 1; low <= mid; low++) {
                         if(!factorMatch(arr, low)) continue;
-                        if(factorMatch(arr, high + mid + low) && gcd(gcd(high, mid), low) === 1) {
+                        let gcdTotal = gcd(gcd(high, mid), low);
+                        if(factorMatch(arr, high + mid + low) && (gcdTotal === 1 || !factorMatch(arr, gcdTotal))) {
                             push = -1;
                             for(let i = 0; i < arr.length; i++) {
-                                let sumPow = expomod(high + mid + low, arr[i]);
-                                if(sumPow > expomod(high, arr[i]) && sumPow > expomod(mid, arr[i]) && sumPow > expomod(low, arr[i]) && push === -1) push = i;
+                                let pure = Math.log(high + mid + low) / Math.log(arr[i]);
+                                if(pure % 1 == 0 && push === -1) push = i;
                             }
                             if(push > -1) res[push][1].push([low, mid, high]);
                             else res[arr.length][1].push([low, mid, high]);
@@ -11171,26 +11210,73 @@ function gmDisplayVars() {
                 }
             }
             return res;
+        }*/
+        function makeRules(arr) {
+            let res = [];
+            for(let i = 0; i <= arr.length; i++) {
+                res.push([]);
+                for(let j = 2; j <= mode_vars[2]; j++) {
+                    res[i].push([]);
+                }
+            }
+            return res;
         }
-        console.log(makeRules([2, 3, 5]));
+        console.log(makeRules(mode_vars[0]));
+        mode_vars[1] = [[1, 3], [1, 2, 3], [2, 3, 4]];
+        let ruleOutputs = [];
+        let minPureOutputs = new Array(mode_vars[0].length)
+        minPureOutputs.fill(0);
+        for(let i = 0; i < mode_vars[1].length; i++) {
+            let out = 0;
+            for(let j = 0; j < mode_vars[1][i].length; j++) {
+                out += mode_vars[1][i][j];
+            }
+            ruleOutputs.push(out);
+            for(let j = 0; j < mode_vars[0].length; j++) {
+                if((Math.log(out) / Math.log(mode_vars[0][j])) % 1 === 0 && (minPureOutputs[j] === 0 || out < minPureOutputs[j])) {
+                    minPureOutputs[j] = out;
+                }
+            }
+        }
+        let impossibleTiles = [];
+        let product = 1;
+        for(let i = 0; i < minPureOutputs.length; i++) {
+            product *= minPureOutputs[i];
+        }
+        for(let i = 2; i < product; i++) {
+            if(!factorMatch(mode_vars[0], i)) continue;
+            let possible = false;
+            for(let j = 0; j < ruleOutputs.length; j++) {
+                if(i % ruleOutputs[j] === 0) possible = true;
+            }
+            if(!possible) impossibleTiles.push(i);
+        }
+        TileNumAmount = mode_vars[0].length;
         TileTypes = [
             [[0, 0], 1, "#000000", "#ffffff"],
             [["@This 0", "+", "@This 1", "<", 4], [[2, "^", "@This 0"], "*", [3, "^", "@This 1"]], ["@HSLA", [-300, "*", "@This 1", "/", ["@This 0", "+", "@This 1"]], 100, ["@This 0", "+", "@This 1", "*", 12.5], 1], "#ffffff"],
             [["@This 0", "+", "@This 1", ">=", 4], [[2, "^", "@This 0"], "*", [3, "^", "@This 1"]], ["@HSLA", [-300, "*", "@This 1", "/", ["@This 0", "+", "@This 1"]], 100, [0.75, "^", ["@This 0", "+", "@This 1", "-", 4], "*", -45, "+", 95], 1], "#000000"]
         ];
-        startTileSpawns = [[[], 100]];
-        winConditions = [[]];
+        startTileSpawns = [[[0, 0], 100]];
+        let root = 2200 ** (1 / mode_vars[0].length);
+        let winTile = new Array(mode_vars[0].length);
+        let winText = 1;
+        for(let i = 0; i < mode_vars[0].length; i++) {
+            winTile[i] = Math.max(Math.round(Math.log(root) / Math.log(mode_vars[0][i])), 1);
+            winText *= mode_vars[0][i] ** winTile[i];
+        }
+        winConditions = [winTile];
         winRequirement = 1;
         knownMergeMaxLength = 2;
         knownMergeLookbackDistance = 0;
         tileValueFunction = [];
         let rulesTitle = "Powers of " + mode_vars[0][0];
         for(let i = 1; i < mode_vars[0].length; i++) {
-            rulesTitle += "Times Powers of " + mode_vars[0][i];
+            rulesTitle += " Times Powers of " + mode_vars[0][i];
         }
-        displayRules("rules_text", ["h2", rulesTitle], ["h1", "3888"], ["p", "Two 1s can merge into a 2, and merges occur between any tile and a tile that's exactly double that tile or triple that tile. Get to the 3888 tile to win!"],
+        displayRules("rules_text", ["h2", rulesTitle], ["h1", winText.toString()], ["p", "Two 1s can merge into a 2, and merges occur between any tile and a tile that's exactly double that tile or triple that tile. Get to the 3888 tile to win!"],
         ["p", "Spawning tiles: 1 (100%)"]);
-        displayRules("gm_rules_text", ["h2", rulesTitle], ["h1", "3888"], ["p", "Two 1s can merge into a 2, and merges occur between any tile and a tile that's exactly double that tile or triple that tile. Get to the 3888 tile to win!"],
+        displayRules("gm_rules_text", ["h2", rulesTitle], ["h1", winText.toString()], ["p", "Two 1s can merge into a 2, and merges occur between any tile and a tile that's exactly double that tile or triple that tile. Get to the 3888 tile to win!"],
         ["p", "Spawning tiles: 1 (100%)"]);
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
         document.getElementById("3888_vars").style.setProperty("display", "flex");
@@ -17308,7 +17394,8 @@ function gmDisplayVars() {
                     [2, [["@This 1", ">", 3n], "&&", [["@This 1", "+B", "@Next 1 1", "=", 6n], "||", ["@This 1", "+B", "@Next 1 1", "=", 9n], "||", ["@This 1", "+B", "@Next 1 1", "=", 13n]]], false]
                 ],
                 [
-                    // 14
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "<", 3n]], true],
+                    [3, [["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 9n], "||", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 14n]], true]
                 ],
                 [
                     [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "<", 5n]], true],

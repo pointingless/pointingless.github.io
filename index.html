@@ -74,7 +74,7 @@
                 <div class="menu_tile hover_grow" style="background-image: linear-gradient(#f67bd5, #994182); --tile_font_size: 4.2;">1365 1366</div>
                 <div class="menu_tile hover_grow" style="background-color: #99c857">2583</div>
                 <div class="menu_tile hover_grow" style="background-color: #a92f10">2131</div>
-                <div class="menu_tile hover_grow" style="background-image: radial-gradient(#ffff77 0% 60%, #75baff)">3888</div>
+                <div class="menu_tile hover_grow" style="background-image: radial-gradient(#ffff77 0% 60%, #75baff); --tile_font_size: 2.6;">Extended 3888</div>
                 <div class="menu_tile hover_grow" style="background-image: radial-gradient(#ff77ff 0% 60%, #baff75)">2000</div>
                 <div class="menu_tile hover_grow" style="background-image: radial-gradient(#77ffff 0% 60%, #ff75ba)">3645</div>
                 <div class="menu_tile hover_grow" style="background-image: radial-gradient(#4fb54f 0% 70%, #f66, #6f6, #66f)">2700</div>
@@ -622,24 +622,12 @@
                     </div> -->
                 </div>
                 <div id="3888_vars" class="gm_var_line">
-                    <div id="3888_extraMerge" class="gm_var_switch_container">
-                        <p id="3888_extraMerge_text" class="gm_var_text">n+8n is not a valid merge.</p>
-                        <div class="gmSwitchButtonLine">
-                            <div id="3888_extraMerge_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
-                        </div>
-                    </div>
-                    <div id="3888_randomGoals" class="gm_var_switch_container">
-                        <p id="3888_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
-                        <div class="gmSwitchButtonLine">
-                            <div id="3888_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
-                        </div>
-                    </div>
-                    <div id="3888_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
-                        <p id="3888_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
-                        <form id="3888_firstGoalMinimum_form" class="gm_var_form">
-                            <input type="number" step="any" id="3888_firstGoalMinimum_change" name="3888_firstGoalMinimum_change">
-                        </form>
-                    </div>
+                    <div id="3888_baseList" class="gm_var_line_multiForm">
+                    <p class="gm_var_text" style="color:#4c0098">Powers: </p>
+                    <form id="3888_baseList_form0" class="customForm_size2">
+                        <input type="text" id="3888_baseList_input0" name="3888_baseList_input0">
+                    </form>
+                </div>
                 </div>
                 <div id="2000_vars" class="gm_var_line">
                     <div id="2000_extraMerge" class="gm_var_switch_container">
@@ -1420,7 +1408,6 @@
                     <form id="Alternate5040_baseList_form0" class="customForm_size2">
                         <input type="text" id="Alternate5040_baseList_input0" name="Alternate5040_baseList_input0">
                     </form>
-                    
                 </div>
                 <p id="Alternate5040_mod27SecretText"></p>
                 <div id="Alternate5040_baseListRandomize" class="gmSwitchButtonLine">
