@@ -11127,7 +11127,7 @@ function gmDisplayVars() {
         document.getElementById("DIVE_firstGoalMinimum_change").value = mode_vars[4];
     }
     else if (gamemode == 54) { // 3888
-        function factorMatch(arr1, num) { // Checks if num is made up of the primes in arr1
+        function factorMatch(arr1, num) { // Checks if num is made up of the primes in arr1 (greedy)
             for(let i = 0; i < arr1.length; i++) {
                 while(num % arr1[i] == 0) {
                     num /= arr1[i];
@@ -11168,7 +11168,7 @@ function gmDisplayVars() {
             });
             document.getElementById("3888_baseList").appendChild(newBaseForm);
         }
-        for (let m = 0; m < mode_vars[1].length; m++) {
+        for (let m = 0; m < mode_vars[0 ].length; m++) {
             document.getElementById("3888_baseList_input" + (m + 1)).value = String(mode_vars[0][m]);
         }
         document.getElementById("3888_baseList_input" + (mode_vars[0].length + 1)).value = "";
@@ -17361,11 +17361,11 @@ function gmDisplayVars() {
                 ],
                 [
                     [3, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 1", "<", 3n]], true],
-                    [2, [["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "=", 3n], "||", ["@NextNE -1 1", "!=", 1n]]], true]
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "%B", 2n, "=", 1n], "&&", [["@This 1", "=", 3n], "||", ["@NextNE -1 1", "!=", 1n], "||", ["@NextNE -1 0", "!=", "@This 0"]]], true]
                 ],
                 [
                     [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 3n], true],
-                    [2, [["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "=", 2n], "||", [["@This 1", "=", 1n], "&&", ["@NextNE -1 1", "!=", 1n]]]], true],
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "=", 2n], "||", [["@This 1", "=", 1n], "&&", [["@NextNE -1 1", "!=", 1n], "||", ["@NextNE -1 0", "!=", "@This 0"]]]]], true],
                     [2, ["@This 1", "+B", "@Next 1 1", "=", 7n], true]
                 ],
                 [
@@ -17430,7 +17430,9 @@ function gmDisplayVars() {
                     // 24
                 ],
                 [
-                    // 25
+                    [3, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 1", "-B", 2n, "absB", "=", 1n]], true],
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "%B", 2n, "=", 0n], "&&", [["@This 1", ">", 1n], "||", ["@NextNE -1 1", "!=", 1n], "||", ["@NextNE -1 0", "!=", "@This 0"]]], true],
+                    [2, ["@This 1", "+B", "@Next 1 1", "=", 25n], true]
                 ]
             ]
             if(mode_vars[3] == 0) {
