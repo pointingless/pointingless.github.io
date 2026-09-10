@@ -324,6 +324,14 @@ document.getElementById("2584_previousNegative_button").addEventListener("click"
     mode_vars[0] = (mode_vars[0] + 1) % 3;
     gmDisplayVars();
 });
+document.getElementById("3888_mlength_plus").addEventListener("click", function(){
+    mode_vars[2]++;
+    gmDisplayVars();
+});
+document.getElementById("3888_mlength_minus").addEventListener("click", function(){
+    mode_vars[2]--;
+    gmDisplayVars();
+});
 document.getElementById("Isotopic256_halfLife_change").addEventListener("change", function() {
     let v = Number(this.value);
     if (isFinite(v) && v > 0) mode_vars[0] = v;
@@ -1265,9 +1273,9 @@ document.getElementById("Alternate5040_diff_button").addEventListener("click", f
     gmDisplayVars();
 });
 document.getElementById("Alternate5040_extra_button").addEventListener("click", function() {
-    if(mode_vars[0] == 1 || mode_vars[0] == 3 || mode_vars[0] == 4 || (mode_vars[0] == 5 && secretsFound[4]) || mode_vars[0] == 12 || mode_vars[0] == 13) mode_vars[3] = (mode_vars[3] + 1) % 3;
+    if(mode_vars[0] == 1 || mode_vars[0] == 3 || mode_vars[0] == 4 || (mode_vars[0] == 5 && secretsFound[4]) || mode_vars[0] == 12 || mode_vars[0] == 13/* || mode_vars[0] == 14*/) mode_vars[3] = (mode_vars[3] + 1) % 3;
     else if(mode_vars[0] == 25) mode_vars[3] = (mode_vars[3] + 1) % 4;
-    else mode_vars[3] = (mode_vars[3] + 1) % 2; // mode_vars[0] can be 5, 7, 9, 10, 14, 15, 16, 17, 18, 19, 21, 24
+    else mode_vars[3] = (mode_vars[3] + 1) % 2; // mode_vars[0] can be 5, 7, 9, 10, 15, 16, 17, 18, 19, 21, 24
     loadGridSize(100, mode_vars);
     gmDisplayVars();
 });
@@ -6689,7 +6697,8 @@ function loadMode(mode) {
     else if (mode == 54) { // 3888
         // width = 4; height = 4;
         TileNumAmount = 1;
-        mode_vars = [[2, 3], [[[1], []], [[0], []], [[], []]], 3]; // mode_vars[0] is an array of the selected prime powers, mode_vars[1] is an array of the selected merges per length per prime gained, mode_vars[2] is the max merge length of the generated rules
+        MergeRules = [];
+        mode_vars = [[2, 3], [], 3]; // mode_vars[0] is an array of the selected prime powers, mode_vars[1] is an array of the selected merges, mode_vars[2] is the max merge length of the generated rules
         start_game_vars = [0] // Controls the display of Discovered Tiles.
         statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"], false, ...[,,,], ["@GVar 0", "=", 0], [0, "@edit_gvar", 0, 1], true], ["Discovered Tiles", ["@DiscTiles"], true, false, "TileArray", "Self", ["@GVar 0", "=", 1], [0, "@edit_gvar", 0, 0], true], ["Score", "@Score"]];
         document.documentElement.style.setProperty("background-image", "radial-gradient(#3399ff 0%, #ffffb6 70%, #fff 140%)");
@@ -9418,7 +9427,7 @@ function loadGridSize(mode, mvars = []) {
     }
     else if (mode == 100) { // Alternate 5040
         defaultSize = 5;
-        if ((mvars[0] == 0 || mvars[0] == 6 || mvars[0] == 7 || mvars[0] == 13 || mvars[0] == 14 || mvars[0] == 15 || mvars[0] == 22 || mvars[0] == 26 || mvars[0] == 27 || mvars[0] == 28 || mvars[0] == 29) && mvars[2] == 0) defaultSize = 4;
+        if ((mvars[0] == 0 || mvars[0] == 6 || mvars[0] == 7 || mvars[0] == 13 || (mvars[0] == 14 && mvars[3] == 0) || mvars[0] == 15 || mvars[0] == 22 || mvars[0] == 26 || mvars[0] == 27 || mvars[0] == 28 || mvars[0] == 29) && mvars[2] == 0) defaultSize = 4;
         else if (mvars[2] == 2 || (mvars[2] == 1 && (mvars[0] == 2 || mvars[0] == 3)) || mvars[0] == 11 || (mvars[0] == 19 && mvars[3] == 0)) defaultSize = 6;
         else if (mvars[0] == 1) {
             if(mvars[3] == 0) defaultSize = 5;
@@ -11127,13 +11136,11 @@ function gmDisplayVars() {
         document.getElementById("DIVE_firstGoalMinimum_change").value = mode_vars[4];
     }
     else if (gamemode == 54) { // 3888
-        function factorMatch(arr1, num) { // Checks if num is made up of the primes in arr1 (greedy)
-            for(let i = 0; i < arr1.length; i++) {
-                while(num % arr1[i] == 0) {
-                    num /= arr1[i];
-                }
-            }
-            return num === 1;
+        function factorMatch(arr1, num) {
+            if(num === 1) return true;
+            if(num < 1 || arr1.length === 0) return false;
+            if(num % arr1[0] === 0 && factorMatch(arr1.slice(), num / arr1[0])) return true
+            return factorMatch(arr1.slice(1), num);
         }
         document.getElementById("3888_baseList").style.setProperty("display", "flex");
         while (document.getElementById("3888_baseList").children.length > mode_vars[0].length + 3) {
@@ -11153,7 +11160,7 @@ function gmDisplayVars() {
                     if (Number.isNaN(v) || v <= 1) {
                         throw new Error();
                     }
-                    if (MV1Index >= mode_vars[0].length) mode_vars[0].push(v);
+                    if (MV1Index >= mode_vars[0].length /* && !factorMatch(mode_vars[0].slice(), v) */) mode_vars[0].push(v);
                     else mode_vars[0][MV1Index] = v;
                     mode_vars[0] = [...new Set(mode_vars[0])];
                     mode_vars[0].sort((a, b) => a - b);
@@ -11173,12 +11180,21 @@ function gmDisplayVars() {
         }
         document.getElementById("3888_baseList_input" + (mode_vars[0].length + 1)).value = "";
         document.getElementById("3888_baseList_form0").style.setProperty("display", "none");
-        /*function makeRules(arr) {
+        document.getElementById("3888_mlength_counter").innerHTML = mode_vars[2];
+        if(mode_vars[2] < 3) document.getElementById("3888_mlength_minus").style.setProperty("display", "none");
+        else document.getElementById("3888_mlength_minus").style.setProperty("display", "block");
+        if(mode_vars[2] > 4) document.getElementById("3888_mlength_plus").style.setProperty("display", "none");
+        else document.getElementById("3888_mlength_plus").style.setProperty("display", "block");
+        let maxn = 100;
+        function makeRules(arr) {
             let res = [];
             for(let i = 0; i <= arr.length; i++) {
-                res.push([[], []]);
+                res.push([]);
+                for(let j = 2; j <= mode_vars[2]; j++) {
+                    res[i].push([]);
+                }
             }
-            for(let high = 1; high < 100; high++) {
+            for(let high = 1; high <= maxn; high++) {
                 if(!factorMatch(arr, high)) continue;
                 for(let mid = 1; mid <= high; mid++) {
                     if(!factorMatch(arr, mid)) continue;
@@ -11192,36 +11208,72 @@ function gmDisplayVars() {
                         if(push > -1) res[push][0].push([mid, high]);
                         else res[arr.length][0].push([mid, high]);
                     }
-                    // Three length merges
-                    for(let low = 1; low <= mid; low++) {
-                        if(!factorMatch(arr, low)) continue;
-                        let gcdTotal = gcd(gcd(high, mid), low);
-                        if(factorMatch(arr, high + mid + low) && (gcdTotal === 1 || !factorMatch(arr, gcdTotal))) {
-                            push = -1;
-                            for(let i = 0; i < arr.length; i++) {
-                                let pure = Math.log(high + mid + low) / Math.log(arr[i]);
-                                if(pure % 1 == 0 && push === -1) push = i;
+                    if(mode_vars[2] > 2) {
+                        // Three length merges
+                        for(let low = 1; low <= mid; low++) {
+                            if(!factorMatch(arr, low)) continue;
+                            let gcdTotal = gcd(gcd(high, mid), low);
+                            if(factorMatch(arr, high + mid + low) && (gcdTotal === 1 || !factorMatch(arr, gcdTotal))) {
+                                push = -1;
+                                for(let i = 0; i < arr.length; i++) {
+                                    let pure = Math.log(high + mid + low) / Math.log(arr[i]);
+                                    if(pure % 1 == 0 && push === -1) push = i;
+                                }
+                                if(push > -1) res[push][1].push([low, mid, high]);
+                                else res[arr.length][1].push([low, mid, high]);
                             }
-                            if(push > -1) res[push][1].push([low, mid, high]);
-                            else res[arr.length][1].push([low, mid, high]);
+                            if(mode_vars[2] > 3) {
+                                // Four length merges
+                                for(let lower = 1; lower <= low; lower++) {
+                                    if(!factorMatch(arr, lower)) continue;
+                                    let gcdTotal2 = gcd(gcd(gcd(high, mid), low), lower);
+                                    if(factorMatch(arr, high + mid + low + lower) && (gcdTotal2 === 1 || !factorMatch(arr, gcdTotal2))) {
+                                        push = -1;
+                                        for(let i = 0; i < arr.length; i++) {
+                                            let pure = Math.log(high + mid + low + lower) / Math.log(arr[i]);
+                                            if(pure % 1 == 0 && push === -1) push = i;
+                                        }
+                                        if(push > -1) res[push][2].push([lower, low, mid, high]);
+                                        else res[arr.length][2].push([lower, low, mid, high]);
+                                    }
+                                    if(mode_vars[2] > 4) {
+                                        // Five length merges
+                                        for(let lowest = 1; lowest <= lower; lowest++) {
+                                            if(!factorMatch(arr, lowest)) continue;
+                                            let gcdTotal3 = gcd(gcd(gcd(gcd(high, mid), low), lower), lowest);
+                                            if(factorMatch(arr, high + mid + low + lower + lowest) && (gcdTotal3 === 1 || !factorMatch(arr, gcdTotal3))) {
+                                                push = -1;
+                                                for(let i = 0; i < arr.length; i++) {
+                                                    let pure = Math.log(high + mid + low + lower + lowest) / Math.log(arr[i]);
+                                                    if(pure % 1 == 0 && push === -1) push = i;
+                                                }
+                                                if(push > -1) res[push][3].push([lowest, lower, low, mid, high]);
+                                                else res[arr.length][3].push([lowest, lower, low, mid, high]);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
-                }
-            }
-            return res;
-        }*/
-        function makeRules(arr) {
-            let res = [];
-            for(let i = 0; i <= arr.length; i++) {
-                res.push([]);
-                for(let j = 2; j <= mode_vars[2]; j++) {
-                    res[i].push([]);
                 }
             }
             return res;
         }
         console.log(makeRules(mode_vars[0]));
         mode_vars[1] = [[1, 3], [1, 2, 3], [2, 3, 4]];
+        mode_vars[1] = mode_vars[1].sort((a, b) => b.length - a.length);
+        for(let i = 0; i < mode_vars[1].length; i++) {
+            let mrule = [["@This 0", "/", mode_vars[1][i][0], "%", 1, "=", 0]]; // put mergeruleapplies here
+            let outs = [false];
+            let score = ["@This 0"];
+            for(let j = 1; j < mode_vars[1][i].length; j++) {
+                outs.push(true);
+                mrule.push("&&", [["@This 0", "/", mode_vars[1][i][0]], "=", ["@Next " + j + " 0", "/", mode_vars[1][i][j]]]);
+                score.push("+", "@Next " + j + " 0" );
+            }
+            MergeRules.push([mode_vars[1][i].length, mrule.slice(), false, [[score.slice()]], score.slice(), outs.slice()]);
+        }
         let ruleOutputs = [];
         let minPureOutputs = new Array(mode_vars[0].length)
         minPureOutputs.fill(0);
@@ -11250,13 +11302,12 @@ function gmDisplayVars() {
             }
             if(!possible) impossibleTiles.push(i);
         }
-        TileNumAmount = mode_vars[0].length;
         TileTypes = [
-            [[0, 0], 1, "#000000", "#ffffff"],
-            [["@This 0", "+", "@This 1", "<", 4], [[2, "^", "@This 0"], "*", [3, "^", "@This 1"]], ["@HSLA", [-300, "*", "@This 1", "/", ["@This 0", "+", "@This 1"]], 100, ["@This 0", "+", "@This 1", "*", 12.5], 1], "#ffffff"],
-            [["@This 0", "+", "@This 1", ">=", 4], [[2, "^", "@This 0"], "*", [3, "^", "@This 1"]], ["@HSLA", [-300, "*", "@This 1", "/", ["@This 0", "+", "@This 1"]], 100, [0.75, "^", ["@This 0", "+", "@This 1", "-", 4], "*", -45, "+", 95], 1], "#000000"]
+            [[1], 1, "#000000", "#ffffff"],
+            [["@This 0", "+", "@This 1", "<", 4], "@This 0", ["@HSLA", [-300, "*", "@This 1", "/", ["@This 0", "+", "@This 1"]], 100, ["@This 0", "+", "@This 1", "*", 12.5], 1], "#ffffff"],
+            [["@This 0", "+", "@This 1", ">=", 4], "@This 0", ["@HSLA", [-300, "*", "@This 1", "/", ["@This 0", "+", "@This 1"]], 100, [0.75, "^", ["@This 0", "+", "@This 1", "-", 4], "*", -45, "+", 95], 1], "#000000"]
         ];
-        startTileSpawns = [[[0, 0], 100]];
+        startTileSpawns = [[[1], 100]];
         let root = 2200 ** (1 / mode_vars[0].length);
         let winTile = new Array(mode_vars[0].length);
         let winText = 1;
@@ -11264,11 +11315,11 @@ function gmDisplayVars() {
             winTile[i] = Math.max(Math.round(Math.log(root) / Math.log(mode_vars[0][i])), 1);
             winText *= mode_vars[0][i] ** winTile[i];
         }
-        winConditions = [winTile];
+        winConditions = [winText];
         winRequirement = 1;
         knownMergeMaxLength = 2;
-        knownMergeLookbackDistance = 0;
-        tileValueFunction = [];
+        knownMergeLookbackDistance = 1;
+        tileValueFunction = ["@This 0"];
         let rulesTitle = "Powers of " + mode_vars[0][0];
         for(let i = 1; i < mode_vars[0].length; i++) {
             rulesTitle += " Times Powers of " + mode_vars[0][i];
@@ -13971,14 +14022,17 @@ function gmDisplayVars() {
                 document.getElementById("Alternate5040_extra_text").innerHTML = "A tile can take any of the fastest paths, and can go between them.";
             }
         }*/
-        /*else if(mode_vars[0] == 14) {
+        else if(mode_vars[0] == 14) {
             if (mode_vars[3] == 0) {
-                document.getElementById("Alternate5040_extra_text").innerHTML = ".";
+                document.getElementById("Alternate5040_extra_text").innerHTML = "Merges are between two tiles.";
             }
             else if (mode_vars[3] == 1) {
-                document.getElementById("Alternate5040_extra_text").innerHTML = ".";
+                document.getElementById("Alternate5040_extra_text").innerHTML = "Tiles merge with two tiles near double it.";
             }
-        }*/
+            else if (mode_vars[3] == 2) {
+                document.getElementById("Alternate5040_extra_text").innerHTML = "Tiles merge with a tile near double it and a tile near double that.";
+            }
+        }
         else if(mode_vars[0] == 15) {
             if (mode_vars[3] == 0) {
                 document.getElementById("Alternate5040_extra_text").innerHTML = "A tile merges with around triple itself.";
@@ -16397,16 +16451,23 @@ function gmDisplayVars() {
             }
         }
         else if(mode_vars[0] == 14) { // 1847 variant
-            document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
-            document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_extra").style.setProperty("display", "block");
             document.getElementById("Alternate5040_num").style.setProperty("display", "none");
-            document.getElementById("Alternate5040_fraction").style.setProperty("display", "block");
-            document.getElementById("Alternate5040_fraction_numerator_change").value = mode_vars[4].numerator;
-            document.getElementById("Alternate5040_fraction_denominator_change").value = mode_vars[4].denominator;
+            if(mode_vars[3] == 0) {
+                document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
+                document.getElementById("Alternate5040_fraction").style.setProperty("display", "block");
+                document.getElementById("Alternate5040_fraction_numerator_change").value = mode_vars[4].numerator;
+                document.getElementById("Alternate5040_fraction_denominator_change").value = mode_vars[4].denominator;
+            }
+            else {
+                document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+                document.getElementById("Alternate5040_fraction").style.setProperty("display", "none");
+                mode_vars[2] = 0;
+            }
             document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #820e0e, #0000, #0000 90deg), repeating-conic-gradient(#0d6ebd 0deg, #ffffa1 45deg, #0d6ebd 90deg)");
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #820e0e, #0000, #0000 90deg), repeating-conic-gradient(#0d6ebd 0deg,#eeee65 45deg,#0d6ebd 90deg)");
             knownMergeLookbackDistance = 0;
-            //if(mode_vars[3] == 0) {
+            if(mode_vars[3] == 0) {
                 let tierTiles = [];
                 function split1847(n) {
                     if(tierTiles.includes(n) || n <= 1n) return;
@@ -16454,7 +16515,54 @@ function gmDisplayVars() {
                     if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
                     else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
                 }
-            //}
+            }
+            else if(mode_vars[3] == 1) {
+                let tierTiles = [];
+                function split1847(n) {
+                    if(tierTiles.includes(n) || n <= 1n) return;
+                    tierTiles.push(n);
+                    let low = BigInt(Math.round(Number(n) / 5));
+                    split1847(low);
+                    switch(n % 5n) {
+                        case 0n:
+                            split1847(2n * low);
+                            break;
+                        case 1n:
+                            split1847(2n * low);
+                        case 2n:
+                            split1847(2n * low + 1n);
+                            break;
+                        case 4n:
+                            split1847(2n * low);
+                        case 3n:
+                            split1847(2n * low - 1n);
+                            break;
+                    }
+                }
+                for(let i = 0; i < validIndex.length; i++) {
+                    split1847(validIndex[i]);
+                    valid.push(tierTiles.slice());
+                    tierTiles = [];
+                }
+                validPos.unshift(valid);
+                console.log(validPos.slice());
+                knownMergeLookbackDistance = 1;
+                //if(mode_vars[2] == 0) {
+                    MergeRules.push(
+                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "*B", 2n, "-B", "@Next 1 1", "absB", "<=", 1n], "&&", ["@This 1", "*B", 2n, "-B", "@Next 2 1", "absB", "<=", 1n], "&&", ["@Next 1 1", "-B", "@Next 2 1", "absB", "<=", 1n], "&&", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"]]], [], [false, true, true]],
+                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "*B", 2n, "-B", "@Next 1 1", "absB", "<=", 1n], "&&", ["@This 1", "*B", 2n, "-B", "@Next 2 1", "absB", "<=", 1n], "&&", ["@Next 1 1", "-B", "@Next 2 1", "absB", "<=", 1n], "&&", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n], "&&", [2n, "<", CAM1Entry], "&&", [["@NextNE -1 0", "!=", "@This 0"], "||", [[["@NextNE -1 1", "!=", 1n], "||", [validPos, "arr_indexOf", 3n, "=", -1]], "&&", [["@NextNE -1 1", "!=", 2n], "||", [validPos, "arr_indexOf", 4n, "=", -1]]]]], true, [["@This 0", 2n]], [], [false, true]],
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n], "&&", [2n, "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]]
+                    )
+                    rulesDescription += "Two tiles that are " + nfact + " can merge. A tile that is a multiple of " + nfact + " can merge with two tiles, no more than " + nfact + " apart, that are each less than " + nfact + " away from double it, as long as their sum can reach " + nonefact + " with further such merges. ";
+                    knownMergeMaxLength = 3;
+                //}
+                rulesTitle[1] = "1847-3A";
+                if(Array.isArray(mode_vars[1])) {
+                    if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+                    else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
+                }
+            }
         }
         else if(mode_vars[0] == 15) { // ????
             document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
