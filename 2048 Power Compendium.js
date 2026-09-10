@@ -1273,7 +1273,7 @@ document.getElementById("Alternate5040_diff_button").addEventListener("click", f
     gmDisplayVars();
 });
 document.getElementById("Alternate5040_extra_button").addEventListener("click", function() {
-    if(mode_vars[0] == 1 || mode_vars[0] == 3 || mode_vars[0] == 4 || (mode_vars[0] == 5 && secretsFound[4]) || mode_vars[0] == 12 || mode_vars[0] == 13/* || mode_vars[0] == 14*/) mode_vars[3] = (mode_vars[3] + 1) % 3;
+    if(mode_vars[0] == 1 || mode_vars[0] == 3 || mode_vars[0] == 4 || (mode_vars[0] == 5 && secretsFound[4]) || mode_vars[0] == 12 || mode_vars[0] == 13 || mode_vars[0] == 14) mode_vars[3] = (mode_vars[3] + 1) % 3;
     else if(mode_vars[0] == 25) mode_vars[3] = (mode_vars[3] + 1) % 4;
     else mode_vars[3] = (mode_vars[3] + 1) % 2; // mode_vars[0] can be 5, 7, 9, 10, 15, 16, 17, 18, 19, 21, 24
     loadGridSize(100, mode_vars);
@@ -16545,7 +16545,6 @@ function gmDisplayVars() {
                     tierTiles = [];
                 }
                 validPos.unshift(valid);
-                console.log(validPos.slice());
                 knownMergeLookbackDistance = 1;
                 //if(mode_vars[2] == 0) {
                     MergeRules.push(
@@ -16558,6 +16557,56 @@ function gmDisplayVars() {
                     knownMergeMaxLength = 3;
                 //}
                 rulesTitle[1] = "1847-3A";
+                if(Array.isArray(mode_vars[1])) {
+                    if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+                    else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
+                }
+            }
+            else if(mode_vars[3] == 2) {
+                let tierTiles = [];
+                function split1847(n) {
+                    if(tierTiles.includes(n) || n <= 1n) return;
+                    tierTiles.push(n);
+                    let low = max((n + 3n) / 7n, 1n);
+                    let medium = 0n;
+                    split1847(low);
+                    switch(n % 7n) {
+                        case 0n:
+                        case 1n:
+                        case 6n:
+                            medium = 2n * low;
+                            break;
+                        case 2n:
+                        case 3n:
+                            medium = 2n * low + 1n;
+                            break;
+                        case 4n:
+                        case 5n:
+                            medium = 2n * low - 1n;
+                            break;
+                    }
+                    if(medium < n - low) split1847(medium);
+                    if(low + medium > 0) split1847(n - low - medium);
+                }
+                for(let i = 0; i < validIndex.length; i++) {
+                    split1847(validIndex[i]);
+                    valid.push(tierTiles.slice());
+                    tierTiles = [];
+                }
+                validPos.unshift(valid);
+                console.log(validPos.slice());
+                knownMergeLookbackDistance = 1;
+                //if(mode_vars[2] == 0) {
+                    MergeRules.push(
+                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "*B", 2n, "-B", "@Next 1 1", "absB", "<=", 1n], "&&", ["@Next 1 1", "*B", 2n, "-B", "@Next 2 1", "absB", "<=", 1n], "&&", [["@This 1", "*B", 4n, "-B", "@Next 1 1", "absB", "<=", 2n], "||", ["@Next 2 1", "=", 3n]], "&&", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"]]], [], [false, true, true]],
+                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "*B", 2n, "-B", "@Next 1 1", "absB", "<=", 1n], "&&", ["@Next 1 1", "*B", 2n, "-B", "@Next 2 1", "absB", "<=", 1n], "&&", [["@This 1", "*B", 4n, "-B", "@Next 1 1", "absB", "<=", 2n], "||", ["@Next 2 1", "=", 1n]], "&&", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n], "&&", [validPos, "arr_indexOf", 2n, ">", -1], "&&", [["@NextNE -1 0", "!=", "@This 0"], "||", [[["@NextNE -1 1", "!=", 1n], "||", [validPos, "arr_indexOf", 3n, "=", -1]], "&&", [["@NextNE -1 1", "!=", 2n], "||", [validPos, "arr_indexOf", 4n, "=", -1]], "&&", [["@NextNE -1 1", "!=", 3n], "||", [validPos, "arr_indexOf", 5n, "=", -1]]]]], true, [["@This 0", 2n]], [], [false, true]],
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n], "&&", [2n, "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]]
+                    )
+                    rulesDescription += "Two or three tiles that are " + nfact + " can merge. A tile that is a multiple of " + nfact + " can merge with a tile no more than " + nfact + " away from double it, and a tile no more than" + nfact + " away from double that, as long as the largest tile is no more than 2*" + nfact + " away from quadruple the smallest tile and their sum can reach " + nonefact + " with further such merges. ";
+                    knownMergeMaxLength = 3;
+                //}
+                rulesTitle[1] = "1847-3B";
                 if(Array.isArray(mode_vars[1])) {
                     if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
                     else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
