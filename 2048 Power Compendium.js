@@ -16546,6 +16546,7 @@ function gmDisplayVars() {
                 }
                 validPos.unshift(valid);
                 knownMergeLookbackDistance = 1;
+                console.log(validPos);
                 //if(mode_vars[2] == 0) {
                     MergeRules.push(
                         [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "*B", 2n, "-B", "@Next 1 1", "absB", "<=", 1n], "&&", ["@This 1", "*B", 2n, "-B", "@Next 2 1", "absB", "<=", 1n], "&&", ["@Next 1 1", "-B", "@Next 2 1", "absB", "<=", 1n], "&&", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"]]], [], [false, true, true]],
@@ -16594,12 +16595,12 @@ function gmDisplayVars() {
                     tierTiles = [];
                 }
                 validPos.unshift(valid);
-                console.log(validPos.slice());
                 knownMergeLookbackDistance = 1;
+                console.log(validPos);
                 //if(mode_vars[2] == 0) {
                     MergeRules.push(
-                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "*B", 2n, "-B", "@Next 1 1", "absB", "<=", 1n], "&&", ["@Next 1 1", "*B", 2n, "-B", "@Next 2 1", "absB", "<=", 1n], "&&", [["@This 1", "*B", 4n, "-B", "@Next 1 1", "absB", "<=", 2n], "||", ["@Next 2 1", "=", 3n]], "&&", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"]]], [], [false, true, true]],
-                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "*B", 2n, "-B", "@Next 1 1", "absB", "<=", 1n], "&&", ["@Next 1 1", "*B", 2n, "-B", "@Next 2 1", "absB", "<=", 1n], "&&", [["@This 1", "*B", 4n, "-B", "@Next 1 1", "absB", "<=", 2n], "||", ["@Next 2 1", "=", 1n]], "&&", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
+                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "*B", 2n, "-B", "@Next 1 1", "absB", "<=", 1n], "&&", ["@Next 1 1", "*B", 2n, "-B", "@Next 2 1", "absB", "<=", 1n], "&&", [["@This 1", "*B", 4n, "-B", "@Next 2 1", "absB", "<=", 2n], "||", ["@Next 2 1", "=", 1n]], "&&", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1"]]], [], [false, true, true]],
+                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "*B", 2n, "-B", "@Next 1 1", "absB", "<=", 1n], "&&", ["@Next 1 1", "*B", 2n, "-B", "@Next 2 1", "absB", "<=", 1n], "&&", [["@This 1", "*B", 4n, "-B", "@Next 2 1", "absB", "<=", 2n], "||", ["@Next 2 1", "=", 1n]], "&&", ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n], "&&", [validPos, "arr_indexOf", 2n, ">", -1], "&&", [["@NextNE -1 0", "!=", "@This 0"], "||", [[["@NextNE -1 1", "!=", 1n], "||", [validPos, "arr_indexOf", 3n, "=", -1]], "&&", [["@NextNE -1 1", "!=", 2n], "||", [validPos, "arr_indexOf", 4n, "=", -1]], "&&", [["@NextNE -1 1", "!=", 3n], "||", [validPos, "arr_indexOf", 5n, "=", -1]]]]], true, [["@This 0", 2n]], [], [false, true]],
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1n], "&&", ["@Next 1 1", "=", 1n], "&&", [2n, "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]]
                     )
