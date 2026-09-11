@@ -87,8 +87,8 @@ class GaussianBigInt {
     fromArrayPair(input) {
         this.real = BigInt(input[0]);
         this.imaginary = BigInt(input[1]);
-        if(input[2] == undefined) this.discriminant = -1n;
-        this.discriminant = BigInt(input[2])
+        if(input[2] === undefined) this.discriminant = -1n;
+        else this.discriminant = BigInt(input[2])
         return this;
     }
     static fromArrayPair(input) {
