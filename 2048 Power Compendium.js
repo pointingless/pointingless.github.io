@@ -1273,9 +1273,9 @@ document.getElementById("Alternate5040_diff_button").addEventListener("click", f
     gmDisplayVars();
 });
 document.getElementById("Alternate5040_extra_button").addEventListener("click", function() {
-    if(mode_vars[0] == 1 || mode_vars[0] == 3 || mode_vars[0] == 4 || (mode_vars[0] == 5 && secretsFound[4]) || mode_vars[0] == 12 || mode_vars[0] == 13 || mode_vars[0] == 14) mode_vars[3] = (mode_vars[3] + 1) % 3;
+    if(mode_vars[0] == 1 || mode_vars[0] == 3 || mode_vars[0] == 4 || (mode_vars[0] == 5 && secretsFound[4]) || mode_vars[0] == 7 || mode_vars[0] == 12 || mode_vars[0] == 13 || mode_vars[0] == 14) mode_vars[3] = (mode_vars[3] + 1) % 3;
     else if(mode_vars[0] == 25) mode_vars[3] = (mode_vars[3] + 1) % 4;
-    else mode_vars[3] = (mode_vars[3] + 1) % 2; // mode_vars[0] can be 5, 7, 9, 10, 15, 16, 17, 18, 19, 21, 24
+    else mode_vars[3] = (mode_vars[3] + 1) % 2; // mode_vars[0] can be 5, 9, 10, 15, 16, 17, 18, 19, 21, 24
     loadGridSize(100, mode_vars);
     gmDisplayVars();
 });
@@ -3159,7 +3159,7 @@ let waves_order = [
     [96, 96.50118], [35, 101], [34, 34.50118], [70, 50.1], [69, 50.22], [91, 91.50118], [73, 73.50118], [89, 89.50118], [97, 97.50118], [37, 102], [40, 50.248], [95, 50.7101113], [50, 50]
 ]
 let wavesModeModified = [96.50118, 34.50118, 50.22, 91.50118, 73.50118, 89.50118, 97.50118, 50.248]
-let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 26, 27, 28, 29, 30, 32, 33/*, 34*/, 24];
+let alt5040_variantOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 26, 27, 28, 29, 30, 32, 33/*, 34, 25, 13, 16, 31, 35*/, 24, /*36*/];
 for (let t = 1; t <= modes_order.length; t++) { //Adding event listeners to the main mode tiles on the menu
     let mtile = document.getElementById("menu_grid_storage").firstElementChild;
     let position = modes_order.indexOf(t);
@@ -3202,7 +3202,7 @@ for (let t = 0; t < alt5040_variantOrder.length; t++) { //Adding event listeners
             else if(mode_vars[0] == 14) mode_vars[4] = new BigRational(2n, 1n);
             else if(mode_vars[0] == 15) mode_vars[4] = 0;
             else if(mode_vars[0] == 22) mode_vars[4] = 4;
-            else if(mode_vars[0] == 31) mode_vars[4] == 13;
+            else if(mode_vars[0] == 31) mode_vars[4] = 13;
             else mode_vars[4] = 2;
             if(mode_vars[0] == 24) secretsFound[10] = true;
             loadGridSize(100, mode_vars);
@@ -13984,6 +13984,9 @@ function gmDisplayVars() {
             else if (mode_vars[3] == 1) {
                 document.getElementById("Alternate5040_extra_text").innerHTML = "Merges occur between a number and a multiple of it.";
             }
+            else if (mode_vars[3] == 2) {
+                document.getElementById("Alternate5040_extra_text").innerHTML = "Merges occur between tiles on DIVE-like paths.";
+            }
         }
         else if(mode_vars[0] == 9) {
             if (mode_vars[3] == 0) {
@@ -14112,6 +14115,17 @@ function gmDisplayVars() {
                 document.getElementById("Alternate5040_extra_text").innerHTML = "The merge length must be coprime to the modulus.";
             }
         }
+        else if(mode_vars[0] == 29) {
+            if (mode_vars[3] == 0) {
+                document.getElementById("Alternate5040_extra_text").innerHTML = "The merge rules are based on normal RACUTE.";
+            }
+            else if (mode_vars[3] == 1) {
+                document.getElementById("Alternate5040_extra_text").innerHTML = "The merge rules are based on Loose RACUTE.";
+            }
+            else if (mode_vars[3] == 2) {
+                document.getElementById("Alternate5040_extra_text").innerHTML = "The merge rules are based on Moistened RACUTE.";
+            }
+        }
         else if(mode_vars[0] == 30) {
             if (mode_vars[3] == 0) {
                 document.getElementById("Alternate5040_extra_text").innerHTML = "The allowed merge rule changes based on the turn number.";
@@ -14233,6 +14247,9 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_extra").style.setProperty("display", "block");
             document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
             document.getElementById("Alternate5040_num").style.setProperty("display", "none");
+            if(mode_vars[3] <= 0) document.getElementById("Alternate5040_num").style.setProperty("display", "none");
+            if(mode_vars[4] < 3) document.getElementById("Alternate5040_num_minus").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_num_title").innerHTML = "Base:";
             document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #9900ff, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #9900ff, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
             if(mode_vars[3] == 0) {
@@ -14326,11 +14343,19 @@ function gmDisplayVars() {
                     else rulesDescription += "(In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow the path to get from 1 to " + none + " in 2047, but every two-tile merge must be done with an additional 1 and every three-tile merge must be done with an additional 2.) ";
                     knownMergeMaxLength = 4;
                 }
+                let goalPow;
+                if (mode_vars[4] < 3) goalPow = 11n;
+                else if (mode_vars[4] < 4) goalPow = 7n;
+                else if (mode_vars[4] < 6) goalPow = 5n;
+                else if (mode_vars[4] < 10) goalPow = 4n;
+                else if (mode_vars[4] < 22) goalPow = 3n;
+                else if (mode_vars[4] < 256) goalPow = 2n;
+                else goalPow = 1n;
+                rulesTitle[1] = BigInt(mode_vars[4]) ** goalPow - 1n;
                 if(Array.isArray(mode_vars[1])) {
-                    if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (2047 Variant) for the following n's in a cycle: " + arrayListString + ". ";
-                    else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (2047 Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
+                    if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+                    else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
                 }
-                rulesTitle[1] = "2047";
                 if(mode_vars[1] == 0n && mode_vars[2] == 1) knownMergeLookbackDistance = 1;
                 else knownMergeLookbackDistance = 0;
             }
@@ -15457,6 +15482,34 @@ function gmDisplayVars() {
                 }
                 rulesTitle[1] = "Strict 3125";
             }
+            else if(mode_vars[3] == 2) { // DIVE
+                if(mode_vars[2] == 0) {
+                    MergeRules.push(
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", ["@This 1", "%B", "@Next 1 1", "=", 0n]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "%B", "@Next 1 1", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [[[[[CAM1Entry, "/B", "@Next 1 1"], "primeFactorizeB", "arr_elem", 0], "arr_length"], "primeB", "*B", "@Next 1 1"], ">", "@This 1"]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
+                    )
+                    rulesDescription += "Two tiles that are multiples of " + nfact + " can merge if one tile divides the other, and the larger tile is less than (" + none + " / the smaller tile)'s largest prime factor. (In other words, two tiles can merge if they could in the Strict 3125 variant of the 180 variant's paths to " + nonefact + ") ";
+                }
+                else if(mode_vars[2] == 1) {
+                    if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
+                    if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
+                        [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", ["@This 1", "%B", "@Next 1 1", "=", 0n]], false, [[1n, baseTile]], [], [false, true]],
+                        [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "%B", "@Next 1 1", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [[[[[CAM1Entry, "/B", "@Next 1 1"], "primeFactorizeB", "arr_elem", 0], "arr_length"], "primeB", "*B", "@Next 1 1"], ">", "@This 1"]], false, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
+                    );
+                    MergeRules.push(
+                        [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", ["@This 1", "%B", "@Next 1 1", "=", 0n]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
+                        [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "%B", "@Next 1 1", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [[[[[CAM1Entry, "/B", "@Next 1 1"], "primeFactorizeB", "arr_elem", 0], "arr_length"], "primeB", "*B", "@Next 1 1"], ">", "@This 1"]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]]
+                    );
+                    rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " can merge with a 1 if one (tile + 1) divides (the other + 1), and the larger tile is more than one less than (" + none + " / (the smaller tile + 1))'s largest prime factor. (In other words, two tiles can merge if they could in the Strict 3125 variant of the 180 variant's paths to " + nonefact + ", but every merge includes an extra 1.) ";
+                    if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. ";
+                    knownMergeMaxLength = 3;
+                }
+                if(Array.isArray(mode_vars[1])) {
+                    if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (DIVE Variant) for the following n's in a cycle: " + arrayListString + ". Get to the " + arrayWinCondition + " tile to win!";
+                    else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (DIVE Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
+                }
+                rulesTitle[1] = "DIVE";
+            };
         }
         else if(mode_vars[0] == 8) { // XXXX variant
             document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
@@ -16675,56 +16728,7 @@ function gmDisplayVars() {
                 else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
             }
         }
-        /*else if(mode_vars[0] == 16) { // 2584 variant (NOT IN V1.1)
-            document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
-            document.getElementById("Alternate5040_extra").style.setProperty("display", "block");
-            document.getElementById("Alternate5040_num").style.setProperty("display", "none");
-            if(mode_vars[3] == 0) {
-                function split2584(n) {
-                    let tierTiles = [[], 0n];
-                    let tPrev = Number(n);
-                    let tCur = Math.round(tPrev / ((1 + Math.sqrt(5)) / 2));
-                    let backup;
-                    while(tCur < tPrev) {
-                        backup = tPrev;
-                        tPrev = tCur;
-                        tCur = backup - tPrev;
-                        if(tCur > 1 && tCur <= tPrev) {
-                            tierTiles[0].push(BigInt(tPrev));
-                        }
-                        else if(tCur == 1) {
-                            tierTiles[0].push(1n);
-                            break;
-                        }
-                    }
-                    if(tPrev < tCur) {
-                        tierTiles[0].push(BigInt(tPrev), BigInt(tCur));
-                        tierTiles[1] = BigInt(tCur);
-                    }
-                    else {
-                        if(tierTiles[0].at(-1) == 1n) tierTiles[0].splice(tierTiles[0].length - 1, 0, BigInt(tPrev));
-                        else tierTiles[0].push(BigInt(tPrev));
-                        tierTiles[1] = BigInt(tPrev);
-                    }
-                    return tierTiles;
-                }
-                if(mode_vars[1] === true) {
-                    if(mode_vars[2] == 0) {
-                        let validTiles = ["@Literal"];
-                        for(let i = 2n; i < 50n; i++) {
-                            validTiles.push(split2584(i));
-                        }
-                        MergeRules = [
-                            [2, [["@This 0", "=", "@Next 1 0"], "&&", [validTiles, "arr_elem", ["@This 0", "-", 1, "Number"], "arr_elem", 0, "arr_elem", ["@This 0", "-", 1, "Number"], "arr_elem", 0, "arr_indexOf", ["@This 1"], ">", -1], "&&", [validTiles, "arr_elem", [validTiles, "arr_elem", ["@This 0", "-", 1, "Number"], "arr_elem", 0, "arr_indexOf", ["@This 1"], "-", 1], "=", "@Next 1 1"]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], ["@This 0", "factorial", "*", ["@This 1", "+B", "@Next 1 1"]], [false, true]],
-                            [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "*B", 2n, "-B", "@Next 1 1", "absB", "<", 2n], "&&", ["@This 1", "+B", "@Next 1 1", "=", ["@This 0", "+B", 1n]]], false, [[["@This 0", "+B", 1n], 1n]], ["@This 0", "+", 1, "factorial"], [false, true]]
-                        ];
-                    }
-                    else if(mode_vars[2] == 1) {
-
-                    }
-                }
-            }
-        }*/
+        // no 16
         else if(mode_vars[0] == 17) { // 1845 variant
             document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
             document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
@@ -17399,17 +17403,36 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_num").style.setProperty("display", "none");
             document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #a059b5, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #a059b5, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
-            MergeRules.push(
-                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
-                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [["@This 1", "+B", "@Next 1 1", "gcdB", CAM1Entry], ">=", [["@This 1", "gcdB", CAM1Entry], "max", ["@Next 1 1", "gcdB", CAM1Entry]]]], true, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
-            )
-            rulesDescription += "Two tiles that are multiples of " + nfact + " but less than " + nonefact + " can merge if the GCD of their sum and " + nonefact + " is no less than the larger of the GCDs of each tile with " + nonefact + ". (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1/(" + none + ") and follow a path to get from 1/(" + none + ") to 1 in RACUTE.) ";
+            if(mode_vars[3] == 0) {
+                MergeRules.push(
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [["@This 1", "+B", "@Next 1 1", "gcdB", CAM1Entry], ">=", [["@This 1", "gcdB", CAM1Entry], "max", ["@Next 1 1", "gcdB", CAM1Entry]]]], true, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
+                )
+                rulesTitle[1] = "RACUTE";
+                rulesDescription += "Two tiles that are multiples of " + nfact + " but less than " + nonefact + " can merge if the GCD of their sum and " + nonefact + " is no less than the larger of the GCDs of each tile with " + nonefact + ". (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1/(" + none + ") and follow a path to get from 1/(" + none + ") to 1 in RACUTE.) ";
+            }
+            else if(mode_vars[3] == 1) {
+                MergeRules.push(
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [["@This 1", "+B", "@Next 1 1", "gcdB", CAM1Entry], ">=", [["@This 1", "gcdB", CAM1Entry], "min", ["@Next 1 1", "gcdB", CAM1Entry]]]], true, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
+                )
+                rulesTitle[1] = "Loose RACUTE";
+                rulesDescription += "Two tiles that are multiples of " + nfact + " but less than " + nonefact + " can merge if the GCD of their sum and " + nonefact + " is no less than the smaller of the GCDs of each tile with " + nonefact + ". (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1/(" + none + ") and follow a path to get from 1/(" + none + ") to 1 in Loose RACUTE.) ";
+            }
+            else if(mode_vars[3] == 2) {
+                MergeRules.push(
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [CAM1Entry, "/", "@Next 1 1", "primeFactorize", "arr_elem", 0, "arr_length", "primeB"]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
+                )
+                rulesTitle[1] = "DIVE";
+                rulesDescription += "Two tiles that are multiples of " + nfact + " but less than " + nonefact + " can merge if the GCD of their sum and " + nonefact + " is no less than the smaller of the GCDs of each tile with " + nonefact + ". (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1/(" + none + ") and follow a path to get from 1/(" + none + ") to 1 in Loose RACUTE.) ";
+            };
+            
             if (Array.isArray(mode_vars[1])) {
-                rulesDescription = "Follow the paths to get from (n - 1)! to n! in Alternate 5040 (RACUTE variant), for the following n's in a cycle: " + arrayListString + ". ";
+                rulesDescription = "Follow the paths to get from (n - 1)! to n! in Alternate 5040 (" + rulesTitle[1] + " Variant), for the following n's in a cycle: " + arrayListString + ". ";
             }
             knownMergeMaxLength = 2;
             knownMergeLookbackDistance = 0;
-            rulesTitle[1] = "RACUTE";
         }
         else if(mode_vars[0] == 30) { // 2295 variant
             document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
@@ -17501,26 +17524,25 @@ function gmDisplayVars() {
             document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
             document.getElementById("Alternate5040_extra").style.setProperty("display", "block");
             document.getElementById("Alternate5040_num").style.setProperty("display", "block");
-            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #8ad4c7, #0000, #0000 90deg), repeating-conic-gradient(#bfc4bc 0deg, #ffffa1 45deg, #bfc4bc 90deg)");
-            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #8ad4c7, #0000, #0000 90deg), repeating-conic-gradient(#bfc4bc 0deg,#eeee65 45deg,#bfc4bc 90deg)");
-            knownMergeLookbackDistance = 1;
+            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #ffffa1, #0000, #0000 90deg), repeating-conic-gradient(#ffffa1 0deg, #eeee65 45deg, #ffffa1 90deg)");
+            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #ffffa1, #0000, #0000 90deg), repeating-conic-gradient(#ffffa1 0deg,#eeee65 45deg,#ffffa1 90deg)");
             let allPowers = [
                 [
-                    [2, true, true]
+                    [2, [true], true]
                 ],
                 [
-                    [2, ["@This 1", "=", 1n], false]
+                    [2, ["@This 1", "%B", mode_vars[4], "=", 1n], false]
                 ],
                 [
-                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 3n], true],
-                    [3, ["@This 1", "+B", "@Next 1 1", "=", 4n], true]
+                    [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "%B", mode_vars[4], "=", 3n], true],
+                    [3, ["@This 1", "+B", "@Next 1 1", "%B", mode_vars[4], "=", 0n], true]
                 ],
                 [
-                    [2, [["@This 1", "+B", "@Next 1 1", "<=", 5n]], true]
+                    [2, [[["@This 1", "%B", mode_vars[4]], "+B", ["@Next 1 1", "%B", mode_vars[4]], "<=", 5n]], true]
                 ],
                 [
-                    [3, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 1", "<", 3n]], true],
-                    [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "%B", 2n, "=", 1n], "&&", [["@This 1", "=", 3n], "||", ["@NextNE -1 1", "!=", 1n], "||", ["@NextNE -1 0", "!=", "@This 0"]]], true]
+                    [3, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 1", "%B", mode_vars[4], "<", 3n]], true],
+                    [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "%B", mode_vars[4], "%B", 2n, "=", 1n], "&&", [["@This 1", "%B", mode_vars[4], "=", 3n], "||", ["@NextNE -1 1", "!=", 1n], "||", ["@NextNE -1 0", "!=", "@This 0"]]], true]
                 ],
                 [
                     [3, ["@This 1", "+B", "@Next 1 1", "+B", "@Next 2 1", "=", 3n], true],
@@ -17546,7 +17568,7 @@ function gmDisplayVars() {
                     [2, [["@This 1", "=", "@Next 1 1"], "&&", [12n, "%B", ["@This 1", "*B", 2n], "=", 0n]], true],
                     [3, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", [12n, "%B", ["@This 1", "*B", 3n], "=", 0n]], true],
                     [4, [["@This 1", "=", "@Next 1 1"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 1", "=", "@Next 3 1"], "&&", [12n, "%B", ["@This 1", "*B", 4n], "=", 0n]], true] 
-                ],
+                ], // FIX 12
                 [
                     [2, [["@This 1", "=", 1n], "&&", ["@Next 1 1", "<", 4n]], false],
                     [2, [["@This 1", ">", 3n], "&&", [["@This 1", "+B", "@Next 1 1", "=", 6n], "||", ["@This 1", "+B", "@Next 1 1", "=", 9n], "||", ["@This 1", "+B", "@Next 1 1", "=", 13n]]], false]
@@ -17594,13 +17616,24 @@ function gmDisplayVars() {
                     [2, ["@This 1", "+B", "@Next 1 1", "=", 25n], true]
                 ]
             ]
+            knownMergeLookbackDistance = 1;
+            knownMergeMaxLength = 4;
             if(mode_vars[3] == 0) {
-                document.getElementById("Alternate5040_num_title").innerHTML = "Wraparound:";
+                for(let i = 2; i < mode_vars[4]; i++) {
+                    for(let j = 0; j < allPowers[i - 2].length; j++) {
+                        if(allPowers[i - 2][j][0] == 2)  MergeRules.push(
+                            [2, [["@This 0", "=", "@Next 1 0"], "&&", [CAM1Entry, "%B", mode_vars[4], "=", BigInt(i)], "&&", [CAM1Entry, "-B", 1n, "floor", mode_vars[4], "<", "@This 1"], "&&", [["@This 1", "/B", mode_vars[4]], "=", ["@Next 1 1", "/B", mode_vars[4]]], "&&", allPowers[i - 2][j][1].slice()], allPowers[i - 2][j][2], [["@This 0", ["@This 1", "+B", "@Next 1 1", "-B", [["@This 1", "+B", "@Next 1 1"], "floorB", mode_vars[4]]]]/*, []*/], [], [false, true]]
+                        );
+                    }
+                }
+                // add wraparound
+                for(let j = 0; j < allPowers[mode_vars[4] - 1].length; j++) {
                 
+                }
+                document.getElementById("Alternate5040_num_title").innerHTML = "Wraparound:";
             }
             else if(mode_vars[3] == 1) {
                 document.getElementById("Alternate5040_num_title").innerHTML = "Largest Prime:";
-
             }
             rulesTitle[1] = "5040";
             if(Array.isArray(mode_vars[1])) {
@@ -17795,6 +17828,132 @@ function gmDisplayVars() {
                 knownMergeMaxLength = 3;
             }*/
             rulesTitle[1] = "SQUART";
+            if(Array.isArray(mode_vars[1])) {
+                /*if(mode_vars[2] == 0) */rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+                //else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
+            }
+        }
+        else if(mode_vars[0] == 35) { // 2216 variant
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_num").style.setProperty("display", "none");
+            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #733f12, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
+            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #733f12, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
+            let tierTiles = []; // 13, 49, 42, 112, 147, 84
+            function splitSQUART(n) {
+                if(tierTiles.includes(n) || n <= 1n) return;
+                tierTiles.push(n);
+                let maxp = primeFactorize(n, Infinity, false, 2);
+                maxp = maxp[0][maxp[0].length - 1]; // 7
+                if(n % 2n == 0n) maxp = 2n;
+                let leftover = n / maxp; // 7
+                let lowp = 1n; 
+                let highp = 1n;
+                if(maxp > 2n) {
+                    lowp = BigInt(Number(maxp) / 2 - 0.5); // 3
+                    highp = lowp + 1n; // 4
+                    splitSQUART(highp ** 2n * leftover); // 112
+                    if(n != tierTiles[0]) splitSQUART(maxp * lowp * leftover); // 147
+                }
+                splitSQUART(lowp * highp * leftover); // 84
+                
+            }
+            for(let i = 0; i < validIndex.length; i++) {
+                splitSQUART(validIndex[i]);
+                valid.push(tierTiles.slice());
+                tierTiles = [];
+            }
+            validPos.unshift(valid);
+            console.log(validPos);
+            //if(mode_vars[2] == 0) {
+                MergeRules.push(
+                    [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "+B", 1n, "<", CAM1Entry], "&&", [validPos, "arr_elem", [validPos, "arr_lastIndexOf", "@This 1", "-", 1], "=", "@Next 1 1"], "&&", [validPos, "arr_elem", [validPos, "arr_lastIndexOf", "@This 1", "+", 1], "=", ["@This 1", "+B", "@Next 1 1", "+B", 1n]]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1", "+B", 1n]]], [], [false, true], true],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_elem", [validPos, "arr_lastIndexOf", "@This 1", "-", 1], "=", "@Next 1 1"], "&&", [validPos, "arr_elem", [validPos, "arr_lastIndexOf", "@This 1", "+", 1], "=", ["@This 1", "+B", "@Next 1 1"]], "&&", [[validPos, "arr_elem", 2, "!=", 2n], "||", [validPos, "arr_elem", 3, "!=", 4n], "||", ["@NextNE -1 0", "!=", "@This 0"], "||", [[["@NextNE -1 1", "!=", 1n], "||", ["@This 1", "!=", 2n]], "&&", [["@NextNE -1 1", "!=", 2n], "||", ["@This 1", "!=", 1n]]]]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "+B", 1n, "=", CAM1Entry], "&&", [validPos, "arr_elem", [validPos, "arr_lastIndexOf", "@This 1", "-", 1], "=", "@Next 1 1"]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true], true],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", [validPos, "arr_elem", [validPos, "arr_lastIndexOf", "@This 1", "-", 1], "=", "@Next 1 1"], "&&", [[validPos, "arr_elem", 2, "!=", 2n], "||", [validPos, "arr_elem", 3, "!=", 4n], "||", ["@NextNE -1 0", "!=", "@This 0"], "||", [[["@NextNE -1 1", "!=", 1n], "||", ["@This 1", "!=", 2n]], "&&", [["@NextNE -1 1", "!=", 2n], "||", ["@This 1", "!=", 1n]]]]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
+                )
+                rulesDescription += "A tile that is a multiple of " + nfact + " can merge with the closest multiple of " + nfact + " that is no greater than itself, potentially including an additional " + nfact + " as a third tile. Whether or not that tile must be included depends on the zeckendorf representation of " + none + ". ";
+                knownMergeMaxLength = 3;
+            /*}
+            else if(mode_vars[2] == 1) {
+                if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
+                if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
+                    [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "+B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "-B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]], "&&", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "+B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "-B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n]], [], [false, true]]
+                );
+                MergeRules.push(
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "+B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "-B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]],
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "+B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "-B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]]
+                );
+                rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " - 1 can merge with a 1 if the ratio of the multiples is the highest power of 2 in the number of moves or if the ratio between the smaller multiple and a number at a distance of " + nfact + " from the larger multiple is that power of 2, and you can reach " + nonefact + " - 1 with further such merges. ";
+                if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in 2295, but tiles can also merge if the larger number is a distance of 1 from a valid merge, and every merge also includes a 1 except for the first power, which goes to " + (mode_vars[1] - 1n) + " instead.) ";
+                else rulesDescription += "(In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in 2295, but tiles can also merge if the larger number is a distance of 1 from a valid merge, and every merge also includes a 1.) ";
+                knownMergeMaxLength = 3;
+            }*/
+            rulesTitle[1] = "2216.XSHFIUHSAUFHD";
+            if(Array.isArray(mode_vars[1])) {
+                /*if(mode_vars[2] == 0) */rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+                //else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
+            }
+        }
+        else if(mode_vars[0] == 36) { // 1/512 variant
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_num").style.setProperty("display", "none");
+            document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #733f12, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
+            document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #733f12, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
+            let tierTiles = []; // 13, 49, 42, 112, 147, 84
+            function splitSQUART(n) {
+                if(tierTiles.includes(n) || n <= 1n) return;
+                tierTiles.push(n);
+                let maxp = primeFactorize(n, Infinity, false, 2);
+                maxp = maxp[0][maxp[0].length - 1]; // 7
+                if(n % 2n == 0n) maxp = 2n;
+                let leftover = n / maxp; // 7
+                let lowp = 1n; 
+                let highp = 1n;
+                if(maxp > 2n) {
+                    lowp = BigInt(Number(maxp) / 2 - 0.5); // 3
+                    highp = lowp + 1n; // 4
+                    splitSQUART(highp ** 2n * leftover); // 112
+                    if(n != tierTiles[0]) splitSQUART(maxp * lowp * leftover); // 147
+                }
+                splitSQUART(lowp * highp * leftover); // 84
+                
+            }
+            for(let i = 0; i < validIndex.length; i++) {
+                splitSQUART(validIndex[i]);
+                valid.push(tierTiles.slice());
+                tierTiles = [];
+            }
+            validPos.unshift(valid);
+            console.log(validPos);
+            //if(mode_vars[2] == 0) {
+                MergeRules.push(
+                    [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "+B", 1n, "<", CAM1Entry], "&&", [validPos, "arr_elem", [validPos, "arr_lastIndexOf", "@This 1", "-", 1], "=", "@Next 1 1"], "&&", [validPos, "arr_elem", [validPos, "arr_lastIndexOf", "@This 1", "+", 1], "=", ["@This 1", "+B", "@Next 1 1", "+B", 1n]]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1", "+B", 1n]]], [], [false, true], true],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_elem", [validPos, "arr_lastIndexOf", "@This 1", "-", 1], "=", "@Next 1 1"], "&&", [validPos, "arr_elem", [validPos, "arr_lastIndexOf", "@This 1", "+", 1], "=", ["@This 1", "+B", "@Next 1 1"]], "&&", [[validPos, "arr_elem", 2, "!=", 2n], "||", [validPos, "arr_elem", 3, "!=", 4n], "||", ["@NextNE -1 0", "!=", "@This 0"], "||", [[["@NextNE -1 1", "!=", 1n], "||", ["@This 1", "!=", 2n]], "&&", [["@NextNE -1 1", "!=", 2n], "||", ["@This 1", "!=", 1n]]]]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "+B", 1n, "=", CAM1Entry], "&&", [validPos, "arr_elem", [validPos, "arr_lastIndexOf", "@This 1", "-", 1], "=", "@Next 1 1"]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true], true],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", [validPos, "arr_elem", [validPos, "arr_lastIndexOf", "@This 1", "-", 1], "=", "@Next 1 1"], "&&", [[validPos, "arr_elem", 2, "!=", 2n], "||", [validPos, "arr_elem", 3, "!=", 4n], "||", ["@NextNE -1 0", "!=", "@This 0"], "||", [[["@NextNE -1 1", "!=", 1n], "||", ["@This 1", "!=", 2n]], "&&", [["@NextNE -1 1", "!=", 2n], "||", ["@This 1", "!=", 1n]]]]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
+                )
+                rulesDescription += "A tile that is a multiple of " + nfact + " can merge with the closest multiple of " + nfact + " that is no greater than itself, potentially including an additional " + nfact + " as a third tile. Whether or not that tile must be included depends on the zeckendorf representation of " + none + ". ";
+                knownMergeMaxLength = 3;
+            /*}
+            else if(mode_vars[2] == 1) {
+                if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
+                if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
+                    [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "+B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "-B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]], "&&", [valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "+B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "-B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n]], [], [false, true]]
+                );
+                MergeRules.push(
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "+B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "-B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]],
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [[["@This 1", "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "+B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]], "||", [[["@This 1", "-B", 1n], "Number"], "/", ["@Next 1 1", "Number"], "=", [2, "^", ["@Moves", "+", 1, "expomod", 2]]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]]
+                );
+                rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " - 1 can merge with a 1 if the ratio of the multiples is the highest power of 2 in the number of moves or if the ratio between the smaller multiple and a number at a distance of " + nfact + " from the larger multiple is that power of 2, and you can reach " + nonefact + " - 1 with further such merges. ";
+                if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in 2295, but tiles can also merge if the larger number is a distance of 1 from a valid merge, and every merge also includes a 1 except for the first power, which goes to " + (mode_vars[1] - 1n) + " instead.) ";
+                else rulesDescription += "(In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in 2295, but tiles can also merge if the larger number is a distance of 1 from a valid merge, and every merge also includes a 1.) ";
+                knownMergeMaxLength = 3;
+            }*/
+            rulesTitle[1] = "1/512";
             if(Array.isArray(mode_vars[1])) {
                 /*if(mode_vars[2] == 0) */rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
                 //else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
