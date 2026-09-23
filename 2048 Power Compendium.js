@@ -9510,9 +9510,12 @@ function loadGridSize(mode, mvars = []) {
                 defaultSize = min(mvars[4] + 3, 4);
                 if(mvars[2] == 1) defaultSize++;
             }
+        } else if(mvars[0] == 32) {
+            defaultSize = 3;
+            if(mvars[2] == 1) defaultSize++;
         }
         if(mode_vars[1] < -1n) defaultSize++;
-        else if(mode_vars[1] instanceof GaussianBigInt) defaultSize += 1;
+        else if(mode_vars[1] instanceof GaussianBigInt) defaultSize++;
     }
     else if (mode == 34.50118) { // Partial Flow DiVE
         if (!mvars[3]) defaultSize = 4;
@@ -14237,7 +14240,7 @@ function gmDisplayVars() {
             if(mode_vars[4] == 2) document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
             else document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
             document.getElementById("Alternate5040_num").style.setProperty("display", "block");
-            if(mode_vars[3] > 0) document.getElementById("Alternate5040_num").style.setProperty("display", "none");
+            if(mode_vars[3] > 1) document.getElementById("Alternate5040_num").style.setProperty("display", "none");
             if(mode_vars[4] < 3) document.getElementById("Alternate5040_num_minus").style.setProperty("display", "none");
             document.getElementById("Alternate5040_num_title").innerHTML = "Base:";
             document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #9900ff, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
@@ -14336,6 +14339,7 @@ function gmDisplayVars() {
                     }
                 }
                 else { // generalized base
+                    mode_vars[2] = 0;
                     let tierTiles = [];
                     function split2047(n) {
                         tierTiles.push(n);
@@ -14359,7 +14363,6 @@ function gmDisplayVars() {
                         tierTiles = [];
                     }
                     validPos.unshift(valid);
-                    console.log(validPos);
                     MergeRules.push(
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", [[validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"]], "=", [validPos, "arr_indexOf", "@This 1", "+", 1]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
                         [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 2 1", "=", 1n], "&&", ["@This 1", "!=", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", [[validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1", "+B", 1n]], "=", [validPos, "arr_indexOf", "@This 1", "+", 1]], "&&", [validPos, "arr_indexOf", ["@Next 1 1", "+B", 1n], "=", -1], "&&", ["@This 1", "+B", "@Next 1 1", "+B", 1n, "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
@@ -14386,40 +14389,84 @@ function gmDisplayVars() {
                 else knownMergeLookbackDistance = 0;
             }
             else if(mode_vars[3] == 1) { // 2049 variant
-                if(mode_vars[2] == 0) {
+                if(mode_vars[4] == 2) {
+                    if(mode_vars[2] == 0) {
+                        MergeRules.push(
+                            [3, [["@This 2", "=", "@Next 1 2"], "&&", ["@This 2", "!=", "@Next 2 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", ["@This 1", "*B", 2n, "-B", 1n, "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true, true]],
+                            [2, [["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "*B", 2n, "=", CAM1Entry]]], true, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true]],
+                            [3, [["@This 2", "=", "@Next 1 2"], "&&", ["@This 2", "!=", "@Next 2 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">", 1n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", [["@This 1", "*B", 2n, "-B", 1n, "Number"], "=", [[CAM1Entry, "/", [2, "^", [[[CAM1Entry, "/", ["@This 1", "*B", 2n, "-B", 1n, "Number"]], "log", 2], "ceil", 1]]], "ceil", 1]], "&&", [2n, "*", "@This 1", "-B", 1n, "<", CAM1Entry]], false, [["@This 0", ["@This 1", "*B", 2n, "-B", 1n], "@This 2"]], [], [false, true, true]],
+                            [2, [["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "*B", 2n, "Number"], "=", [[CAM1Entry, "/", [2, "^", [[[CAM1Entry, "/", ["@This 1", "*B", 2n, "Number"]], "log", 2], "ceil", 1]]], "ceil", 1]], "&&", [2n, "*", "@This 1", "<", CAM1Entry]], true, [["@This 0", ["@This 1", "*B", 2n], "@This 2"]], [], [false, true]]
+                        )
+                        rulesDescription += "Merges occur between two equal tiles that are multiples of " + nfact + " but smaller than " + nonefact + ", potentially including a negative " + nfact + " as a third tile. Whether or not that third tile must be included depends on the binary digits of " + none + ". ";
+                        knownMergeMaxLength = 3;
+                    }
+                    else if(mode_vars[2] == 1) {
+                        if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
+                        if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
+                            [3, [["@This 0", "=", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 2", "!=", "@Next 2 2"], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", ["@This 1", "*B", 2n, "-B", 1n, "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n, "@This 2"]], [], [false, true, true]],
+                            [2, [["@This 0", "=", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "*B", 2n, "=", [CAM1Entry, "-B", 1n]]]], true, [[1n, 1n, "@This 2"]], [], [false, true]],
+                            [3, [["@This 0", "=", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 2", "!=", "@Next 2 2"], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", ">", 1n], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", [["@This 1", "*B", 2n, "-B", 1n, "Number"], "=", [[[CAM1Entry, "-B", 1n], "/", [2, "^", [[[[CAM1Entry, "-B", 1n], "/", ["@This 1", "*B", 2n, "-B", 1n, "Number"]], "log", 2], "ceil", 1]]], "ceil", 1]], "&&", [2n, "*", "@This 1", "-B", 1n, "<", [CAM1Entry, "-B", 1n]]], false, [[0n, ["@This 1", "*B", 2n, "-B", 1n], "@This 2"]], [], [false, true, true]],
+                            [2, [["@This 0", "=", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "*B", 2n, "Number"], "=", [[[CAM1Entry, "-B", 1n], "/", [2, "^", [[[[CAM1Entry, "-B", 1n], "/", ["@This 1", "*B", 2n, "Number"]], "log", 2], "ceil", 1]]], "ceil", 1]], "&&", [2n, "*", "@This 1", "<", [CAM1Entry, "-B", 1n]]], true, [[0n, ["@This 1", "*B", 2n], "@This 2"]], [], [false, true]]
+                        );
+                        MergeRules.push(
+                            [3, [["@This 0", ">", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 2", "!=", "@Next 2 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", ["@This 1", "*B", 2n, "-B", 1n, "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true, true]],
+                            [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@Next 2 2", "=", "@This 2"], "&&", ["@This 0", ">", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "*B", 2n, "=", CAM1Entry]]], false, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true, true]],
+                            [3, [["@This 0", ">", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 2", "!=", "@Next 2 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">", 1n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", [["@This 1", "*B", 2n, "-B", 1n, "Number"], "=", [[CAM1Entry, "/", [2, "^", [[[CAM1Entry, "/", ["@This 1", "*B", 2n, "-B", 1n, "Number"]], "log", 2], "ceil", 1]]], "ceil", 1]], "&&", [2n, "*", "@This 1", "-B", 1n, "<", CAM1Entry]], false, [["@This 0", ["@This 1", "*B", 2n, "-B", 1n], "@This 2"]], [], [false, true, true]],
+                            [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@Next 2 2", "=", "@This 2"], "&&", ["@This 0", ">", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "*B", 2n, "Number"], "=", [[CAM1Entry, "/", [2, "^", [[[CAM1Entry, "/", ["@This 1", "+B", "@Next 1 1", "Number"]], "log", 2], "ceil", 1]]], "ceil", 1]], "&&", [2n, "*", "@This 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "*B", 2n], "@This 2"]], [], [false, true, true]]
+                        );
+                        rulesDescription += "Merges occur between two equal tiles that are each one less than multiples of " + nfact + " but smaller than " + nonefact + " - 1, potentially including a " + nonefact + " - 1 with the opposite sign as a third tile. If there's no third tile in the merge, then an extra 1 of the same sign is included. Whether or not that third tile must be included depends on the binary digits of " + none + ". ";
+                        if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow the path to get from 1 to " + none + " in 2049, but every two-tile merge must be done with an additional 1 except for the first power, where you go to " + (mode_vars[1] - 1n) + " instead.) ";
+                        else rulesDescription += "(In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow the path to get from 1 to " + none + " in 2049, but every two-tile merge must be done with an additional 1.) ";
+                        knownMergeMaxLength = 3;
+                    }
+                }
+                else { // generalized base
+                    mode_vars[2] = 0;
+                    let tierTiles = [];
+                    function split2049(n) {
+                        tierTiles.push(n);
+                        while(n > BigInt(mode_vars[4])) {
+                            let curn = Number(n);
+                            let r = (BigInt(mode_vars[4]) - (n % BigInt(mode_vars[4]))) % BigInt(mode_vars[4]);
+                            for(let i = 1n; i < BigInt(mode_vars[4]); i++) {
+                                if(i <= r) tierTiles.push(n - BigInt(Math.ceil(curn / mode_vars[4])) + 1n);
+                                else tierTiles.push(n - BigInt(Math.ceil(curn / mode_vars[4])));
+                                n = tierTiles.at(-1);
+                            }
+                        }
+                        for(let i = 1n; i < n; i++) {
+                            tierTiles.push(i);
+                        }
+                        tierTiles.sort((a, b) => Number(a - b));
+                    }
+                    for(let i = 0; i < validIndex.length; i++) {
+                        split2049(validIndex[i]);
+                        valid.push(tierTiles.slice());
+                        tierTiles = [];
+                    }
+                    validPos.unshift(valid);
                     MergeRules.push(
-                        [3, [["@This 2", "=", "@Next 1 2"], "&&", ["@This 2", "!=", "@Next 2 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", ["@This 1", "*B", 2n, "-B", 1n, "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true, true]],
-                        [2, [["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "*B", 2n, "=", CAM1Entry]]], true, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true]],
-                        [3, [["@This 2", "=", "@Next 1 2"], "&&", ["@This 2", "!=", "@Next 2 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">", 1n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", [["@This 1", "*B", 2n, "-B", 1n, "Number"], "=", [[CAM1Entry, "/", [2, "^", [[[CAM1Entry, "/", ["@This 1", "*B", 2n, "-B", 1n, "Number"]], "log", 2], "ceil", 1]]], "ceil", 1]], "&&", [2n, "*", "@This 1", "-B", 1n, "<", CAM1Entry]], false, [["@This 0", ["@This 1", "*B", 2n, "-B", 1n], "@This 2"]], [], [false, true, true]],
-                        [2, [["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "*B", 2n, "Number"], "=", [[CAM1Entry, "/", [2, "^", [[[CAM1Entry, "/", ["@This 1", "*B", 2n, "Number"]], "log", 2], "ceil", 1]]], "ceil", 1]], "&&", [2n, "*", "@This 1", "<", CAM1Entry]], true, [["@This 0", ["@This 1", "*B", 2n], "@This 2"]], [], [false, true]]
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", [[validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"]], "=", [validPos, "arr_indexOf", "@This 1", "+", 1]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true]],
+                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 2 1", "=", 1n], "&&", ["@Next 2 2", "!=", "@This 2"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", [[validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1", "-B", 1n]], "=", [validPos, "arr_indexOf", "@This 1", "+", 1]], "&&", ["@This 1", "+B", "@Next 1 1", "-B", 1n, "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true, true]],
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", [[validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"]], "=", [validPos, "arr_indexOf", "@This 1", "+", 1]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"], "@This 2"]], [], [false, true]],
+                        [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 2 1", "=", 1n], "&&", ["@Next 2 2", "!=", "@This 2"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", [[validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1", "-B", 1n]], "=", [validPos, "arr_indexOf", "@This 1", "+", 1]], "&&", ["@This 1", "+B", "@Next 1 1", "-B", 1n, "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1", "-B", 1n], "@This 2"]], [], [false, true, true]]
                     )
-                    rulesDescription += "Merges occur between two equal tiles that are multiples of " + nfact + " but smaller than " + nonefact + ", potentially including a negative " + nfact + " as a third tile. Whether or not that third tile must be included depends on the binary digits of " + none + ". ";
+                    rulesDescription += "Merges occur between a tile that is " + none + " times some power of " + mode_vars[4] + ", rounded down, multiplied by " + nfact + " and a tile near a multiple of it but smaller than the tile of the next power of " + mode_vars[4] + ", potentially including a negative " + nfact + " as a third tile. Whether or not that third tile must be included depends on the base-" + mode_vars[4] + " digits of " + none + ". ";
                     knownMergeMaxLength = 3;
                 }
-                else if(mode_vars[2] == 1) {
-                    if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
-                    if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
-                        [3, [["@This 0", "=", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 2", "!=", "@Next 2 2"], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", ["@This 1", "*B", 2n, "-B", 1n, "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n, "@This 2"]], [], [false, true, true]],
-                        [2, [["@This 0", "=", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "*B", 2n, "=", [CAM1Entry, "-B", 1n]]]], true, [[1n, 1n, "@This 2"]], [], [false, true]],
-                        [3, [["@This 0", "=", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 2", "!=", "@Next 2 2"], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", ">", 1n], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", [["@This 1", "*B", 2n, "-B", 1n, "Number"], "=", [[[CAM1Entry, "-B", 1n], "/", [2, "^", [[[[CAM1Entry, "-B", 1n], "/", ["@This 1", "*B", 2n, "-B", 1n, "Number"]], "log", 2], "ceil", 1]]], "ceil", 1]], "&&", [2n, "*", "@This 1", "-B", 1n, "<", [CAM1Entry, "-B", 1n]]], false, [[0n, ["@This 1", "*B", 2n, "-B", 1n], "@This 2"]], [], [false, true, true]],
-                        [2, [["@This 0", "=", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "*B", 2n, "Number"], "=", [[[CAM1Entry, "-B", 1n], "/", [2, "^", [[[[CAM1Entry, "-B", 1n], "/", ["@This 1", "*B", 2n, "Number"]], "log", 2], "ceil", 1]]], "ceil", 1]], "&&", [2n, "*", "@This 1", "<", [CAM1Entry, "-B", 1n]]], true, [[0n, ["@This 1", "*B", 2n], "@This 2"]], [], [false, true]]
-                    );
-                    MergeRules.push(
-                        [3, [["@This 0", ">", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 2", "!=", "@Next 2 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", ["@This 1", "*B", 2n, "-B", 1n, "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true, true]],
-                        [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@Next 2 2", "=", "@This 2"], "&&", ["@This 0", ">", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "*B", 2n, "=", CAM1Entry]]], false, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], [false, true, true]],
-                        [3, [["@This 0", ">", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 2", "!=", "@Next 2 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">", 1n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@Next 2 1", "=", 1n], "&&", [["@This 1", "*B", 2n, "-B", 1n, "Number"], "=", [[CAM1Entry, "/", [2, "^", [[[CAM1Entry, "/", ["@This 1", "*B", 2n, "-B", 1n, "Number"]], "log", 2], "ceil", 1]]], "ceil", 1]], "&&", [2n, "*", "@This 1", "-B", 1n, "<", CAM1Entry]], false, [["@This 0", ["@This 1", "*B", 2n, "-B", 1n], "@This 2"]], [], [false, true, true]],
-                        [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@Next 2 2", "=", "@This 2"], "&&", ["@This 0", ">", 0n], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@This 1", "=", "@Next 1 1"], "&&", [["@This 1", "*B", 2n, "Number"], "=", [[CAM1Entry, "/", [2, "^", [[[CAM1Entry, "/", ["@This 1", "+B", "@Next 1 1", "Number"]], "log", 2], "ceil", 1]]], "ceil", 1]], "&&", [2n, "*", "@This 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "*B", 2n], "@This 2"]], [], [false, true, true]]
-                    );
-                    rulesDescription += "Merges occur between two equal tiles that are each one less than multiples of " + nfact + " but smaller than " + nonefact + " - 1, potentially including a " + nonefact + " - 1 with the opposite sign as a third tile. If there's no third tile in the merge, then an extra 1 of the same sign is included. Whether or not that third tile must be included depends on the binary digits of " + none + ". ";
-                    if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow the path to get from 1 to " + none + " in 2049, but every two-tile merge must be done with an additional 1 except for the first power, where you go to " + (mode_vars[1] - 1n) + " instead.) ";
-                    else rulesDescription += "(In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow the path to get from 1 to " + none + " in 2049, but every two-tile merge must be done with an additional 1.) ";
-                    knownMergeMaxLength = 3;
-                }
+                let goalPow;
+                if (mode_vars[4] < 3) goalPow = 11n;
+                else if (mode_vars[4] < 4) goalPow = 7n;
+                else if (mode_vars[4] < 6) goalPow = 5n;
+                else if (mode_vars[4] < 10) goalPow = 4n;
+                else if (mode_vars[4] < 22) goalPow = 3n;
+                else if (mode_vars[4] < 256) goalPow = 2n;
+                else goalPow = 1n;
+                rulesTitle[1] = BigInt(mode_vars[4]) ** goalPow + 1n;
                 if(Array.isArray(mode_vars[1])) {
-                    if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (2049 Variant) for the following n's in a cycle: " + arrayListString + ". ";
-                    else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (2049 Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
+                    if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". ";
+                    else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (" + rulesTitle[1] + " Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
                 }
-                rulesTitle[1] = "2049";
                 if(mode_vars[1] == 0n && mode_vars[2] == 1) knownMergeLookbackDistance = 1;
                 else knownMergeLookbackDistance = 0;
                 spawnTiles = "Spawning tiles: 1 (50%), -1 (50%)";
@@ -18008,7 +18055,7 @@ function gmDisplayVars() {
         //if(modifiers[13] == "Non-Interacting" && mode_vars[2] == 2) MergeRules.shift();  // removes annihilation merge
 
         // Adds score rules
-        // make this 0 = 0n not have -1, also do special case scores ([2, 0] etc)
+        // make this 0 = 0n not have -1
         
         if(mode_vars[1] === true) {
             for(let i = 0; i < MergeRules.length; i++) {
