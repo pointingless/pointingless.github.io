@@ -17425,21 +17425,38 @@ function gmDisplayVars() {
             }
         }
         else if(mode_vars[0] == 29) { // RACUTE variant
-            document.getElementById("Alternate5040_diff").style.setProperty("display", "none");
+            document.getElementById("Alternate5040_diff").style.setProperty("display", "block");
             document.getElementById("Alternate5040_extra").style.setProperty("display", "none");
             document.getElementById("Alternate5040_num").style.setProperty("display", "none");
             document.documentElement.style.setProperty("background-image", "repeating-conic-gradient(from -45deg, #0000, #0000, #a059b5, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg, #ffffa1 45deg, #c5c500 90deg)");
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #a059b5, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
-            MergeRules.push(
-                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
-                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [["@This 1", "+B", "@Next 1 1", "gcdB", CAM1Entry], ">=", [["@This 1", "gcdB", CAM1Entry], "max", ["@Next 1 1", "gcdB", CAM1Entry]]]], true, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
-            )
-            rulesTitle[1] = "RACUTE";
-            rulesDescription += "Two tiles that are multiples of " + nfact + " but less than " + nonefact + " can merge if the GCD of their sum and " + nonefact + " is no less than the larger of the GCDs of each tile with " + nonefact + ". (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1/(" + none + ") and follow a path to get from 1/(" + none + ") to 1 in RACUTE.) ";
-            if (Array.isArray(mode_vars[1])) {
-                rulesDescription = "Follow the paths to get from (n - 1)! to n! in Alternate 5040 (" + rulesTitle[1] + " Variant), for the following n's in a cycle: " + arrayListString + ". ";
+            if(mode_vars[2] == 0) {
+                MergeRules.push(
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
+                    [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [["@This 1", "+B", "@Next 1 1", "gcdB", CAM1Entry], ">=", [["@This 1", "gcdB", CAM1Entry], "max", ["@Next 1 1", "gcdB", CAM1Entry]]]], true, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
+                )
+                rulesTitle[1] = "RACUTE";
+                rulesDescription += "Two tiles that are multiples of " + nfact + " but less than " + nonefact + " can merge if the GCD of their sum and " + nonefact + " is no less than the larger of the GCDs of each tile with " + nonefact + ". (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1/(" + none + ") and follow a path to get from 1/(" + none + ") to 1 in RACUTE.) ";
+                knownMergeMaxLength = 2;
             }
-            knownMergeMaxLength = 2;
+            else if(mode_vars[2] == 1) {
+                if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
+                if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
+                    [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]]], true, [[1n, 1n]], [], [false, true]],
+                    [2, [["@This 0", "=", 0n], "&&", ["@Next 1 0", "=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]], "&&", [["@This 1", "+B", "@Next 1 1", "gcdB", [CAM1Entry, "-B", 1n]], ">=", [["@This 1", "gcdB", [CAM1Entry, "-B", 1n]], "max", ["@Next 1 1", "gcdB", [CAM1Entry, "-B", 1n]]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]]], true, [[0n, ["@This 1", "+", "@Next 1 1"]]], [], [false, true]],
+                );
+                MergeRules.push(
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]],
+                    [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [["@This 1", "+B", "@Next 1 1", "gcdB", CAM1Entry], ">=", [["@This 1", "gcdB", CAM1Entry], "max", ["@Next 1 1", "gcdB", CAM1Entry]]]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]]
+                );
+                rulesTitle[1] = "RACUTE";
+                rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " but less than " + nonefact + " - 1 can merge with a 1 if the GCD of (their sum + 2) and " + nonefact + " is no less than the larger of the GCDs of each (tile + 1) with " + nonefact + ". (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1/(" + none + ") and follow a path to get from 1/(" + none + ") to 1 in RACUTE, but every merge must include an extra 1.) ";
+                knownMergeMaxLength = 3;
+            }
+            if(Array.isArray(mode_vars[1])) {
+                if(mode_vars[2] == 0) rulesDescription = "Follow the paths to get from (n - 1)! to n! (pretending the start of each tier is (n - 1)!) in Alternate 5040 (RACUTE Variant) for the following n's in a cycle: " + arrayListString + ". ";
+                else if(mode_vars[2] == 1) rulesDescription = "Follow the paths to get from (n - 1)! - 1 to n! - 1 (pretending the start of each tier is (n - 1)! - 1) in Alternate 5039 (RACUTE Variant) for the following n's in a cycle: " + arrayListString + ". For the first time getting to the first number only, you merge like in the normal tile values version and get to n - 1 instead. ";
+            }
             knownMergeLookbackDistance = 0;
         }
         else if(mode_vars[0] == 30) { // 2295 variant
@@ -18021,7 +18038,7 @@ function gmDisplayVars() {
                 if(MergeRules[i][3][0] == "@MergeOverflowOverwrite") outputOne = 1;
                 let output = MergeRules[i][3][outputOne];
                 if(MergeRules[i][4].length == 0) {
-                    MergeRules[i][4] = [[arrayProduct, "^", [output[0], "/B", mode_vars[1].length, "Number"]], "*", [arraySubproducts, "arr_elem", [output[0], "%", mode_vars[1].length]], "*", "@This 1", "*", output[1]];
+                    MergeRules[i][4] = [[arrayProduct, "^", [output[0], "/B", mode_vars[1].length, "Number"]], "*", [arraySubproducts, "arr_elem", [output[0], "%", mode_vars[1].length]], "*", output[1]];
                     if(mode_vars[2] == 1) MergeRules[i][4].push("-", 1);
                 }
             }
