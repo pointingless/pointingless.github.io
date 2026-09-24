@@ -16571,7 +16571,7 @@ function gmDisplayVars() {
                 console.log(validPos.slice());
                 if(mode_vars[2] == 0) {
                     MergeRules.push(
-                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", ["@This 1", "!=", 0n], "&&", [[validPos, "arr_indexOf", "@This 1"], "=", [validPos, "arr_len", "-", 1]]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", ["@This 1", "!=", 0n], "&&", [[validPos, "arr_indexOf", "@This 1"], "=", [validPos, "arr_length", "-", 1]]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@This 1", "!=", 0n], "&&", [[validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"]], "=", [validPos, "arr_indexOf", "@This 1", "+", 1]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]]
                     );
                     rulesDescription = "A multiple of " + nfact + " can merge with the previous multiple or the one before that, depending on which get it to " + nonefact + " with further such merges. If both tiles can, then the smaller multiple is merged with. A tile that is " + nfact + " can merge with k * " + nfact + " until the minimum k where a path is possible to " + nonefact + ". (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow a path to get from 1 to " + none + " in 2669, but 1+k is a valid merge until it reaches a tile that such a path is possible with.)";
@@ -16580,20 +16580,20 @@ function gmDisplayVars() {
                     if(mode_vars[1] == 0n) knownMergeLookbackDistance = 1;
                     if(Array.isArray(mode_vars[1]) || (typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n)) MergeRules.push(
                         [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [[valid, "arr_elem", 0, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"]], "=", [valid, "arr_elem", 0, "arr_indexOf", "@This 1", "+", 1]], "&&", ["@This 1", "+B", "@Next 1 1", "<", [CAM1Entry, "-B", 1n]]], false, [[0n, ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
-                        [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [[valid, "arr_elem", 0, "arr_indexOf", "@This 1"], "=", [valid, "arr_elem", 0, "arr_len", "-", 1]], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n]], [], [false, true]]
+                        [2, [["@Next 1 0", "=", 0n], "&&", ["@This 0", "=", 0n], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [[valid, "arr_elem", 0, "arr_indexOf", "@This 1"], "=", [valid, "arr_elem", 0, "arr_length", "-", 1]], "&&", ["@This 1", "+B", "@Next 1 1", "=", [CAM1Entry, "-B", 1n]]], false, [[1n, 1n]], [], [false, true]]
                     );
                     MergeRules.push(
-                        [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [[validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"]], "=", [validPos, "arr_indexOf", "@This 1", "+", 1]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]],
-                        [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", ["@Next 1 1", "!=", 0n], "&&", [[validPos, "arr_indexOf", "@This 1"], "=", [validPos, "arr_len", "-", 1]]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]]
+                        [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@Next 1 1", "!=", 0n], "&&", [[validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"]], "=", [validPos, "arr_indexOf", "@This 1", "+", 1]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]],
+                        [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", ">", 0n], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", ["@Next 1 1", "!=", 0n], "&&", [[validPos, "arr_indexOf", "@This 1"], "=", [validPos, "arr_length", "-", 1]]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]]
                     );
                     rulesDescription += "A multiple of " + nfact + " can merge with the previous multiple or the one before that, depending on which get it to " + nonefact + " with further such merges. If both tiles can, then the smaller multiple is merged with. A tile that is " + nfact + " can merge with k * " + nfact + " until the minimum k where a path is possible to " + nonefact + ". ";
                     if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in 2669, but 1+k is a valid merge until it reaches a tile that such a path is possible with, but also every merge must be done with an additional 1 except for the first power, where you go to " + (mode_vars[1] - 1n) + " instead.) ";
                     else rulesDescription += "(In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in 2669, but 1+k is a valid merge until it reaches a tile that such a path is possible with, but also every merge must be done with an additional 1.) ";
-                    knownMergeMaxLength = 3;
+                    
                 }
                 rulesTitle[1] = "2669";
             }
-            knownMergeMaxLength = 2;
+            knownMergeMaxLength = 2 + mode_vars[2];
         }
         else if(mode_vars[0] == 14) { // 1847 variant
             document.getElementById("Alternate5040_extra").style.setProperty("display", "block");
