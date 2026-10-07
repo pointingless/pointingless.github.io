@@ -16568,7 +16568,7 @@ function gmDisplayVars() {
                     valid.push(tierTiles.slice());
                 }
                 validPos.unshift(valid);
-                console.log(validPos.slice());
+                //console.log(validPos.slice());
                 if(mode_vars[2] == 0) {
                     MergeRules.push(
                         [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", ["@This 1", "!=", 0n], "&&", [[validPos, "arr_indexOf", "@This 1"], "=", [validPos, "arr_length", "-", 1]]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
@@ -16848,7 +16848,7 @@ function gmDisplayVars() {
                     [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "=", "@Next 1 1"], "||", [["@This 1", ">", "@Next 1 1"], "&&", ["@This 1", "-B", "@Next 1 1", "=", ["@This 1", "gcdB", "@Next 1 1"]]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
                     [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "=", "@Next 1 1"], "||", [["@This 1", ">", "@Next 1 1"], "&&", ["@This 1", "-B", "@Next 1 1", "=", ["@This 1", "gcdB", "@Next 1 1"]]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]]
                 )
-                rulesDescription += "Two tiles that are multiples of " + nfact + " can merge if they are equal of if, when divided by their greatest common divisor, the difference between the two tiles is 1. (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow a path to get from 1 to " + none + " in 1845.) ";
+                rulesDescription += "Two tiles that are multiples of " + nfact + " can merge if they are equal of if, when divided by their greatest common divisor, the difference between the two tiles is 1, and you can reach " + nonefact + " with further such merges. (In other words, to get from " + nfact + " to " + nonefact + ", pretend " + nfact + " is 1 and follow a path to get from 1 to " + none + " in 1845.) ";
                 knownMergeMaxLength = 2;
             }
             else if(mode_vars[2] == 1) {
@@ -16861,7 +16861,7 @@ function gmDisplayVars() {
                     [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", ">", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "=", "@Next 1 1"], "||", [["@This 1", ">", "@Next 1 1"], "&&", ["@This 1", "-B", "@Next 1 1", "=", ["@This 1", "gcdB", "@Next 1 1"]]]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [validPos, "arr_indexOf", ["@This 1", "+B", "@Next 1 1"], ">", -1]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true, true]],
                     [3, [["@Next 2 0", "=", oneTile[0]], "&&", ["@Next 2 1", "=", oneTile[1]], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", ">", 0n], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "=", "@Next 1 1"], "||", [["@This 1", ">", "@Next 1 1"], "&&", ["@This 1", "-B", "@Next 1 1", "=", ["@This 1", "gcdB", "@Next 1 1"]]]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true, true]]
                 );
-                rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " can merge with a 1 if they are equal of if, when each tile is increased by 1 and divided by their greatest common divisor, the difference between the two tiles is 1. ";
+                rulesDescription += "Two tiles that are each one less than multiples of " + nfact + " can merge with a 1 if they are equal of if, when each tile is increased by 1 and divided by their greatest common divisor, the difference between the two tiles is 1, and you can reach " + nonefact + " - 1 with further such merges. ";
                 if(typeof mode_vars[1] == "bigint" && mode_vars[1] != 0n) rulesDescription += "For the first time getting to the power only, you merge like in the normal tile values version and get to " + (mode_vars[1] - 1n) + " instead. (In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in 1845, but every merge must include an additional 1 except for the first power, which goes to " + (mode_vars[1] - 1n) + " instead.) ";
                 else rulesDescription += "(In other words, to get from " + nfact + " - 1 to " + nonefact + " - 1, pretend " + nfact + " - 1 is 1 and follow a path to get from 1 to " + none + " in 1845, but every merge must include an additional 1.) ";
                 knownMergeMaxLength = 3;
